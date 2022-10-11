@@ -1,0 +1,87 @@
+// Mixins
+// Bootstrap Button Variant
+@mixin button-variant($color, $background, $border) {
+  color: $color;
+  border-color: $border;
+  background-color: $background;
+  &.focus,
+  &:focus {
+    color: $color;
+    border-color: darken($border, 25%);
+    background-color: darken($background, 10%);
+  }
+  &:hover {
+    color: $color;
+    border-color: darken($border, 12%);
+    background-color: darken($background, 10%);
+  }
+  &.active,
+  &:active,
+  .open > &.dropdown-toggle {
+    color: $color;
+    border-color: darken($border, 12%);
+    background-color: darken($background, 10%);
+    &.focus,
+    &:focus,
+    &:hover {
+      color: $color;
+      border-color: darken($border, 25%);
+      background-color: darken($background, 17%);
+    }
+  }
+  &.active,
+  &:active,
+  .open > &.dropdown-toggle {
+    background-image: none;
+  }
+  &.disabled,
+  &[disabled],
+  fieldset[disabled] & {
+    &.focus,
+    &:focus,
+    &:hover {
+      border-color: $border;
+      background-color: $background;
+    }
+  }
+  .badge {
+    color: $background;
+    background-color: $color;
+  }
+}
+@mixin transition-all() {
+  -webkit-transition: all 0.2s;
+  -moz-transition: all 0.2s;
+  transition: all 0.2s;
+}
+@mixin background-cover() {
+  -webkit-background-size: cover!important;
+  -moz-background-size: cover!important;;
+  -o-background-size: cover!important;;
+  background-size: cover!important;;
+}
+@mixin background-normal() {
+  -webkit-background-size: auto!important;
+  -moz-background-size: auto!important;;
+  -o-background-size: auto!important;;
+  background-size: auto!important;;
+}
+@mixin gotham-book() {
+  font-family: 'GothamBook';
+}
+@mixin gotham-bold() {
+  font-family: 'GothamBold';
+}
+
+@mixin gotham-medium() {
+  font-family: 'GothamMedium';
+}
+@mixin red-gradient(){
+  /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#a92a3f+0,d3384f+100 */
+  background: #a92a3f; /* Old browsers */
+  background: -moz-linear-gradient(left,  #a92a3f 0%, #d3384f 100%); /* FF3.6-15 */
+  background: -webkit-linear-gradient(left,  #a92a3f 0%,#d3384f 100%); /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(to right,  #a92a3f 0%,#d3384f 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a92a3f', endColorstr='#d3384f',GradientType=1 ); /* IE6-9 */
+
+}

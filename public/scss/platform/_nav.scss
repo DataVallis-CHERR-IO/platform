@@ -1,0 +1,77 @@
+#sideNav {
+  background-color: $theme-primary;
+
+  .navbar-nav .nav-item .nav-link {
+    font-weight: 600;
+    letter-spacing: 0.05rem;
+    text-transform: uppercase;
+  }
+  .navbar-toggler {
+    right: 20px;
+    top: 16px;
+
+    &:focus {
+      outline-color: lighten($theme-primary, 15%);
+    }
+  }
+
+  .navbar-brand {
+    @media (max-width: 991px) {
+      width: 130px;
+    }
+    img {
+      width: 100%;
+    }
+  }
+}
+
+@media (min-width: 992px) {
+  #sideNav {
+    text-align: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    width: $sidebar-base-width;
+    height: 100vh;
+    .navbar-brand {
+      margin: 0;
+      padding: 0.8rem 2rem 1.8rem;
+      /*background-color: white;*/
+
+    }
+    .navbar-collapse {
+      display: flex;
+      align-items: flex-start;
+      flex-grow: 0;
+
+      width: 100%;
+      margin-bottom: auto;
+      .navbar-nav {
+        flex-direction: column;
+
+        width: 100%;
+        .nav-item {
+          display: block;
+          .nav-link {
+            display: block;
+            padding: 1.2rem;
+            text-align: left;
+            font-size: 14px;
+
+            i {
+              font-size: 24px;
+              float: left;
+              margin-right: 15px;
+              margin-top: -2px;
+            }
+          }
+        }
+      }
+    }
+  }
+}

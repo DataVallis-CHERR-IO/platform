@@ -1,0 +1,36 @@
+.login-box {
+  padding: 25px 15px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.2);
+  border-radius: 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: transform .15s ease,box-shadow .15s ease;
+  animation: wallet-button-enter .4s ease 1;
+  animation-fill-mode: backwards;
+}
+.kyc-features {
+  position: relative;
+  padding: 25px 15px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.2);
+  border-radius: 8px;
+  text-align: center;
+  transition: transform .15s ease,box-shadow .15s ease;
+  min-height: 254px;
+  & p{
+    font-size: 15px;
+  }
+  & .fa-question-circle{
+    position: absolute;
+    top: 7px;
+    right: 7px;
+  }
+}
+.login-box:not(.is-disabled):focus, .login-box:not(.is-disabled):hover {
+  transform: translateY(-2px);
+  z-index: 2;
+  box-shadow: 0 0 4px rgba(210,18,66,1);
+}
+.login-box.is-disabled{
+  opacity: 0.5;
+}
+@keyframes wallet-button-enter{0%{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}

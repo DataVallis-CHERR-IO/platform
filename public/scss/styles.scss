@@ -1,0 +1,19 @@
+@import "variables.scss";
+@import "mixins.scss";
+@import "global.scss";
+@import "font-cherrio.scss";
+@import "navbar.scss";
+@import "header.scss";
+@import "login.scss";
+@import "sections.scss";
+@import "footer.scss";
+
+@import "page.scss";
+
+@import "bootstrap-overrides.scss";
+
+//PLATFORM
+@import "platform/nav.scss";
+@import "platform/header.scss";
+@import "platform/page.scss";
+@import "platform/dashboard.scss";

@@ -1,0 +1,451 @@
+main {
+  padding: 30px 0;
+
+  p, a, label {
+    color: #6e7e98;
+  }
+
+  .form-group {
+    @media (max-width: 767px) {
+      margin-bottom: 30px;
+    }
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    p {
+      margin-bottom: 0;
+    }
+
+    a {
+      text-decoration: underline;
+
+      &:hover {
+        color: $theme-red;
+      }
+    }
+  }
+}
+
+label {
+  cursor: pointer;
+
+  input[type="checkbox"] {
+    display: none;
+  }
+
+  span {
+    float: left;
+    width: 22px;
+    height: 22px;
+    margin-right: 10px;
+    border: 2px solid $theme-red;
+    @include transition-all;
+    border-radius: 50%;
+    background: no-repeat center center;
+  }
+
+  input[type="checkbox"]:checked + span {
+    background-image: url(../img/icon-check-mark.svg);
+    background-size: 12px !important;
+  }
+
+  div {
+    display: table;
+  }
+}
+
+.header-holder {
+  @media (max-width: 991px) {
+    margin-top: 50px;
+  }
+}
+
+.header-image {
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  overflow: hidden;
+}
+
+.campaign-title-holder {
+  @media (max-width: 991px) {
+    margin-top: 120px !important;
+  }
+}
+
+.campaign-content {
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  overflow: hidden;
+  -webkit-box-shadow: -10px 10px 43px -10px rgba(0,0,0,0.32);
+  -moz-box-shadow: -10px 10px 43px -10px rgba(0,0,0,0.32);
+  box-shadow: -10px 10px 43px -10px rgba(0,0,0,0.32);
+
+  .campaign-content-left {
+    float: left;
+    width: 350px;
+    background-color: white;
+    height: 160px;
+    padding: 30px 45px;
+
+    @media (max-width: 1200px) {
+      width: 270px;
+      padding: 20px 25px;
+    }
+
+    @media (max-width: 991px) {
+      width: 100%;
+      float: none;
+    }
+
+    .campaign-title {
+      color: #d11242;
+      font-weight: 600;
+    }
+  }
+
+  .campaign-content-right {
+    width: 570px;
+    float: right;
+    background-color: #d11242;
+    color: white;
+    height: 160px;
+    padding: 30px 45px;
+
+    @media (max-width: 1200px) {
+      width: 500px;
+      padding: 20px 25px;
+    }
+
+    @media (max-width: 991px) {
+      width: 100%;
+      float: none;
+    }
+
+    @media (max-width: 767px) {
+      height: auto;
+    }
+  }
+
+  .campaign-title {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+
+  .campaign-progress {
+    .progress {
+      padding: 6px;
+      height: 32px;
+      border-radius: 20px;
+    }
+
+    .progress-bar {
+      border-radius: 20px;
+      background-color: black;
+    }
+  }
+
+  .campaign-info {
+    display: flex;
+    padding-top: 10px;
+
+    @media (max-width: 767px) {
+      display: block;
+    }
+
+    .campaign-info-1,
+    .campaign-info-2 {
+      margin-right: 30px;
+    }
+  }
+
+  .campaign-countdown {
+    padding-top: 10px;
+
+    .campagin-cd-item {
+      display: inline-block;
+      text-align: center;
+      position: relative;
+      padding-right: 50px;
+
+      @media (max-width: 1200px) {
+        padding-right: 40px;
+      }
+
+      &:last-child {
+        padding-right: 0;
+
+        &:after {
+          display: none;
+        }
+      }
+
+      &:after {
+        content: ":";
+        padding: 0 35px;
+        position: absolute;
+        top: 0;
+      }
+    }
+
+    .campaign-cd-item-inner {
+      display: inline-block;
+    }
+
+    .num {
+      color: #d11242;
+      display: block;
+      font-weight: 600;
+    }
+
+    .label {
+      color: #28384d;
+      opacity: 0.6;
+      font-size: 12px;
+      display: block;
+    }
+  }
+}
+
+.section-1 {
+  padding: 150px 0;
+
+  @media (max-width: 991px) {
+    padding: 70px 0;
+  }
+
+  .lead {
+    font-size: 16px;
+    font-weight: 500;
+  }
+}
+
+.c-red {
+  color: #d11242;
+}
+
+.section-2 {
+  background-color: #fff5f6;
+  padding: 150px 0;
+
+  @media (max-width: 991px) {
+    padding: 70px 0;
+  }
+
+  .lead {
+    font-size: 16px;
+    font-weight: 500;
+  }
+}
+
+.box-left {
+  padding: 30px;
+  background-color: white;
+  border-radius: 10px;
+  margin-top: 30px;
+
+  @media (min-width: 481px) {
+    padding: 50px;
+  }
+
+  @media (min-width: 992px) {
+    padding: 50px 200px 50px 50px;
+    margin-top: 140px;
+  }
+
+  h2 {
+    color: #484e58;
+    opacity: 0.3;
+    font-weight: 800;
+  }
+
+  ul {
+    li {
+      margin-bottom: 10px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+}
+
+.box-right {
+  padding: 30px;
+  background-color: white;
+  border-radius: 10px;
+  @include red-gradient;
+
+  @media (min-width: 481px) {
+    padding: 50px;
+  }
+
+  @media (min-width: 992px) {
+    padding: 50px 130px 50px 50px;
+  }
+
+  h2 {
+    color: white;
+    opacity: 0.77;
+    font-weight: 800;
+  }
+
+  h3 {
+    color: white;
+  }
+
+  ul {
+    li {
+      color: white;
+      margin-bottom: 10px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+}
+
+.box-to-right {
+  margin-top: 30px;
+
+  @media (min-width: 992px) {
+    margin-top: -470px;
+    margin-left: 395px;
+  }
+
+  @media (min-width: 1201px) {
+    margin-top: -430px;
+    margin-left: 475px;
+  }
+}
+
+
+.section-inner-video {
+  width: 100%;
+  text-align: center;
+
+  .video-wrapper {
+    display: inline-block;
+    padding: 50px 0 0;
+    width: 800px;
+
+    @media (max-width: 992px) {
+      width: 100%;
+    }
+
+    @media (max-width: 992px) {
+      padding-top: 0;
+    }
+  }
+  .video-wrapper-inner {
+    max-width: 100%;
+  }
+  .mb_YTPBar .mb_YTPseekbar {
+    background: $theme-red;
+  }
+}
+
+.popup-gallery {
+  margin: 0 -15px;
+  a {
+    width: 32.5%;
+    display: inline-block;
+    padding: 0 15px;
+
+    @media (max-width: 480px) {
+      width: 49%;
+      margin-bottom: 20px;
+    }
+
+    img {
+      width: 100%;
+    }
+  }
+}
+
+.documents-list {
+  .document-item {
+    padding: 25px 0;
+    border-top: 1px solid #eee;
+  }
+
+  .document-icon,
+  .document-title,
+  .document-abbr {
+    float: left;
+  }
+
+  .document-title {
+    @media (max-width: 767px) {
+      float: none;
+      display: table;
+    }
+  }
+
+  .document-button {
+    float: right;
+
+    @media (max-width: 767px) {
+      margin-top: 20px;
+      float: none;
+    }
+  }
+
+  .document-icon {
+    padding: 7px 0;
+    margin-right: 20px;
+  }
+
+  .document-abbr {
+    padding: 10px 0;
+    margin-right: 50px;
+  }
+
+  .document-title {
+    padding: 10px 0;
+  }
+}
+
+.donation-item {
+  font-size: 18px;
+  padding: 20px 0;
+  border-bottom: 1px solid #eee;
+
+  @media (max-width: 767px) {
+    font-size: 14px;
+  }
+
+  span {
+    float: right;
+
+    @media (max-width: 767px) {
+      float: none;
+      display: block;
+    }
+  }
+}
+
+.donation-button {
+  margin-top: 30px;
+}
+
+.donation-header {
+  h2 {
+    display: inline-block;
+
+    @media (max-width: 767px) {
+      display: block;
+    }
+  }
+
+  .btn {
+    float: right;
+
+    @media (max-width: 767px) {
+      float: none;
+      margin-bottom: 30px;
+    }
+  }
+}
