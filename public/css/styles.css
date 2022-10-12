@@ -1626,6 +1626,7 @@ a:hover {
     position: relative;
     background-size: cover;
     box-shadow: inset 0 0 0 2000px rgba(0, 0, 0, 0.4);
+    top: 63px
 }
 
 @media (max-width: 991px) {
@@ -1687,7 +1688,7 @@ a:hover {
     }
 }
 
-.pagehead .campaign-title-holder {
+.pagehead .project-title-holder {
     margin-top: 200px;
 }
 
@@ -1770,12 +1771,12 @@ label div {
 }
 
 @media (max-width: 991px) {
-    .campaign-title-holder {
+    .project-title-holder {
         margin-top: 120px !important;
     }
 }
 
-.campaign-content {
+.project-content {
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
     overflow: hidden;
@@ -1784,7 +1785,7 @@ label div {
     box-shadow: -10px 10px 43px -10px rgba(0, 0, 0, 0.32);
 }
 
-.campaign-content .campaign-content-left {
+.project-content .project-content-left {
     float: left;
     width: 350px;
     background-color: white;
@@ -1793,25 +1794,25 @@ label div {
 }
 
 @media (max-width: 1200px) {
-    .campaign-content .campaign-content-left {
+    .project-content .project-content-left {
         width: 270px;
         padding: 20px 25px;
     }
 }
 
 @media (max-width: 991px) {
-    .campaign-content .campaign-content-left {
+    .project-content .project-content-left {
         width: 100%;
         float: none;
     }
 }
 
-.campaign-content .campaign-content-left .campaign-title {
+.project-content .project-content-left .project-title {
     color: #d11242;
     font-weight: 600;
 }
 
-.campaign-content .campaign-content-right {
+.project-content .project-content-right {
     width: 570px;
     float: right;
     background-color: #d11242;
@@ -1821,62 +1822,62 @@ label div {
 }
 
 @media (max-width: 1200px) {
-    .campaign-content .campaign-content-right {
+    .project-content .project-content-right {
         width: 500px;
         padding: 20px 25px;
     }
 }
 
 @media (max-width: 991px) {
-    .campaign-content .campaign-content-right {
+    .project-content .project-content-right {
         width: 100%;
         float: none;
     }
 }
 
 @media (max-width: 767px) {
-    .campaign-content .campaign-content-right {
+    .project-content .project-content-right {
         height: auto;
     }
 }
 
-.campaign-content .campaign-title {
+.project-content .project-title {
     font-size: 18px;
     margin-bottom: 10px;
 }
 
-.campaign-content .campaign-progress .progress {
+.project-content .project-progress .progress {
     padding: 6px;
     height: 32px;
     border-radius: 20px;
 }
 
-.campaign-content .campaign-progress .progress-bar {
+.project-content .project-progress .progress-bar {
     border-radius: 20px;
     background-color: black;
 }
 
-.campaign-content .campaign-info {
+.project-content .project-info {
     display: flex;
     padding-top: 10px;
 }
 
 @media (max-width: 767px) {
-    .campaign-content .campaign-info {
+    .project-content .project-info {
         display: block;
     }
 }
 
-.campaign-content .campaign-info .campaign-info-1,
-.campaign-content .campaign-info .campaign-info-2 {
+.project-content .project-info .project-info-1,
+.project-content .project-info .project-info-2 {
     margin-right: 30px;
 }
 
-.campaign-content .campaign-countdown {
+.project-content .project-countdown {
     padding-top: 10px;
 }
 
-.campaign-content .campaign-countdown .campagin-cd-item {
+.project-content .project-countdown .project-cd-item {
     display: inline-block;
     text-align: center;
     position: relative;
@@ -1884,37 +1885,37 @@ label div {
 }
 
 @media (max-width: 1200px) {
-    .campaign-content .campaign-countdown .campagin-cd-item {
+    .project-content .project-countdown .project-cd-item {
         padding-right: 40px;
     }
 }
 
-.campaign-content .campaign-countdown .campagin-cd-item:last-child {
+.project-content .project-countdown .project-cd-item:last-child {
     padding-right: 0;
 }
 
-.campaign-content .campaign-countdown .campagin-cd-item:last-child:after {
+.project-content .project-countdown .project-cd-item:last-child:after {
     display: none;
 }
 
-.campaign-content .campaign-countdown .campagin-cd-item:after {
+.project-content .project-countdown .project-cd-item:after {
     content: ":";
     padding: 0 35px;
     position: absolute;
     top: 0;
 }
 
-.campaign-content .campaign-countdown .campaign-cd-item-inner {
+.project-content .project-countdown .project-cd-item-inner {
     display: inline-block;
 }
 
-.campaign-content .campaign-countdown .num {
+.project-content .project-countdown .num {
     color: #d11242;
     display: block;
     font-weight: 600;
 }
 
-.campaign-content .campaign-countdown .label {
+.project-content .project-countdown .label {
     color: #28384d;
     opacity: 0.6;
     font-size: 12px;

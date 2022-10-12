@@ -1,13 +1,13 @@
 import React from 'react'
 import Layout from '../../components/pages/layout'
-import CampaignDetail from '../../components/pages/campaigns/campaign-detail'
-import { apolloClient } from '../../clients/graphql'
-import { QUERY_PROJECT } from '../../constants/queries/moralis/campaign'
+import ProjectDetail from '../../components/pages/projects/project-detail'
 import { IProjectProps } from '../../interfaces/components'
+import { apolloClient } from '../../clients/graphql'
+import { QUERY_CAMPAIGN } from '../../constants/queries/moralis/project'
 
 export const getServerSideProps = async context => {
   const { data } = await apolloClient.query({
-    query: QUERY_PROJECT,
+    query: QUERY_CAMPAIGN,
     variables: {
       slug: context.params.slug
     }
@@ -15,7 +15,7 @@ export const getServerSideProps = async context => {
 
   return {
     props: {
-      campaign: data.campaign,
+      project: data.campaign,
       seo: {
         title: data.campaign.title,
         description: data.campaign.description
@@ -27,7 +27,7 @@ export const getServerSideProps = async context => {
 const Slug: React.FC<IProjectProps> = ({ project }) => {
   return (
     <Layout>
-      <CampaignDetail project={project} />
+      <ProjectDetail project={project} />
     </Layout>
   )
 }

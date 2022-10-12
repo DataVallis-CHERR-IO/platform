@@ -1,7 +1,7 @@
-import { IDefaultProps } from '../../../interfaces/components'
+import React from 'react'
 import Header from '../header'
 import Footer from '../footer'
-import React from 'react'
+import { IDefaultProps } from '../../../interfaces/components'
 
 const Layout: React.FC<IDefaultProps> = ({ children }) => {
   return (

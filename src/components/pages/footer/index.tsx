@@ -1,14 +1,14 @@
-import useTranslation from 'next-translate/useTranslation'
+import React from 'react'
 import moment from 'moment'
 import Link from 'next/link'
-import React from 'react'
 import Image from 'next/image'
+import useTranslation from 'next-translate/useTranslation'
 
 const Footer: React.FC = () => {
-  const { t } = useTranslation()
+  const { t } = useTranslation('common')
 
   return (
-    <footer>
+    <footer className='custom-footer'>
       <div className='container'>
         <div className='row'>
           <div className='col-lg-12 text-center'>
@@ -59,36 +59,36 @@ const Footer: React.FC = () => {
               </ul>
             </div>
             <div className='logo-footer'>
-              <Image src='/img/logo-cherrio.svg' alt={t('common:companyName')} width={225} height={65} />
+              <Image src='/img/logo-cherrio.svg' alt={t('companyName')} width={225} height={65} />
             </div>
             <div className='footer-contact'>
               <Link href='mailto:info@cherr.io'>
-                <a>{t('common:infoEmailAddress')}</a>
+                <a>{t('infoEmailAddress')}</a>
               </Link>
             </div>
             <div className='footer-nav'>
               <ul>
                 <li className='text-uppercase'>
-                  {t('common:domainName')} ({t('common:companyName')}) © {moment().format('YYYY')}
+                  {t('domainName')} ({t('companyName')}) © {moment().format('YYYY')}
                 </li>
                 <li>
                   <Link href='/'>
-                    <a className='text-uppercase'>{t('common:home')}</a>
+                    <a className='text-uppercase'>{t('home')}</a>
                   </Link>
                 </li>
                 <li>
                   <Link href='#'>
-                    <a className='text-uppercase'>{t('common:terms')}</a>
+                    <a className='text-uppercase'>{t('terms')}</a>
                   </Link>
                 </li>
                 <li>
                   <Link href='#'>
-                    <a className='text-uppercase'>{t('common:privacyPolicy')}</a>
+                    <a className='text-uppercase'>{t('privacyPolicy')}</a>
                   </Link>
                 </li>
               </ul>
             </div>
-            <p>{t('common:copyright')}</p>
+            <p>{t('copyright')}</p>
           </div>
         </div>
       </div>

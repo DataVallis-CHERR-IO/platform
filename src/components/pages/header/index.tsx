@@ -1,40 +1,29 @@
 import React, { useEffect, useState } from 'react'
+import axios from 'axios'
+import Link from 'next/link'
+import Image from 'next/image'
+import useTranslation from 'next-translate/useTranslation'
 import { signIn } from 'next-auth/react'
 import { chain as supportedChain, useAccount, useConnect, useDisconnect, useSignMessage } from 'wagmi'
 import { MetaMaskConnector } from 'wagmi/connectors/metaMask'
 import { permalink } from '../../../constants/routes'
 import { truncateAddress } from '../../../utils'
 import { notify } from '../../../utils/notify'
-import axios from 'axios'
-import Link from 'next/link'
-import Web3 from 'web3'
-import useTranslation from 'next-translate/useTranslation'
-import Image from 'next/image'
+import { changeNetwork } from '../../../modules/change-network'
 
 const Header: React.FC = () => {
-  const { t } = useTranslation()
-  const { connectAsync } = useConnect()
+  const { t } = useTranslation('common')
+  const { connectAsync, status } = useConnect()
   const { disconnectAsync } = useDisconnect()
   const { isConnected, address } = useAccount()
   const { signMessageAsync } = useSignMessage()
   const [loggedIn, setLoggedIn] = useState<boolean>(false)
 
-  const changeNetwork = async () => {
-    try {
-      await window.ethereum.request({
-        method: 'wallet_switchEthereumChain',
-        params: [{ chainId: Web3.utils.toHex(process.env.CHAIN_ID) }]
-      })
-    } catch (error) {
-      console.error(error)
-    }
-  }
-
   const login = async () => {
     const ethereum = window.ethereum
 
     if (!ethereum) {
-      notify(t('common:metamaskInstanceMissing'), 'warning')
+      notify(t('metamaskInstanceMissing'), 'warning')
       return
     }
 
@@ -45,9 +34,9 @@ const Header: React.FC = () => {
     })
 
     if (chain.unsupported) {
-      notify(t('common:metamaskInvalidNetwork', { chain: process.env.CHAIN }), 'warning')
       await logout()
       await changeNetwork()
+
       return
     }
 
@@ -78,7 +67,7 @@ const Header: React.FC = () => {
   }
 
   useEffect(() => {
-    !isConnected || setLoggedIn(isConnected)
+    !isConnected || status === 'loading' || setLoggedIn(isConnected)
 
     if (window.ethereum) {
       window.ethereum.on('chainChanged', async () => {
@@ -98,57 +87,36 @@ const Header: React.FC = () => {
         <div className='navbar-brand js-scroll-trigger'>
           <Image src='/img/logo-cherrio-white.svg' alt='Cherrio Logo' className='img-responsive logo-white' width={150} height={44} />
         </div>
-        <button
-          className='navbar-toggler navbar-toggler-right'
-          type='button'
-          data-toggle='collapse'
-          data-target='#navbarResponsive'
-          aria-controls='navbarResponsive'
-          aria-expanded='false'
-          aria-label='Toggle navigation'
-        >
-          <div id='nav-icon3'>
-            <span /> <span /> <span /> <span />
-          </div>
-        </button>
         <div className='collapse navbar-collapse' id='navbarResponsive'>
           <ul className='navbar-nav mx-auto'>
             <li className='nav-item'>
               <Link href='/'>
-                <a className='nav-link js-scroll-trigger'>{t('common:home')}</a>
+                <a className='nav-link js-scroll-trigger'>{t('home.text')}</a>
               </Link>
             </li>
             <li className='nav-item'>
               <Link href='#'>
-                <a className='nav-link js-scroll-trigger'>{t('common:about')}</a>
+                <a className='nav-link js-scroll-trigger'>{t('projects')}</a>
               </Link>
             </li>
             <li className='nav-item'>
-              <Link href='#'>
-                <a className='nav-link js-scroll-trigger'>{t('common:projects')}</a>
+              <Link href='https://www.cherr.io/'>
+                <a className='nav-link js-scroll-trigger'>{t('about')}</a>
               </Link>
             </li>
-            <li className='nav-item'>
-              <Link href='#'>
-                <a className='nav-link js-scroll-trigger'>{t('common:ngos')}</a>
-              </Link>
-            </li>
-            <li className='nav-item'>
-              <Link href='#'>
-                <a className='nav-link js-scroll-trigger'>{t('common:contact')}</a>
-              </Link>
-            </li>
-            {!loggedIn && (
+            {!loggedIn ? (
               <li className='nav-item'>
-                <Link href='#'>
-                  <a className='nav-link js-scroll-trigger' onClick={() => login()}>
-                    {t('common:login')}
-                  </a>
-                </Link>
+                <div className='nav-link js-scroll-trigger' onClick={() => login()}>
+                  {t('login')}
+                </div>
               </li>
-            )}
-            {loggedIn && (
+            ) : (
               <>
+                <li className='nav-item'>
+                  <Link href='/dashboard'>
+                    <a className='nav-link js-scroll-trigger'>{t('dashboard')}</a>
+                  </Link>
+                </li>
                 <li className='nav-item'>
                   <Link href='#'>
                     <a className='nav-link js-scroll-trigger'>{truncateAddress(address)}</a>
@@ -157,7 +125,7 @@ const Header: React.FC = () => {
                 <li className='nav-item'>
                   <Link href='#'>
                     <a className='nav-link js-scroll-trigger' onClick={() => logout()}>
-                      {t('common:logout')}
+                      {t('logout')}
                     </a>
                   </Link>
                 </li>

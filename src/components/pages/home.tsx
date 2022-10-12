@@ -1,5 +1,5 @@
 import React from 'react'
-import Campaigns from '../../views/campaigns'
+import Projects from '../../views/projects'
 import Subscribe from '../../views/subscribe'
 import Header from '../../views/home/header'
 import CharityDAO from '../../views/home/charity-dao'
@@ -9,7 +9,12 @@ import TopFeatures from '../../views/home/top-features'
 const Home: React.FC = () => {
   return (
     <>
-      <Header /> <Campaigns /> <CharityDAO /> <ProblemAndSolution /> <TopFeatures /> <Subscribe />
+      <Header />
+      <Projects />
+      <CharityDAO />
+      <ProblemAndSolution />
+      <TopFeatures />
+      <Subscribe />
     </>
   )
 }

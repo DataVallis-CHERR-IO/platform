@@ -1,36 +1,35 @@
 import React, { useEffect, useState } from 'react'
 import { IProjectDetail } from '../../../interfaces/api'
-import { ICampaignDetailProps } from '../../../interfaces/components'
+import { IProjectDetailType } from '../../../interfaces/components'
 import { useQuery } from 'react-query'
 import { apolloClient } from '../../../clients/graphql'
-import { QUERY_CAMPAIGN_DETAIL } from '../../../constants/queries/moralis/campaign-detail'
+import { QUERY_CAMPAIGN_DETAIL } from '../../../constants/queries/moralis/project-detail'
 import { Loading } from '@web3uikit/core'
 import moment from 'moment/moment'
-import CampaignCountdown from '../../../views/campaigns/components/campaign-countdown'
+import ProjectCountdown from '../../../views/projects/components/project-countdown'
 import useTranslation from 'next-translate/useTranslation'
 import Subscribe from '../../../views/subscribe'
-import CampaignContribution from '../../../views/campaigns/components/campaign-contribution'
-import CampaignDocuments from '../../../views/campaigns/components/campaign-documents'
-import CampaignImages from '../../../views/campaigns/components/campaign-images'
+import ProjectDocuments from '../../../views/projects/components/project-documents'
+import ProjectImages from '../../../views/projects/components/project-images'
 import Image from 'next/image'
-// import Moralis from 'moralis-v1'
+import ProjectContribution from '../../../views/projects/components/project-contribution'
 
-const CampaignDetail: React.FC<ICampaignDetailProps> = ({ project }) => {
-  const { t } = useTranslation()
-  const [campaignDetail, setCampaignDetail] = useState<IProjectDetail>(null)
+const ProjectDetail: React.FC<IProjectDetailType> = ({ project }) => {
+  const { t } = useTranslation('common')
+  const [projectDetail, setProjectDetail] = useState<IProjectDetail>(null)
   const [displayDonateBtn, setDisplayDonateBtn] = useState<boolean>(true)
 
   const { data, isLoading } = useQuery(
-    ['campaignDetail'],
+    ['projectDetail'],
     async () => {
       return (
         await apolloClient.query({
           query: QUERY_CAMPAIGN_DETAIL,
           variables: {
-            campaignId: project._id
+            projectId: project._id
           }
         })
-      ).data.campaignDetail
+      ).data.projectDetail
     },
     {
       onError: error => {
@@ -44,7 +43,7 @@ const CampaignDetail: React.FC<ICampaignDetailProps> = ({ project }) => {
       setDisplayDonateBtn(false)
     }
     if (data) {
-      setCampaignDetail(data)
+      setProjectDetail(data)
     }
   }, [data, displayDonateBtn])
 
@@ -61,7 +60,7 @@ const CampaignDetail: React.FC<ICampaignDetailProps> = ({ project }) => {
     //   provider: 'metamask'
     // })
     // const result = await Moralis.transfer(options)
-    // console.log(result)
+    // console.log(result);
     // const { data } = await axios.get('/api/contracts/deploy', {
     //   headers: {
     //     'content-type': 'application/json'
@@ -72,7 +71,7 @@ const CampaignDetail: React.FC<ICampaignDetailProps> = ({ project }) => {
     // const contract = await deployFundRaising();
     // console.log(contract.address);
     // if (!isConnected) {
-    //     notify(t('common:metamaskConnectMissing'), 'warning');
+    //     notify(t('metamaskConnectMissing'), 'warning');
     //     return;
     // }
     // console.log('isConnected', isConnected);
@@ -87,7 +86,7 @@ const CampaignDetail: React.FC<ICampaignDetailProps> = ({ project }) => {
     // console.log(tx);
     // const provider = new ethers.providers.Web3Provider(window.ethereum);
     // const signer = provider.getSigner();
-    // const contract = new ethers.Contract(campaign.contractAddress, getMaticAbi(), provider);
+    // const contract = new ethers.Contract(project.contractAddress, getMaticAbi(), provider);
     //
     // console.log(signer);
     // await token.connect(signer).transfer('0xAAe3b0B628E1b8918a0F0C648f5FAc3cDFe61C9e', 20000000);
@@ -117,16 +116,16 @@ const CampaignDetail: React.FC<ICampaignDetailProps> = ({ project }) => {
         <div className='header-content'>
           <div className='container'>
             <div className='row'>
-              <div className='col-lg-8 mx-auto text-center campaign-title-holder'>
+              <div className='col-lg-8 mx-auto text-center project-title-holder'>
                 <h1>{project.title}</h1>
               </div>
               <div className='col-lg-10 mx-auto header-holder'>
                 <div className='header-image'>
                   <Image src='/img/platform/header-2.jpg' alt='header' className='img-fluid' width={920} height={355} />
                 </div>
-                <div className='campaign-content clearfix'>
-                  <CampaignCountdown startedAt={project.startedAt} endedAt={project.endedAt} />
-                  <CampaignContribution project={project} />
+                <div className='project-content clearfix'>
+                  <ProjectCountdown startedAt={project.startedAt} endedAt={project.endedAt} />
+                  <ProjectContribution project={project} />
                 </div>
               </div>
             </div>
@@ -138,14 +137,14 @@ const CampaignDetail: React.FC<ICampaignDetailProps> = ({ project }) => {
           <div className='row'>
             <div className='col-lg-12'>
               <div className='donation-header'>
-                <h2 className='c-gray'>{t('common:description')}</h2>
+                <h2 className='c-gray'>{t('description')}</h2>
                 {displayDonateBtn && (
                   <div className='btn btn-primary js-scroll-trigger' onClick={donate}>
-                    {t('common:donateNow')}
+                    {t('donateNow')}
                   </div>
                 )}
               </div>
-              {!isLoading ? <p>{campaignDetail?.description || '/'}</p> : <Loading size={12} spinnerColor='#FFFFFF' spinnerType='wave' />}
+              {!isLoading ? <p>{projectDetail?.description || '/'}</p> : <Loading size={12} spinnerColor='#FFFFFF' spinnerType='wave' />}
             </div>
           </div>
           <div className='row'>
@@ -163,15 +162,16 @@ const CampaignDetail: React.FC<ICampaignDetailProps> = ({ project }) => {
         <div className='container'>
           <div className='row'>
             <div className='col-lg-12'>
-              <h2 className='c-gray'>{t('common:requirements')}</h2>
-              {!isLoading ? <p>{campaignDetail?.requirements || '/'}</p> : <Loading size={12} spinnerColor='#FFFFFF' spinnerType='wave' />}
+              <h2 className='c-gray'>{t('requirements')}</h2>
+              {!isLoading ? <p>{projectDetail?.requirements || '/'}</p> : <Loading size={12} spinnerColor='#FFFFFF' spinnerType='wave' />}
             </div>
           </div>
         </div>
       </section>
-      <CampaignImages campaignId={project._id} /> <CampaignDocuments campaignId={project._id} /> <Subscribe />
+      <ProjectImages projectId={project._id} />
+      <ProjectDocuments projectId={project._id} /> <Subscribe />
     </>
   )
 }
 
-export default CampaignDetail
+export default ProjectDetail

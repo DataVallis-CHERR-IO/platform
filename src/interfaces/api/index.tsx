@@ -24,7 +24,7 @@ export interface IProjectDetail extends IApiModel {
 }
 
 export interface IProjectDocument extends IApiModel {
-  projectId?: string
+  campaignId?: string
   title?: string
   path?: string
   format?: string
@@ -35,7 +35,7 @@ export interface IProjectDocument extends IApiModel {
 }
 
 export interface IProjectImage extends IApiModel {
-  projectId?: string
+  campaignId?: string
   title?: string
   description?: string
   path?: string

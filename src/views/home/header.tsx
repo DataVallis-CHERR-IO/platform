@@ -2,7 +2,7 @@ import React from 'react'
 import useTranslation from 'next-translate/useTranslation'
 
 const Header: React.FC = () => {
-  const { t } = useTranslation()
+  const { t } = useTranslation('common')
 
   return (
     <header className='pagehead'>
@@ -10,10 +10,10 @@ const Header: React.FC = () => {
         <div className='container'>
           <div className='row'>
             <div className='col-lg-7'>
-              <h1>{t('home:header.title')}</h1>
+              <h1>{t('home.header.title')}</h1>
             </div>
             <div className='col-lg-7'>
-              <p className='subtitle'>{t('home:header.subtitle')}</p>
+              <p className='subtitle'>{t('home.header.subtitle')}</p>
             </div>
           </div>
         </div>

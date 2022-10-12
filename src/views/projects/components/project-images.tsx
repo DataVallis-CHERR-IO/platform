@@ -1,25 +1,28 @@
 import React, { useEffect, useState } from 'react'
-import { IProjectImage } from '../../../interfaces/api'
-import { ICampaignImageProps } from '../../../interfaces/components'
-import useTranslation from 'next-translate/useTranslation'
 import Image from 'next/image'
+import useTranslation from 'next-translate/useTranslation'
+import { IProjectImage } from '../../../interfaces/api'
 import { useQuery } from 'react-query'
 import { apolloClient } from '../../../clients/graphql'
-import { QUERY_CAMPAIGN_IMAGES } from '../../../constants/queries/moralis/campaign-image'
+import { QUERY_CAMPAIGN_IMAGES } from '../../../constants/queries/moralis/project-image'
 import { Loading } from '@web3uikit/core'
 
-const CampaignImages: React.FC<ICampaignImageProps> = ({ campaignId }) => {
-  const { t } = useTranslation()
-  const [campaignImages, setCampaignImages] = useState<IProjectImage[]>([])
+interface IProjectImageProps {
+  projectId: string
+}
+
+const ProjectImages: React.FC<IProjectImageProps> = ({ projectId }) => {
+  const { t } = useTranslation('common')
+  const [projectImages, setProjectImages] = useState<IProjectImage[]>([])
 
   const { data, isLoading } = useQuery(
-    ['campaignImages'],
+    ['projectImages'],
     async () => {
       return (
         await apolloClient.query({
           query: QUERY_CAMPAIGN_IMAGES,
           variables: {
-            campaignId: campaignId
+            campaignId: projectId
           }
         })
       ).data.campaignImages
@@ -33,7 +36,7 @@ const CampaignImages: React.FC<ICampaignImageProps> = ({ campaignId }) => {
 
   useEffect(() => {
     if (data) {
-      setCampaignImages(data)
+      setProjectImages(data)
     }
   }, [data])
 
@@ -42,13 +45,13 @@ const CampaignImages: React.FC<ICampaignImageProps> = ({ campaignId }) => {
       <div className='container'>
         <div className='row'>
           <div className='col-lg-12'>
-            <h2 className='c-gray'>{t('common:gallery')}</h2>
+            <h2 className='c-gray'>{t('gallery')}</h2>
             <div className='popup-gallery' data-aos='fade-up' data-aos-delay={300}>
               {!isLoading ? (
-                campaignImages.map((campaignImage: IProjectImage) => (
-                  <React.Fragment key={campaignImage._id}>
+                projectImages.map((projectImage: IProjectImage) => (
+                  <React.Fragment key={projectImage._id}>
                     <div>
-                      <Image loader={() => campaignImage.image} src={campaignImage.image} alt={campaignImage.title} width={341} height={341} />
+                      <Image loader={() => projectImage.image} src={projectImage.image} alt={projectImage.title} width={341} height={341} />
                     </div>
                   </React.Fragment>
                 ))
@@ -65,4 +68,4 @@ const CampaignImages: React.FC<ICampaignImageProps> = ({ campaignId }) => {
   )
 }
 
-export default CampaignImages
+export default ProjectImages

@@ -1,27 +1,27 @@
 import type { NextPage } from 'next'
 import React from 'react'
-import Header from '../components/pages/header'
 import Head from 'next/head'
-import Footer from '../components/pages/footer'
+import Header from '../components/pages/header'
 import Home from '../components/pages/home'
-import CampaignsProvider from '../contexts/campaigns'
-import { ICampaignsProps } from '../interfaces/components'
+import Footer from '../components/pages/footer'
+import ProjectsProvider from '../contexts/projects'
+import { IProjectsProps } from '../interfaces/components'
 import { apolloClient } from '../clients/graphql'
-import { QUERY_PROJECTS } from '../constants/queries/moralis/campaign'
+import { QUERY_CAMPAIGNS } from '../constants/queries/moralis/project'
 
 export async function getServerSideProps() {
   const { data } = await apolloClient.query({
-    query: QUERY_PROJECTS
+    query: QUERY_CAMPAIGNS
   })
 
   return {
     props: {
-      campaigns: data.campaigns
+      projects: data.campaigns
     }
   }
 }
 
-const App: NextPage<ICampaignsProps> = ({ campaigns }) => {
+const App: NextPage<IProjectsProps> = ({ projects }) => {
   return (
     <div>
       <Head>
@@ -32,9 +32,9 @@ const App: NextPage<ICampaignsProps> = ({ campaigns }) => {
         <meta name='author' content='' />
       </Head>
       <Header />
-      <CampaignsProvider campaigns={campaigns}>
+      <ProjectsProvider projects={projects}>
         <Home />
-      </CampaignsProvider>
+      </ProjectsProvider>
       <Footer />
     </div>
   )

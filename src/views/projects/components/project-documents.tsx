@@ -1,25 +1,28 @@
 import React, { useEffect, useState } from 'react'
-import { IProjectDocument } from '../../../interfaces/api'
-import { ICampaignDocumentProps } from '../../../interfaces/components'
 import useTranslation from 'next-translate/useTranslation'
 import Image from 'next/image'
 import { useQuery } from 'react-query'
 import { apolloClient } from '../../../clients/graphql'
-import { QUERY_CAMPAIGN_DOCUMENTS } from '../../../constants/queries/moralis/campaign-document'
+import { QUERY_CAMPAIGN_DOCUMENTS } from '../../../constants/queries/moralis/project-document'
 import { Loading } from '@web3uikit/core'
+import { IProjectDocument } from '../../../interfaces/api'
 
-const CampaignDocuments: React.FC<ICampaignDocumentProps> = ({ campaignId }) => {
-  const { t } = useTranslation()
-  const [campaignDocuments, setCampaignDocuments] = useState<IProjectDocument[]>([])
+interface IProjectDocumentsProps {
+  projectId: string
+}
+
+const ProjectDocuments: React.FC<IProjectDocumentsProps> = ({ projectId }) => {
+  const { t } = useTranslation('common')
+  const [projectDocuments, setProjectDocuments] = useState<IProjectDocument[]>([])
 
   const { data, isLoading } = useQuery(
-    ['campaignDocuments'],
+    ['projectDocuments'],
     async () => {
       return (
         await apolloClient.query({
           query: QUERY_CAMPAIGN_DOCUMENTS,
           variables: {
-            campaignId: campaignId
+            campaignId: projectId
           }
         })
       ).data.campaignDocuments
@@ -32,9 +35,7 @@ const CampaignDocuments: React.FC<ICampaignDocumentProps> = ({ campaignId }) => 
   )
 
   useEffect(() => {
-    if (data) {
-      setCampaignDocuments(data)
-    }
+    !data || setProjectDocuments(data)
   }, [data])
 
   return (
@@ -42,19 +43,19 @@ const CampaignDocuments: React.FC<ICampaignDocumentProps> = ({ campaignId }) => 
       <div className='container'>
         <div className='row'>
           <div className='col-lg-12'>
-            <h2 className='c-gray'>{t('common:documents')}</h2>
+            <h2 className='c-gray'>{t('documents')}</h2>
             <div className='documents-list'>
               {!isLoading ? (
-                campaignDocuments.map((campaignDocument: IProjectDocument) => (
-                  <React.Fragment key={campaignDocument._id}>
+                projectDocuments.map((projectDocument: IProjectDocument) => (
+                  <React.Fragment key={projectDocument._id}>
                     <div className='document-item clearfix'>
                       <div className='document-icon'>
-                        <Image src={campaignDocument.icon} alt={campaignDocument.format} width={22} height={28} />
+                        <Image src={projectDocument.icon} alt={projectDocument.format} width={22} height={28} />
                       </div>
-                      <div className='document-abbr text-uppercase'>{campaignDocument.format}</div>
-                      <div className='document-title'>{campaignDocument.title}</div>
+                      <div className='document-abbr text-uppercase'>{projectDocument.format}</div>
+                      <div className='document-title'>{projectDocument.title}</div>
                       <div className='document-button'>
-                        <div className='btn'>{t('common:preview')}</div>
+                        <div className='btn'>{t('preview')}</div>
                       </div>
                     </div>
                   </React.Fragment>
@@ -72,4 +73,4 @@ const CampaignDocuments: React.FC<ICampaignDocumentProps> = ({ campaignId }) => 
   )
 }
 
-export default CampaignDocuments
+export default ProjectDocuments

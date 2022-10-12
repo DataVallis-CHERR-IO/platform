@@ -13,7 +13,10 @@ const nextConfig = {
         CHAIN: process.env.CHAIN,
         WAGMI_CHAIN: process.env.WAGMI_CHAIN,
         EVM_CHAIN: process.env.EVM_CHAIN,
-        TOKEN_DECIMALS: process.env.TOKEN_DECIMALS
+        TOKEN_NAME: process.env.TOKEN_NAME,
+        TOKEN_DECIMALS: process.env.TOKEN_DECIMALS,
+        TOKEN_RPC_URL: process.env.TOKEN_RPC_URL,
+        TOKEN_BLOCK_EXPLORER_URL: process.env.TOKEN_BLOCK_EXPLORER_URL
     },
     ...nextTranslate()
 };

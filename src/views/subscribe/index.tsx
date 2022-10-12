@@ -2,7 +2,7 @@ import useTranslation from 'next-translate/useTranslation'
 import React, { useRef } from 'react'
 
 const Subscribe: React.FC = () => {
-  const { t } = useTranslation()
+  const { t } = useTranslation('common')
   const emailRef = useRef(null)
   // const subscribers = useSubscribers();
   //
@@ -24,15 +24,15 @@ const Subscribe: React.FC = () => {
           <div className='col-lg-12 animation-1'>
             <div className='subscribe-form'>
               <div className='subscribe-form-left'>
-                <h4 className='color-silver'>{t('common:subscribe.title')}</h4>
-                <p>{t('common:subscribe.subtitle')}</p>
+                <h4 className='color-silver'>{t('subscribe.title')}</h4>
+                <p>{t('subscribe.subtitle')}</p>
               </div>
               <div className='subscribe-form-right'>
                 <form method='POST'>
                   <div className='subscribe-wrapper'>
-                    <input ref={emailRef} type='text' id='email' name='email' placeholder={t('common:enterYourEmailAddress')} />
+                    <input ref={emailRef} type='text' id='email' name='email' placeholder={t('enterYourEmailAddress')} />
                     <button type='submit' id='subscribe-submit' onClick={event => subscribe(event)}>
-                      {t('common:subscribe.text')}
+                      {t('subscribe.text')}
                     </button>
                   </div>
                 </form>

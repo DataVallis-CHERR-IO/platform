@@ -1,7 +1,11 @@
-import { ICampaignProgressProps } from '../../../interfaces/components'
 import React from 'react'
 
-const CampaignProgress: React.FC<ICampaignProgressProps> = ({ progress, balance }) => {
+interface IProjectProgressProps {
+  balance: number
+  progress: number
+}
+
+const ProjectProgress: React.FC<IProjectProgressProps> = ({ progress, balance }) => {
   return (
     <div className='progress'>
       <div className='progress-bar' role='progressbar' style={{ width: `${progress}%` }} aria-valuenow={balance} aria-valuemin={0} aria-valuemax={100}>
@@ -11,4 +15,4 @@ const CampaignProgress: React.FC<ICampaignProgressProps> = ({ progress, balance 
   )
 }
 
-export default CampaignProgress
+export default ProjectProgress

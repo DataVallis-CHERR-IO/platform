@@ -2,7 +2,6 @@
     "locales": ["en"],
     "defaultLocale": "en",
     "pages": {
-        "*": ["common", "campaign"],
-        "/": ["home"]
+        "*": ["common"]
     }
 }

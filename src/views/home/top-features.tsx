@@ -5,15 +5,15 @@ import { faChartLine, faMedal, faUsers, faVrCardboard } from '@fortawesome/free-
 import { faConnectdevelop } from '@fortawesome/free-brands-svg-icons'
 
 const TopFeatures: React.FC = () => {
-  const { t } = useTranslation()
+  const { t } = useTranslation('common')
 
   return (
     <section className='section-1'>
       <div className='container'>
         <div className='row'>
           <div className='col-lg-8 mx-auto text-center'>
-            <h2 className='c-red'>{t('home:topFeatures.title')}</h2>
-            <p className='lead'>{t('home:topFeatures.subtitle')}</p>
+            <h2 className='c-red'>{t('home.topFeatures.title')}</h2>
+            <p className='lead'>{t('home.topFeatures.subtitle')}</p>
           </div>
         </div>
         <div className='row'>
@@ -22,43 +22,43 @@ const TopFeatures: React.FC = () => {
               <div className='col-lg-6 col-md-6 col-xl-4'>
                 <div className='mt-5'>
                   <FontAwesomeIcon icon={faConnectdevelop} className='text-primary mb-4' size='2x' />
-                  <h3 className='h4 mb-2'>{t('home:topFeatures.text1.title')}</h3>
-                  <p className='text-muted mb-0'>{t('home:topFeatures.text1.subtitle')}</p>
+                  <h3 className='h4 mb-2'>{t('home.topFeatures.text1.title')}</h3>
+                  <p className='text-muted mb-0'>{t('home.topFeatures.text1.subtitle')}</p>
                 </div>
               </div>
               <div className='col-lg-6 col-md-6 col-xl-4'>
                 <div className='mt-5'>
                   <FontAwesomeIcon icon={faMedal} className='text-primary mb-4' size='2x' />
-                  <h3 className='h4 mb-2'>{t('home:topFeatures.text2.title')}</h3>
-                  <p className='text-muted mb-0'>{t('home:topFeatures.text2.subtitle')}</p>
+                  <h3 className='h4 mb-2'>{t('home.topFeatures.text2.title')}</h3>
+                  <p className='text-muted mb-0'>{t('home.topFeatures.text2.subtitle')}</p>
                 </div>
               </div>
               <div className='col-lg-6 col-md-6 col-xl-4'>
                 <div className='mt-5'>
                   <FontAwesomeIcon icon={faUsers} className='text-primary mb-4' size='2x' />
-                  <h3 className='h4 mb-2'>{t('home:topFeatures.text3.title')}</h3>
-                  <p className='text-muted mb-0'>{t('home:topFeatures.text3.subtitle')}</p>
+                  <h3 className='h4 mb-2'>{t('home.topFeatures.text3.title')}</h3>
+                  <p className='text-muted mb-0'>{t('home.topFeatures.text3.subtitle')}</p>
                 </div>
               </div>
               <div className='col-lg-6 col-md-6 col-xl-4'>
                 <div className='mt-5'>
                   {<FontAwesomeIcon icon={faChartLine} className='text-primary mb-4' size='2x' />}
-                  <h3 className='h4 mb-2'>{t('home:topFeatures.text4.title')}</h3>
-                  <p className='text-muted mb-0'>{t('home:topFeatures.text4.subtitle')}</p>
+                  <h3 className='h4 mb-2'>{t('home.topFeatures.text4.title')}</h3>
+                  <p className='text-muted mb-0'>{t('home.topFeatures.text4.subtitle')}</p>
                 </div>
               </div>
               <div className='col-lg-6 col-md-6 col-xl-4'>
                 <div className='mt-5'>
                   {<FontAwesomeIcon icon={faChartLine} className='text-primary mb-4' size='2x' />}
-                  <h3 className='h4 mb-2'>{t('home:topFeatures.text5.title')}</h3>
-                  <p className='text-muted mb-0'>{t('home:topFeatures.text5.subtitle')}</p>
+                  <h3 className='h4 mb-2'>{t('home.topFeatures.text5.title')}</h3>
+                  <p className='text-muted mb-0'>{t('home.topFeatures.text5.subtitle')}</p>
                 </div>
               </div>
               <div className='col-lg-6 col-md-6 col-xl-4'>
                 <div className='mt-5'>
                   {<FontAwesomeIcon icon={faVrCardboard} className='text-primary mb-4' size='2x' />}
-                  <h3 className='h4 mb-2'>{t('home:topFeatures.text6.title')}</h3>
-                  <p className='text-muted mb-0'>{t('home:topFeatures.text6.subtitle')}</p>
+                  <h3 className='h4 mb-2'>{t('home.topFeatures.text6.title')}</h3>
+                  <p className='text-muted mb-0'>{t('home.topFeatures.text6.subtitle')}</p>
                 </div>
               </div>
             </div>

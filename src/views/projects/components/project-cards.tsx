@@ -1,39 +1,39 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { ethers } from 'ethers'
-import { Loading } from '@web3uikit/core'
-import { ICampaignCardProps } from '../../../interfaces/components'
-import { IProject } from '../../../interfaces/api'
-import { getFundRaisingAbi } from '../../../../server/src/abi/fund-raising.abi'
-import { notify } from '../../../utils/notify'
-import { useCampaignContext } from '../../../contexts/campaigns/campaignsProvider'
-import { useBalance, useContractEvent } from 'wagmi'
 import moment from 'moment'
 import Link from 'next/link'
 import useTranslation from 'next-translate/useTranslation'
-import CampaignProgress from './campaign-progress'
+import ProjectProgress from './project-progress'
+import { ethers } from 'ethers'
+import { Loading } from '@web3uikit/core'
+import { IProjectCardType } from '../../../interfaces/components'
+import { IProject } from '../../../interfaces/api'
+import { getFundRaisingAbi } from '../../../../server/src/web3/abi/fund-raising.abi'
+import { notify } from '../../../utils/notify'
+import { useProjectsContext } from '../../../contexts/projects/provider'
+import { useBalance, useContractEvent } from 'wagmi'
 
-const CampaignCards: React.FC = () => {
-  const { projects } = useCampaignContext()
+const ProjectCards: React.FC = () => {
+  const { projects } = useProjectsContext()
 
   return (
     <div className='section-content'>
       <div className='row mtli-row-clearfix'>
         {!!projects.length ? (
-          projects.map((campaign: IProject) => (
-            <React.Fragment key={campaign._id}>
-              <CampaignCard project={campaign} />
+          projects.map((project: IProject) => (
+            <React.Fragment key={project._id}>
+              <ProjectCard project={project} />
             </React.Fragment>
           ))
         ) : (
-          <div>Loading campaigns...</div>
+          <div>Loading projects...</div>
         )}
       </div>
     </div>
   )
 }
 
-const CampaignCard: React.FC<ICampaignCardProps> = ({ project }) => {
-  const { t } = useTranslation()
+const ProjectCard: React.FC<IProjectCardType> = ({ project }) => {
+  const { t } = useTranslation('common')
   const [balance, setBalance] = useState<number>(0)
   const [contribution, setContribution] = useState<number>(0)
   const [progress, setProgress] = useState<number>(0)
@@ -50,7 +50,7 @@ const CampaignCard: React.FC<ICampaignCardProps> = ({ project }) => {
     eventName: 'donations',
     listener: event => {
       const amount = Number(ethers.utils.formatUnits(event[0].toString(), process.env.TOKEN_DECIMALS))
-      notify(t('common:newContributionForCampaignReceived', { project: project.title, contribution: amount }))
+      notify(t('newContributionForProjectReceived', { project: project.title, contribution: amount }))
       updateData(amount)
     }
   })
@@ -62,7 +62,6 @@ const CampaignCard: React.FC<ICampaignCardProps> = ({ project }) => {
   useEffect(() => {
     setLoading(isLoading)
 
-    console.log(data);
     if (displayDonateBtn && (moment().isAfter(moment(project.endedAt, 'x')) || moment().isBefore(moment(project.startedAt, 'x')))) {
       setDisplayDonateBtn(false)
     }
@@ -81,7 +80,7 @@ const CampaignCard: React.FC<ICampaignCardProps> = ({ project }) => {
     <div className='col-sm-12 col-md-12 col-lg-4 animation-1 mt-4'>
       <div className='causes maxwidth500 mb-sm-50'>
         <div className='thumb'>
-          <img className='img-thumbnail' alt='campaign image' src={project.image} />
+          <img className='img-thumbnail' alt={t('project')} src={project.image} />
         </div>
         <div className='causes-details clearfix'>
           <div className='p-30 p-sm-15 bg-lighter'>
@@ -89,25 +88,25 @@ const CampaignCard: React.FC<ICampaignCardProps> = ({ project }) => {
               <span>{project.title}</span>
             </h4>
             <p>{project.description}</p>
-            <CampaignProgress progress={progress} balance={balance} />
+            <ProjectProgress progress={progress} balance={balance} />
             <ul className='list-inline clearfix mt-20 mb-20'>
               <li className='pull-left flip pr-0'>
                 <i className='fab fa-ethereum' />
                 <span className='font-weight-bold text-lowercase'>
                   {loading && (
-                    <div className='campaign-card-loading'>
+                    <div className='project-card-loading'>
                       <Loading size={12} spinnerColor='#FFFFFF' spinnerType='wave' />
                     </div>
                   )}
                   {!loading && (
                     <div>
-                      {balance} {t('common:raisedOf')} <i className='fab fa-ethereum' /> {project.goal}
+                      {balance} {t('raisedOf')} <i className='fab fa-ethereum' /> {project.goal}
                     </div>
                   )}
                 </span>
               </li>
             </ul>
-            <Link href={`/campaigns/${project.slug}`}>
+            <Link href={`/projects/${project.slug}`}>
               <div className='btn btn-black mt-2 btn-sm'>{t(`common:${displayDonateBtn ? 'donateNow' : 'readMore'}`)}</div>
             </Link>
           </div>
@@ -117,4 +116,4 @@ const CampaignCard: React.FC<ICampaignCardProps> = ({ project }) => {
   )
 }
 
-export default CampaignCards
+export default ProjectCards
