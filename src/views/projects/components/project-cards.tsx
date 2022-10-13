@@ -7,7 +7,7 @@ import { ethers } from 'ethers'
 import { Loading } from '@web3uikit/core'
 import { IProjectCardType } from '../../../interfaces/components'
 import { IProject } from '../../../interfaces/api'
-import { getFundRaisingAbi } from '../../../../server/src/web3/abi/fund-raising.abi'
+import { getCherrioProjectAbi } from '../../../../server/src/web3/abi/cherrio-project'
 import { notify } from '../../../utils/notify'
 import { useProjectsContext } from '../../../contexts/projects/provider'
 import { useBalance, useContractEvent } from 'wagmi'
@@ -15,10 +15,11 @@ import { useBalance, useContractEvent } from 'wagmi'
 const ProjectCards: React.FC = () => {
   const { projects } = useProjectsContext()
 
+  console.log(projects)
   return (
     <div className='section-content'>
       <div className='row mtli-row-clearfix'>
-        {!!projects.length ? (
+        {!!projects?.length ? (
           projects.map((project: IProject) => (
             <React.Fragment key={project._id}>
               <ProjectCard project={project} />
@@ -44,16 +45,17 @@ const ProjectCard: React.FC<IProjectCardType> = ({ project }) => {
     addressOrName: project.contractAddress
   })
 
-  useContractEvent({
-    addressOrName: project.contractAddress,
-    contractInterface: getFundRaisingAbi(),
-    eventName: 'donations',
-    listener: event => {
-      const amount = Number(ethers.utils.formatUnits(event[0].toString(), process.env.TOKEN_DECIMALS))
-      notify(t('newContributionForProjectReceived', { project: project.title, contribution: amount }))
-      updateData(amount)
-    }
-  })
+  !project.contractAddress ||
+    useContractEvent({
+      addressOrName: project.contractAddress,
+      contractInterface: getCherrioProjectAbi(),
+      eventName: 'donations',
+      listener: event => {
+        const amount = Number(ethers.utils.formatUnits(event[0].toString(), process.env.TOKEN_DECIMALS))
+        notify(t('newContributionForProjectReceived', { project: project.title, contribution: amount }))
+        updateData(amount)
+      }
+    })
 
   const updateData = useCallback((donation?: number) => {
     !donation || setContribution(donation)
@@ -80,7 +82,7 @@ const ProjectCard: React.FC<IProjectCardType> = ({ project }) => {
     <div className='col-sm-12 col-md-12 col-lg-4 animation-1 mt-4'>
       <div className='causes maxwidth500 mb-sm-50'>
         <div className='thumb'>
-          <img className='img-thumbnail' alt={t('project')} src={project.image} />
+          <img className='img-thumbnail' alt={t('project.text')} src={project.image} />
         </div>
         <div className='causes-details clearfix'>
           <div className='p-30 p-sm-15 bg-lighter'>

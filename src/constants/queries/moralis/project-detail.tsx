@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client'
 
 export const QUERY_CAMPAIGN_DETAIL = gql`
-  query campaignDetail($campaignId: String) {
+  query CampaignDetail($campaignId: String) {
     campaignDetail(campaignId: $campaignId) {
       _id
       requirements

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { IProjectDetail } from '../../../interfaces/api'
-import { IProjectDetailType } from '../../../interfaces/components'
+import { IProject, IProjectDetail } from '../../../interfaces/api'
 import { useQuery } from 'react-query'
 import { apolloClient } from '../../../clients/graphql'
 import { QUERY_CAMPAIGN_DETAIL } from '../../../constants/queries/moralis/project-detail'
@@ -14,7 +13,11 @@ import ProjectImages from '../../../views/projects/components/project-images'
 import Image from 'next/image'
 import ProjectContribution from '../../../views/projects/components/project-contribution'
 
-const ProjectDetail: React.FC<IProjectDetailType> = ({ project }) => {
+interface IProjectDetailProps {
+  project: IProject
+}
+
+const ProjectDetail: React.FC<IProjectDetailProps> = ({ project }) => {
   const { t } = useTranslation('common')
   const [projectDetail, setProjectDetail] = useState<IProjectDetail>(null)
   const [displayDonateBtn, setDisplayDonateBtn] = useState<boolean>(true)

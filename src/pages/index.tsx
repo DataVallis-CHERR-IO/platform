@@ -4,24 +4,27 @@ import Head from 'next/head'
 import Header from '../components/pages/header'
 import Home from '../components/pages/home'
 import Footer from '../components/pages/footer'
-import ProjectsProvider from '../contexts/projects'
-import { IProjectsProps } from '../interfaces/components'
+import ProjectsProvider, { IProject } from '../contexts/projects'
 import { apolloClient } from '../clients/graphql'
-import { QUERY_CAMPAIGNS } from '../constants/queries/moralis/project'
+import { QUERY_PROJECTS } from '../constants/queries/moralis/project'
 
 export async function getServerSideProps() {
   const { data } = await apolloClient.query({
-    query: QUERY_CAMPAIGNS
+    query: QUERY_PROJECTS
   })
 
   return {
     props: {
-      projects: data.campaigns
+      projects: data.projects
     }
   }
 }
 
-const App: NextPage<IProjectsProps> = ({ projects }) => {
+interface IAppProps {
+  projects?: IProject[]
+}
+
+const App: NextPage<IAppProps> = ({ projects }) => {
   return (
     <div>
       <Head>

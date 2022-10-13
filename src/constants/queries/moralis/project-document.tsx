@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client'
 
 export const QUERY_CAMPAIGN_DOCUMENTS = gql`
-  query campaignDocuments($campaignId: String) {
+  query CampaignDocuments($campaignId: String) {
     campaignDocuments(campaignId: $campaignId) {
       _id
       title

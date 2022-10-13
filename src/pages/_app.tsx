@@ -1,5 +1,6 @@
 import type { AppProps } from 'next/app'
 import React from 'react'
+import I18nProvider from 'next-translate/I18nProvider'
 import { Session } from 'next-auth'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { ToastContainer } from 'react-toastify'
@@ -39,14 +40,16 @@ const queryClient = new QueryClient({
 
 const MyApp = ({ Component, pageProps }: AppProps<{ session: Session }>) => {
   return (
-    <QueryClientProvider client={queryClient}>
-      <WagmiConfig client={client}>
-        <SessionProvider session={pageProps.session} refetchInterval={0}>
-          <Component {...pageProps} />
-          <ToastContainer />
-        </SessionProvider>
-      </WagmiConfig>
-    </QueryClientProvider>
+    <I18nProvider lang='en'>
+      <QueryClientProvider client={queryClient}>
+        <WagmiConfig client={client}>
+          <SessionProvider session={pageProps.session} refetchInterval={0}>
+            <Component {...pageProps} />
+            <ToastContainer />
+          </SessionProvider>
+        </WagmiConfig>
+      </QueryClientProvider>
+    </I18nProvider>
   )
 }
 

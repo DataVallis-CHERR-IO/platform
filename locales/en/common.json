@@ -34,6 +34,7 @@
     "preview": "Preview",
     "readMore": "Read more",
     "note": "Note",
+    "create": "Create",
     "metamaskConnectMissing": "You are not logged in. Please login first",
     "metamaskInstanceMissing": "You don't have metamask installed",
     "metamaskInvalidNetwork": "You don't have the right network. Only {{chain}} is supported.",
@@ -45,6 +46,7 @@
     "city": "City",
     "country": "Country",
     "holder": "Holder",
+    "chooseAtLeastOneOption": "Choose at least one option",
     "referenceNumber": "Reference number",
     "purposeOfPayment": "Purpose of payment",
     "donationApproveByAdmin": "Your donation will be approved by the administrator once the transfer will be completed.",
@@ -122,6 +124,7 @@
     },
     "project": {
         "text": "Project",
+        "description": "Type long description of project",
         "willStartSoon": "Project will start soon",
         "isLiveNow": "Project is Live Now",
         "hasEnded": "Project has ended",
@@ -133,6 +136,15 @@
         "createNewDescription": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
         "clickToCreateNew": "Click to create new project",
         "createNewTooltip": "You can create your own project"
+    },
+    "projectType": {
+        "text": "Project type",
+        "health": "Health",
+        "school": "School"
+    },
+    "input": {
+        "required": "This field is required",
+        "invalidValue": "Invalid field value"
     },
     "subscribe": {
         "text": "Subscribe",

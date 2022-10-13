@@ -6,7 +6,7 @@ import { ethers } from 'ethers'
 import { EvmChain } from '@moralisweb3/evm-utils'
 import { useBalance, useContractEvent } from 'wagmi'
 import { notify } from '../../../utils/notify'
-import { getFundRaisingAbi } from '../../../../server/src/web3/abi/fund-raising.abi'
+import { getCherrioProjectAbi } from '../../../../server/src/web3/abi/cherrio-project'
 import { IProject } from '../../../interfaces/api'
 
 interface IProjectContributionProps {
@@ -26,7 +26,7 @@ const ProjectContribution: React.FC<IProjectContributionProps> = ({ project }) =
 
   useContractEvent({
     addressOrName: project.contractAddress,
-    contractInterface: getFundRaisingAbi(),
+    contractInterface: getCherrioProjectAbi(),
     eventName: 'donations',
     listener: event => {
       const amount = Number(ethers.utils.formatUnits(event[0].toString(), process.env.TOKEN_DECIMALS))

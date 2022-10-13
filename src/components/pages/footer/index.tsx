@@ -73,7 +73,7 @@ const Footer: React.FC = () => {
                 </li>
                 <li>
                   <Link href='/'>
-                    <a className='text-uppercase'>{t('home')}</a>
+                    <a className='text-uppercase'>{t('home.text')}</a>
                   </Link>
                 </li>
                 <li>

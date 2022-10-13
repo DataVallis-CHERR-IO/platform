@@ -1,3 +1,5 @@
+import { ISelectOptions } from '../component'
+
 export interface IApiModel {
   _id?: string
   createdAt?: any
@@ -44,6 +46,12 @@ export interface IProjectImage extends IApiModel {
   statusId?: number
   uploadedAt?: any
   deletedAt?: any
+}
+
+export interface IProjectType extends IApiModel, ISelectOptions {
+  name?: string
+  lkName?: string
+  statusId?: number
 }
 
 export interface IProjectsContext {

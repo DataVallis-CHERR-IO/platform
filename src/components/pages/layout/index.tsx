@@ -1,9 +1,12 @@
 import React from 'react'
 import Header from '../header'
 import Footer from '../footer'
-import { IDefaultProps } from '../../../interfaces/components'
 
-const Layout: React.FC<IDefaultProps> = ({ children }) => {
+interface ILayoutProps {
+  children: React.ReactNode
+}
+
+const Layout: React.FC<ILayoutProps> = ({ children }) => {
   return (
     <>
       <Header /> {children} <Footer />
