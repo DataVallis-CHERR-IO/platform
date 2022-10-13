@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { IProject, IProjectDetail } from '../../../interfaces/api'
 import { useQuery } from 'react-query'
 import { apolloClient } from '../../../clients/graphql'
-import { QUERY_CAMPAIGN_DETAIL } from '../../../constants/queries/moralis/project-detail'
+import { QUERY_PROJECT_DETAIL } from '../../../constants/queries/moralis/project-detail'
 import { Loading } from '@web3uikit/core'
 import moment from 'moment/moment'
 import ProjectCountdown from '../../../views/projects/components/project-countdown'
@@ -27,7 +27,7 @@ const ProjectDetail: React.FC<IProjectDetailProps> = ({ project }) => {
     async () => {
       return (
         await apolloClient.query({
-          query: QUERY_CAMPAIGN_DETAIL,
+          query: QUERY_PROJECT_DETAIL,
           variables: {
             projectId: project._id
           }
@@ -171,8 +171,7 @@ const ProjectDetail: React.FC<IProjectDetailProps> = ({ project }) => {
           </div>
         </div>
       </section>
-      <ProjectImages projectId={project._id} />
-      <ProjectDocuments projectId={project._id} /> <Subscribe />
+      <ProjectImages projectId={project._id} /> <ProjectDocuments projectId={project._id} /> <Subscribe />
     </>
   )
 }

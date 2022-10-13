@@ -22,13 +22,9 @@ class Input extends Component<IInputProps, InputProps> {
 
   handleOnChange = (value: string) => {
     if (!_.get(this.props, 'ignoreStates', false)) {
-      if (_.get(this.props, 'validation.required', false) && value.length === 0) {
-        this.setState({ state: 'error' })
-      } else if (!_.get(this.props, 'validation.required', false) && value.length === 0) {
-        this.setState({ state: 'initial' })
-      } else if (value.length > 0) {
-        this.setState({ state: 'confirmed' })
-      }
+      value.length === 0 || this.setState({ state: 'confirmed' })
+      !_.get(this.props, 'validation.required', false) || value.length > 0 || this.setState({ state: 'error' })
+      _.get(this.props, 'validation.required', false) || value.length > 0 || this.setState({ state: 'initial' })
     }
 
     this.setState({ value })

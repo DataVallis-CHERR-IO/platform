@@ -1,4 +1,4 @@
-import Web3 from 'web3'
+import { ethers } from 'ethers'
 
 export const addNetwork = () => {
   return new Promise<boolean>(resolve => {
@@ -7,7 +7,7 @@ export const addNetwork = () => {
         method: 'wallet_addEthereumChain',
         params: [
           {
-            chainId: Web3.utils.toHex(process.env.CHAIN_ID),
+            chainId: ethers.utils.hexlify(process.env.CHAIN_ID),
             chainName: process.env.CHAIN,
             nativeCurrency: {
               name: process.env.TOKEN_NAME,

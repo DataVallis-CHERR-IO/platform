@@ -22,13 +22,9 @@ class TextArea extends Component<ITextAreaProps, TextAreaProps> {
 
   handleOnChange = (value: string) => {
     if (!_.get(this.props, 'ignoreStates', false)) {
-      if (_.get(this.props, 'validation.required', false) && value.length === 0) {
-        this.setState({ state: 'error' })
-      } else if (!_.get(this.props, 'validation.required', false) && value.length === 0) {
-        this.setState({ state: null })
-      } else if (value.length > 0) {
-        this.setState({ state: 'confirmed' })
-      }
+      value.length === 0 || this.setState({ state: 'confirmed' })
+      !_.get(this.props, 'validation.required', false) || value.length > 0 || this.setState({ state: 'error' })
+      _.get(this.props, 'validation.required', false) || value.length > 0 || this.setState({ state: null })
     }
 
     this.setState({ value })

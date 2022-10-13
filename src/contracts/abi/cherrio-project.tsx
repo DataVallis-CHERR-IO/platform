@@ -16,7 +16,13 @@ export const getCherrioProjectAbi = (): any[] => [
     name: 'donations',
     type: 'event'
   },
-  { inputs: [], name: 'admin', outputs: [{ internalType: 'address', name: '', type: 'address' }], stateMutability: 'view', type: 'function' },
+  {
+    inputs: [],
+    name: 'admin',
+    outputs: [{ internalType: 'address', name: '', type: 'address' }],
+    stateMutability: 'view',
+    type: 'function'
+  },
   { inputs: [], name: 'contribute', outputs: [], stateMutability: 'payable', type: 'function' },
   {
     inputs: [{ internalType: 'address', name: '', type: 'address' }],
@@ -36,14 +42,56 @@ export const getCherrioProjectAbi = (): any[] => [
     stateMutability: 'nonpayable',
     type: 'function'
   },
-  { inputs: [], name: 'deadline', outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }], stateMutability: 'view', type: 'function' },
-  { inputs: [], name: 'getBalance', outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }], stateMutability: 'view', type: 'function' },
+  {
+    inputs: [],
+    name: 'deadline',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [],
+    name: 'getBalance',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function'
+  },
   { inputs: [], name: 'getRefund', outputs: [], stateMutability: 'nonpayable', type: 'function' },
-  { inputs: [], name: 'goal', outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }], stateMutability: 'view', type: 'function' },
-  { inputs: [{ internalType: 'uint256', name: 'index', type: 'uint256' }], name: 'makePayment', outputs: [], stateMutability: 'nonpayable', type: 'function' },
-  { inputs: [], name: 'minimumContribution', outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }], stateMutability: 'view', type: 'function' },
-  { inputs: [], name: 'raisedAmount', outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }], stateMutability: 'view', type: 'function' },
-  { inputs: [], name: 'totalContributors', outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }], stateMutability: 'view', type: 'function' },
+  {
+    inputs: [],
+    name: 'goal',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [{ internalType: 'uint256', name: 'index', type: 'uint256' }],
+    name: 'makePayment',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [],
+    name: 'minimumContribution',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [],
+    name: 'raisedAmount',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [],
+    name: 'totalContributors',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function'
+  },
   {
     inputs: [{ internalType: 'uint256', name: 'index', type: 'uint256' }],
     name: 'voteForRequest',

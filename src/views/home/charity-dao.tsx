@@ -10,13 +10,13 @@ const CharityDAO: React.FC = () => {
       <div className='container'>
         <div className='row'>
           <div className='col-lg-5'>
-            <h2 className='c-red'>{t('home.highlightedProjects.description.title')}</h2>
-            <p className='lead'>{t('home.highlightedProjects.description.text1')}</p>
-            <p>{t('home.highlightedProjects.description.text2')}</p>
+            <h2 className='c-red'>{t('home.lastProjects.description.title')}</h2>
+            <p className='lead'>{t('home.lastProjects.description.text1')}</p>
+            <p>{t('home.lastProjects.description.text2')}</p>
           </div>
           <div className='col-lg-7'>
             <div className='section-img text-center'>
-              <Image src='/img/platform/section-1.png' alt='highlighted projects' className='img-fluid' width={504} height={424} />
+              <Image src='/img/platform/section-1.png' alt={t('lastProjects')} className='img-fluid' width={504} height={424} />
             </div>
           </div>
         </div>

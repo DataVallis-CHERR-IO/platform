@@ -11,6 +11,8 @@ import { useMutation } from 'react-query'
 import { apolloClient } from '../../../clients/graphql'
 import { MUTATION_CREATE_PROJECT } from '../../../constants/queries/moralis/project'
 import { paramCase } from 'param-case'
+import { notify } from '../../../utils/notify'
+import { MUTATION_CREATE_PROJECT_DETAIL } from '../../../constants/queries/moralis/project-detail'
 
 interface ICreateNewProjectProps {
   projectTypes: IProjectType[]
@@ -21,6 +23,7 @@ const CreateNewProjectComponent: React.FC<ICreateNewProjectProps> = ({ projectTy
   const [title, setTitle] = useState<string>('')
   const [excerpt, setExcerpt] = useState<string>('')
   const [description, setDescription] = useState<string>('')
+  const [requirements, setRequirements] = useState<string>('')
   const [goal, setGoal] = useState<string>('')
   const [types, setTypes] = useState<IProjectType[]>([])
   const formRef = useRef<HTMLFormElement>(null)
@@ -31,7 +34,14 @@ const CreateNewProjectComponent: React.FC<ICreateNewProjectProps> = ({ projectTy
       variables
     })
 
+  const createProjectDetail = variables =>
+    apolloClient.mutate({
+      mutation: MUTATION_CREATE_PROJECT_DETAIL,
+      variables
+    })
+
   const { mutateAsync: createProjectMutation } = useMutation(createProject)
+  const { mutateAsync: createProjectDetailMutation } = useMutation(createProjectDetail)
 
   const create = async event => {
     event.preventDefault()
@@ -41,25 +51,42 @@ const CreateNewProjectComponent: React.FC<ICreateNewProjectProps> = ({ projectTy
 
       return
     }
-    console.log(excerpt, 'excerpt')
-    console.log(description, 'description')
-    console.log(goal, 'goal')
-    console.log(types, 'types')
+
+    if (types.length === 0) {
+      notify(t('fillOutAllRequiredFields'), 'warning')
+
+      return
+    }
+
+    // formRef.current.reset()
+    // formRef.current = null
+    // setTitle('')
+    // setExcerpt('')
+    // setDescription('')
+    // setGoal('')
+    // setTypes([])
+
     const contract = await deploy([50320, ethers.utils.parseUnits(goal, 'gwei').toString()])
 
     if (contract) {
-      console.log(contract.address, 'contract address')
-
       const project = await createProjectMutation({
         title,
         excerpt,
         slug: paramCase(title),
         goal: Number(goal),
-        image: '/img/campaign2.png',
-        contractAddress: '0x1232eas'
+        image: '/img/campaign1.png',
+        contractAddress: contract.address
       })
 
-      console.log(project, 'PROJECT')
+      if (project) {
+        await createProjectDetailMutation({
+          projectId: project.data.createProject._id,
+          description,
+          requirements
+        })
+
+        notify(t('successfullyCreated'))
+      }
     }
   }
 
@@ -88,6 +115,9 @@ const CreateNewProjectComponent: React.FC<ICreateNewProjectProps> = ({ projectTy
                         validation={{ required: true }}
                         setValue={setDescription}
                       />
+                    </div>
+                    <div className='col-md-12 mb-5'>
+                      <TextArea label='requirements' id='requirements' placeholder='project.requirements' setValue={setRequirements} />
                     </div>
                     <div className='col-md-6 mb-5'>
                       <Select

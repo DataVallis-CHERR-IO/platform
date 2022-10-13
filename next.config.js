@@ -7,6 +7,7 @@ const nextConfig = {
         APP_DOMAIN: process.env.APP_DOMAIN,
         MORALIS_API_KEY: process.env.MORALIS_API_KEY,
         GRAPHQL_URL: process.env.GRAPHQL_URL,
+        GRAPHQL_WS_URL: process.env.GRAPHQL_WS_URL,
         HTTPS_PROVIDER: process.env.HTTPS_PROVIDER,
         WSS_PROVIDER: process.env.WSS_PROVIDER,
         CHAIN_ID: process.env.CHAIN_ID,

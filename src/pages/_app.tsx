@@ -10,6 +10,8 @@ import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
 import 'react-toastify/dist/ReactToastify.css'
 import '../../public/vendor/bootstrap/css/bootstrap.min.css'
 import '../../public/css/styles.min.css'
+import { ApolloProvider } from '@apollo/client'
+import { apolloClient } from '../clients/graphql'
 
 const { provider, webSocketProvider } = configureChains(
   [chain[process.env.WAGMI_CHAIN]],
@@ -41,14 +43,15 @@ const queryClient = new QueryClient({
 const MyApp = ({ Component, pageProps }: AppProps<{ session: Session }>) => {
   return (
     <I18nProvider lang='en'>
-      <QueryClientProvider client={queryClient}>
-        <WagmiConfig client={client}>
-          <SessionProvider session={pageProps.session} refetchInterval={0}>
-            <Component {...pageProps} />
-            <ToastContainer />
-          </SessionProvider>
-        </WagmiConfig>
-      </QueryClientProvider>
+      <ApolloProvider client={apolloClient}>
+        <QueryClientProvider client={queryClient}>
+          <WagmiConfig client={client}>
+            <SessionProvider session={pageProps.session} refetchInterval={0}>
+              <Component {...pageProps} /> <ToastContainer />
+            </SessionProvider>
+          </WagmiConfig>
+        </QueryClientProvider>
+      </ApolloProvider>
     </I18nProvider>
   )
 }

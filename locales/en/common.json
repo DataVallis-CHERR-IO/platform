@@ -46,6 +46,7 @@
     "city": "City",
     "country": "Country",
     "holder": "Holder",
+    "fillOutAllRequiredFields": "Please fill out all required fields",
     "chooseAtLeastOneOption": "Choose at least one option",
     "referenceNumber": "Reference number",
     "purposeOfPayment": "Purpose of payment",
@@ -57,8 +58,8 @@
             "title": "Blockchain solution for charitable donations that aims to increase transparency and reinforce trust back to the people",
             "subtitle": "A global ecosystem for charitable causes, based on blockchain technology, to improve and expand the existing fundraising processes, advance their efficiency and real-time transparency, resulting in the increase of trust and in public welfare improvement."
         },
-        "highlightedProjects": {
-            "title": "Highlighted projects",
+        "lastProjects": {
+            "title": "Last projects",
             "subtitle": "Learn more about charity projects and donate for a good cause.",
             "description": {
                 "title": "Charity DAO",
@@ -124,7 +125,9 @@
     },
     "project": {
         "text": "Project",
+        "successfullyCreated": "Project has been successfully created",
         "description": "Type long description of project",
+        "requirements": "Type if project has any requirements",
         "willStartSoon": "Project will start soon",
         "isLiveNow": "Project is Live Now",
         "hasEnded": "Project has ended",

@@ -12,7 +12,6 @@ export interface IProject extends IApiModel {
   image?: string
   goal?: string
   slug?: string
-  isHighlightedProject?: number
   contractAddress?: string
   statusId?: number
   startedAt?: any

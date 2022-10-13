@@ -6,8 +6,8 @@ import { ethers } from 'ethers'
 import { EvmChain } from '@moralisweb3/evm-utils'
 import { useBalance, useContractEvent } from 'wagmi'
 import { notify } from '../../../utils/notify'
-import { getCherrioProjectAbi } from '../../../../server/src/web3/abi/cherrio-project'
 import { IProject } from '../../../interfaces/api'
+import { getCherrioProjectAbi } from '../../../contracts/abi/cherrio-project'
 
 interface IProjectContributionProps {
   project?: IProject
@@ -24,16 +24,17 @@ const ProjectContribution: React.FC<IProjectContributionProps> = ({ project }) =
     addressOrName: project.contractAddress
   })
 
-  useContractEvent({
-    addressOrName: project.contractAddress,
-    contractInterface: getCherrioProjectAbi(),
-    eventName: 'donations',
-    listener: event => {
-      const amount = Number(ethers.utils.formatUnits(event[0].toString(), process.env.TOKEN_DECIMALS))
-      notify(t('newContributionForProjectReceived', { project: project.title, contribution: amount }))
-      updateData(amount)
-    }
-  })
+  !ethers.utils.isAddress(project.contractAddress) ||
+    useContractEvent({
+      addressOrName: project.contractAddress,
+      contractInterface: getCherrioProjectAbi(),
+      eventName: 'donations',
+      listener: event => {
+        const amount = Number(ethers.utils.formatUnits(event[0].toString(), process.env.TOKEN_DECIMALS))
+        notify(t('newContributionForProjectReceived', { project: project.title, contribution: amount }))
+        updateData(amount)
+      }
+    })
 
   const getDonations = useCallback(async () => {
     const chain = EvmChain[process.env.EVM_CHAIN]

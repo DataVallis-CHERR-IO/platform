@@ -11,8 +11,13 @@ export const getServerSideProps = async () => {
   })
 
   const projectTypes = []
-  data.projectTypes.forEach((projectType: IProjectType) => projectTypes.push({ id: projectType._id, label: projectType.lkName }))
-  console.log(projectTypes)
+  data.projectTypes.forEach((projectType: IProjectType) =>
+    projectTypes.push({
+      id: projectType._id,
+      label: projectType.lkName
+    })
+  )
+
   return {
     props: {
       projectTypes
@@ -27,8 +32,7 @@ interface ICreateNewProjectProps {
 const CreateNewProject: React.FC<ICreateNewProjectProps> = ({ projectTypes }) => {
   return (
     <Layout>
-      {' '}
-      <CreateNewProjectComponent projectTypes={projectTypes} />{' '}
+      <CreateNewProjectComponent projectTypes={projectTypes} />
     </Layout>
   )
 }

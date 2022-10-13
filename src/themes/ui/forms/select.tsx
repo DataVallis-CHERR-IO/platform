@@ -1,6 +1,6 @@
 import React, { Component, Dispatch, SetStateAction } from 'react'
 import withTranslation from 'next-translate/withTranslation'
-import { Select as SelectWeb3UI, ISelectProps } from '@web3uikit/core'
+import { ISelectProps, Select as SelectWeb3UI } from '@web3uikit/core'
 import { I18n } from 'next-translate'
 import * as _ from 'lodash'
 
@@ -21,15 +21,10 @@ class Select extends Component<ISelectOptionProps, ISelectProps> {
   }
 
   handleOnChange = value => {
-    console.log(value, 'value')
     if (!_.get(this.props, 'ignoreStates', false)) {
-      if (_.get(this.props, 'validation.required', false) && value.length === 0) {
-        this.setState({ state: 'error' })
-      } else if (!_.get(this.props, 'validation.required', false) && value.length === 0) {
-        this.setState({ state: null })
-      } else if (value.length > 0) {
-        this.setState({ state: 'confirmed' })
-      }
+      value.length === 0 || this.setState({ state: 'confirmed' })
+      !_.get(this.props, 'validation.required', false) || value.length > 0 || this.setState({ state: 'error' })
+      _.get(this.props, 'validation.required', false) || value.length > 0 || this.setState({ state: null })
     }
 
     this.setState({ value })
@@ -45,6 +40,7 @@ class Select extends Component<ISelectOptionProps, ISelectProps> {
         label={t(this.props.label)}
         onChange={event => this.handleOnChange(event)}
         validation={this.props.validation}
+        errorMessage={t(this.props.errorMessage)}
         placeholder={t(this.props.placeholder)}
         state={this.state.state}
         value={this.state.value}
@@ -53,7 +49,7 @@ class Select extends Component<ISelectOptionProps, ISelectProps> {
     )
   }
 
-  static defaultProps = { width: '100%' }
+  static defaultProps = { errorMessage: 'input.required', width: '100%' }
 }
 
 export default withTranslation(Select, 'common')

@@ -31,7 +31,7 @@ interface IProjectProps {
 const Slug: React.FC<IProjectProps> = ({ project }) => {
   return (
     <Layout>
-      <ProjectDetail project={project} />
+      <ProjectDetail project={project} />'
     </Layout>
   )
 }

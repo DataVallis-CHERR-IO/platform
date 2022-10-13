@@ -5,22 +5,35 @@ import useTranslation from 'next-translate/useTranslation'
 import ProjectProgress from './project-progress'
 import { ethers } from 'ethers'
 import { Loading } from '@web3uikit/core'
-import { IProjectCardType } from '../../../interfaces/components'
 import { IProject } from '../../../interfaces/api'
-import { getCherrioProjectAbi } from '../../../../server/src/web3/abi/cherrio-project'
 import { notify } from '../../../utils/notify'
 import { useProjectsContext } from '../../../contexts/projects/provider'
 import { useBalance, useContractEvent } from 'wagmi'
+import { getCherrioProjectAbi } from '../../../contracts/abi/cherrio-project'
+import { useSubscription } from '@apollo/client'
+import { SUBSCRIPTION_PROJECT_CREATED } from '../../../constants/queries/moralis/project'
+import * as _ from 'lodash'
 
 const ProjectCards: React.FC = () => {
   const { projects } = useProjectsContext()
+  const [lastProjects, setLastProjects] = useState<IProject[]>([])
+  const { data, loading, error } = useSubscription(SUBSCRIPTION_PROJECT_CREATED)
 
-  console.log(projects)
+  useEffect(() => {
+    !projects || setLastProjects(projects)
+
+    if (!loading && data) {
+      lastProjects.unshift(data.projectCreated)
+      lastProjects.length < 4 || lastProjects.pop()
+      setLastProjects(_.cloneDeep(lastProjects))
+    }
+  }, [data, loading, error])
+
   return (
     <div className='section-content'>
       <div className='row mtli-row-clearfix'>
-        {!!projects?.length ? (
-          projects.map((project: IProject) => (
+        {!!lastProjects.length ? (
+          lastProjects.map((project: IProject) => (
             <React.Fragment key={project._id}>
               <ProjectCard project={project} />
             </React.Fragment>
@@ -33,7 +46,11 @@ const ProjectCards: React.FC = () => {
   )
 }
 
-const ProjectCard: React.FC<IProjectCardType> = ({ project }) => {
+interface IProjectCardProps {
+  project: IProject
+}
+
+const ProjectCard: React.FC<IProjectCardProps> = ({ project }) => {
   const { t } = useTranslation('common')
   const [balance, setBalance] = useState<number>(0)
   const [contribution, setContribution] = useState<number>(0)
@@ -45,7 +62,7 @@ const ProjectCard: React.FC<IProjectCardType> = ({ project }) => {
     addressOrName: project.contractAddress
   })
 
-  !project.contractAddress ||
+  !ethers.utils.isAddress(project.contractAddress) ||
     useContractEvent({
       addressOrName: project.contractAddress,
       contractInterface: getCherrioProjectAbi(),

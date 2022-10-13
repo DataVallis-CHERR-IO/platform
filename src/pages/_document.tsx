@@ -14,8 +14,8 @@ export default class MyDocument extends Document {
           <link href='https://fonts.googleapis.com/css?family=Poppins:300,300i,400,400i,500,500i,600,700,800,900&subset=latin-ext' rel='stylesheet' />
         </Head>
         <body>
-          <Main /> <NextScript />
-          <div id='root-modal'></div>
+          <Main />
+          <NextScript />
         </body>
       </Html>
     )
