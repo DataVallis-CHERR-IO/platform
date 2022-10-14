@@ -35,7 +35,7 @@ export interface IProjectDocument extends IApiModel {
   deletedAt?: any
 }
 
-export interface IProjectImage extends IApiModel {
+export interface IProjectMedia extends IApiModel {
   campaignId?: string
   title?: string
   description?: string

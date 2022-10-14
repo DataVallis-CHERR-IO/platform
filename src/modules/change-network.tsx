@@ -11,7 +11,7 @@ export const changeNetwork = () => {
       .then(() => resolve(true))
       .catch(async error => {
         if (error.message.includes(`Unrecognized chain ID "${ethers.utils.hexlify(process.env.CHAIN_ID)}".`)) {
-          resolve(await addNetwork())
+          return resolve(await addNetwork())
         }
 
         resolve(false)

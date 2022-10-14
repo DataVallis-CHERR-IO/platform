@@ -3,7 +3,7 @@ import useTranslation from 'next-translate/useTranslation'
 import Image from 'next/image'
 import { useQuery } from 'react-query'
 import { apolloClient } from '../../../clients/graphql'
-import { QUERY_CAMPAIGN_DOCUMENTS } from '../../../constants/queries/moralis/project-document'
+import { QUERY_PROJECT_DOCUMENTS } from '../../../constants/queries/moralis/project-document'
 import { Loading } from '@web3uikit/core'
 import { IProjectDocument } from '../../../interfaces/api'
 
@@ -20,12 +20,12 @@ const ProjectDocuments: React.FC<IProjectDocumentsProps> = ({ projectId }) => {
     async () => {
       return (
         await apolloClient.query({
-          query: QUERY_CAMPAIGN_DOCUMENTS,
+          query: QUERY_PROJECT_DOCUMENTS,
           variables: {
-            campaignId: projectId
+            projectId
           }
         })
-      ).data.campaignDocuments
+      ).data.projectDocuments
     },
     {
       onError: error => {

@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react'
-import { IProject, IProjectDetail } from '../../../interfaces/api'
-import { useQuery } from 'react-query'
-import { apolloClient } from '../../../clients/graphql'
-import { QUERY_PROJECT_DETAIL } from '../../../constants/queries/moralis/project-detail'
-import { Loading } from '@web3uikit/core'
 import moment from 'moment/moment'
 import ProjectCountdown from '../../../views/projects/components/project-countdown'
 import useTranslation from 'next-translate/useTranslation'
 import Subscribe from '../../../views/subscribe'
 import ProjectDocuments from '../../../views/projects/components/project-documents'
-import ProjectImages from '../../../views/projects/components/project-images'
+import ProjectMedia from '../../../views/projects/components/project-media'
 import Image from 'next/image'
 import ProjectContribution from '../../../views/projects/components/project-contribution'
+import { IProject, IProjectDetail } from '../../../interfaces/api'
+import { useQuery } from 'react-query'
+import { apolloClient } from '../../../clients/graphql'
+import { QUERY_PROJECT_DETAIL } from '../../../constants/queries/moralis/project-detail'
+import { Loading } from '@web3uikit/core'
 
 interface IProjectDetailProps {
   project: IProject
@@ -45,9 +45,7 @@ const ProjectDetail: React.FC<IProjectDetailProps> = ({ project }) => {
     if (displayDonateBtn && (moment().isAfter(moment(project.endedAt, 'x')) || moment().isBefore(moment(project.startedAt, 'x')))) {
       setDisplayDonateBtn(false)
     }
-    if (data) {
-      setProjectDetail(data)
-    }
+    !data || setProjectDetail(data)
   }, [data, displayDonateBtn])
 
   // 0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0 MATIC CONTRACT
@@ -171,7 +169,7 @@ const ProjectDetail: React.FC<IProjectDetailProps> = ({ project }) => {
           </div>
         </div>
       </section>
-      <ProjectImages projectId={project._id} /> <ProjectDocuments projectId={project._id} /> <Subscribe />
+      <ProjectMedia projectId={project._id} /> <ProjectDocuments projectId={project._id} /> <Subscribe />
     </>
   )
 }

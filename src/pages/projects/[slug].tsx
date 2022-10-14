@@ -18,7 +18,7 @@ export const getServerSideProps = async context => {
       project: data.project,
       seo: {
         title: data.project.title,
-        description: data.project.description
+        description: data.project.excerpt
       }
     }
   }

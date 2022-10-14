@@ -1,21 +1,30 @@
 import useTranslation from 'next-translate/useTranslation'
 import React, { useRef } from 'react'
+import { apolloClient } from '../../clients/graphql'
+import { MUTATION_SUBSCRIBE } from '../../constants/queries/moralis/subscriber'
+import { useMutation } from 'react-query'
+import { notify } from '../../utils/notify'
 
 const Subscribe: React.FC = () => {
   const { t } = useTranslation('common')
-  const emailRef = useRef(null)
-  // const subscribers = useSubscribers();
-  //
-  const subscribe = async event => {
+  const emailRef = useRef<HTMLInputElement>(null)
+
+  const subscribe = variables =>
+    apolloClient.mutate({
+      mutation: MUTATION_SUBSCRIBE,
+      variables
+    })
+
+  const { mutateAsync: subscribeMutation } = useMutation(subscribe)
+
+  const submit = async event => {
     event.preventDefault()
 
-    // await setSubscribe(emailRef.current.value);
+    const subscription = await subscribeMutation({ email: emailRef.current.value })
+    notify(t(`subscribe.${subscription.data.subscribe}`), subscription.data.subscribe === 'success' ? 'success' : 'warning')
+
+    emailRef.current.value = ''
   }
-  //
-  // useEffect(() => {
-  //     console.log('subscribers', subscribers)
-  //
-  // }, [subscribers])
 
   return (
     <section className='section-updates' id='updates'>
@@ -31,7 +40,7 @@ const Subscribe: React.FC = () => {
                 <form method='POST'>
                   <div className='subscribe-wrapper'>
                     <input ref={emailRef} type='text' id='email' name='email' placeholder={t('enterYourEmailAddress')} />
-                    <button type='submit' id='subscribe-submit' onClick={event => subscribe(event)}>
+                    <button type='submit' id='subscribe-submit' onClick={submit}>
                       {t('subscribe.text')}
                     </button>
                   </div>

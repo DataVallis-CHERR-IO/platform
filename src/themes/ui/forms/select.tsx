@@ -38,7 +38,7 @@ class Select extends Component<ISelectOptionProps, ISelectProps> {
       <SelectWeb3UI
         {...this.props}
         label={t(this.props.label)}
-        onChange={event => this.handleOnChange(event)}
+        onChange={this.handleOnChange}
         validation={this.props.validation}
         errorMessage={t(this.props.errorMessage)}
         placeholder={t(this.props.placeholder)}

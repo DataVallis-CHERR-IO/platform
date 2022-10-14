@@ -118,16 +118,12 @@ const Header: React.FC = () => {
                   </Link>
                 </li>
                 <li className='nav-item'>
-                  <Link href='#'>
-                    <a className='nav-link js-scroll-trigger'>{truncateAddress(address)}</a>
-                  </Link>
+                  <div className='nav-link js-scroll-trigger'>{truncateAddress(address)}</div>
                 </li>
                 <li className='nav-item'>
-                  <Link href='#'>
-                    <a className='nav-link js-scroll-trigger' onClick={() => logout()}>
-                      {t('logout')}
-                    </a>
-                  </Link>
+                  <div className='nav-link js-scroll-trigger' onClick={() => logout()}>
+                    {t('logout')}
+                  </div>
                 </li>
               </>
             )}

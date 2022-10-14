@@ -16,7 +16,7 @@ class TextArea extends Component<ITextAreaProps, TextAreaProps> {
 
     this.state = {
       state: this.props.state,
-      value: this.props.value
+      // value: this.props.value
     }
   }
 
@@ -27,7 +27,7 @@ class TextArea extends Component<ITextAreaProps, TextAreaProps> {
       _.get(this.props, 'validation.required', false) || value.length > 0 || this.setState({ state: null })
     }
 
-    this.setState({ value })
+    // this.setState({ value })
     !this.props.setValue || this.props.setValue(value)
   }
 
@@ -42,7 +42,7 @@ class TextArea extends Component<ITextAreaProps, TextAreaProps> {
         onChange={event => this.handleOnChange(event.target.value)}
         validation={this.props.validation}
         state={this.state.state}
-        value={this.state.value}
+        value={this.props.value}
         width={this.props.width}
       />
     )

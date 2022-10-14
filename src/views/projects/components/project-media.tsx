@@ -1,31 +1,31 @@
 import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import useTranslation from 'next-translate/useTranslation'
-import { IProjectImage } from '../../../interfaces/api'
+import { IProjectMedia } from '../../../interfaces/api'
 import { useQuery } from 'react-query'
 import { apolloClient } from '../../../clients/graphql'
-import { QUERY_CAMPAIGN_IMAGES } from '../../../constants/queries/moralis/project-image'
+import { QUERY_PROJECT_MEDIA } from '../../../constants/queries/moralis/project-media'
 import { Loading } from '@web3uikit/core'
 
-interface IProjectImageProps {
+interface IProjectMediaProps {
   projectId: string
 }
 
-const ProjectImages: React.FC<IProjectImageProps> = ({ projectId }) => {
+const ProjectMedia: React.FC<IProjectMediaProps> = ({ projectId }) => {
   const { t } = useTranslation('common')
-  const [projectImages, setProjectImages] = useState<IProjectImage[]>([])
+  const [projectMedia, setProjectMedia] = useState<IProjectMedia[]>([])
 
   const { data, isLoading } = useQuery(
-    ['projectImages'],
+    ['projectMedia'],
     async () => {
       return (
         await apolloClient.query({
-          query: QUERY_CAMPAIGN_IMAGES,
+          query: QUERY_PROJECT_MEDIA,
           variables: {
-            campaignId: projectId
+            projectId
           }
         })
-      ).data.campaignImages
+      ).data.projectMedia
     },
     {
       onError: error => {
@@ -35,9 +35,7 @@ const ProjectImages: React.FC<IProjectImageProps> = ({ projectId }) => {
   )
 
   useEffect(() => {
-    if (data) {
-      setProjectImages(data)
-    }
+    !data || setProjectMedia(data)
   }, [data])
 
   return (
@@ -48,10 +46,10 @@ const ProjectImages: React.FC<IProjectImageProps> = ({ projectId }) => {
             <h2 className='c-gray'>{t('gallery')}</h2>
             <div className='popup-gallery' data-aos='fade-up' data-aos-delay={300}>
               {!isLoading ? (
-                projectImages.map((projectImage: IProjectImage) => (
-                  <React.Fragment key={projectImage._id}>
+                projectMedia.map((media: IProjectMedia) => (
+                  <React.Fragment key={media._id}>
                     <div>
-                      <Image loader={() => projectImage.image} src={projectImage.image} alt={projectImage.title} width={341} height={341} />
+                      <Image loader={() => media.image} src={media.image} alt={media.title} width={341} height={341} />
                     </div>
                   </React.Fragment>
                 ))
@@ -68,4 +66,4 @@ const ProjectImages: React.FC<IProjectImageProps> = ({ projectId }) => {
   )
 }
 
-export default ProjectImages
+export default ProjectMedia

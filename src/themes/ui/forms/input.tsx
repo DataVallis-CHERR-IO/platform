@@ -6,29 +6,19 @@ import * as _ from 'lodash'
 
 interface IInputProps extends InputProps {
   i18n: I18n
-  setValue?: Dispatch<SetStateAction<string | number>>
+  setValue?: Dispatch<SetStateAction<string | number>>[]
   ignoreStates?: boolean
 }
 
 class Input extends Component<IInputProps, InputProps> {
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      state: this.props.state,
-      value: this.props.value
-    }
-  }
-
-  handleOnChange = (value: string) => {
+  handleOnChange = event => {
     if (!_.get(this.props, 'ignoreStates', false)) {
-      value.length === 0 || this.setState({ state: 'confirmed' })
-      !_.get(this.props, 'validation.required', false) || value.length > 0 || this.setState({ state: 'error' })
-      _.get(this.props, 'validation.required', false) || value.length > 0 || this.setState({ state: 'initial' })
+      event.target.value.length === 0 || this.props.setValue[1]('confirmed')
+      !_.get(this.props, 'validation.required', false) || event.target.value.length > 0 || this.props.setValue[1]('error')
+      _.get(this.props, 'validation.required', false) || event.target.value.length > 0 || this.props.setValue[1]('initial')
     }
 
-    this.setState({ value })
-    !this.props.setValue || this.props.setValue(value)
+    !this.props.setValue || this.props.setValue[0](event.target.value)
   }
 
   render() {
@@ -38,11 +28,11 @@ class Input extends Component<IInputProps, InputProps> {
       <InputWeb3UI
         {...this.props}
         label={t(this.props.label)}
-        onChange={event => this.handleOnChange(event.target.value)}
+        onChange={this.handleOnChange}
         validation={this.props.validation}
         errorMessage={t(this.props.errorMessage)}
-        state={this.state.state}
-        value={this.state.value}
+        state={this.props.state}
+        value={this.props.value}
         width={this.props.width}
       />
     )

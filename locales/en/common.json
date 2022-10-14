@@ -46,6 +46,7 @@
     "city": "City",
     "country": "Country",
     "holder": "Holder",
+    "somethingWentWrong": "Something went wrong. Please try again later",
     "fillOutAllRequiredFields": "Please fill out all required fields",
     "chooseAtLeastOneOption": "Choose at least one option",
     "referenceNumber": "Reference number",
@@ -151,6 +152,9 @@
     },
     "subscribe": {
         "text": "Subscribe",
+        "success": "You have been successfully subscribed",
+        "alreadySubscribed": "You are already subscribed",
+        "failed": "Subscribe unsuccessful. Please try later",
         "title": "Don't miss out, Stay updated",
         "subtitle": "Sign up for updates and market news. Subscribe to our newsletter and receive update about ICOs and other crypto tips."
     }

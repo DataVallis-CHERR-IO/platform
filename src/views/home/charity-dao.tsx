@@ -16,7 +16,7 @@ const CharityDAO: React.FC = () => {
           </div>
           <div className='col-lg-7'>
             <div className='section-img text-center'>
-              <Image src='/img/platform/section-1.png' alt={t('lastProjects')} className='img-fluid' width={504} height={424} />
+              <Image src='/img/platform/section-1.png' alt={t('home.lastProjects.title')} className='img-fluid' width={504} height={424} />
             </div>
           </div>
         </div>
