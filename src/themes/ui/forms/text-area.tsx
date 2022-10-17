@@ -8,6 +8,7 @@ interface ITextAreaProps extends TextAreaProps {
   i18n: I18n
   setValue?: Dispatch<SetStateAction<string | number>>
   ignoreStates?: boolean
+  myRef: any
 }
 
 class TextArea extends Component<ITextAreaProps, TextAreaProps> {
@@ -15,20 +16,18 @@ class TextArea extends Component<ITextAreaProps, TextAreaProps> {
     super(props)
 
     this.state = {
-      state: this.props.state,
-      // value: this.props.value
+      state: this.props.state
     }
   }
 
-  handleOnChange = (value: string) => {
+  handleOnChange = event => {
     if (!_.get(this.props, 'ignoreStates', false)) {
-      value.length === 0 || this.setState({ state: 'confirmed' })
-      !_.get(this.props, 'validation.required', false) || value.length > 0 || this.setState({ state: 'error' })
-      _.get(this.props, 'validation.required', false) || value.length > 0 || this.setState({ state: null })
+      event.target.value.length === 0 || this.setState({ state: 'confirmed' })
+      !_.get(this.props, 'validation.required', false) || event.target.value.length > 0 || this.setState({ state: 'error' })
+      _.get(this.props, 'validation.required', false) || event.target.value.length > 0 || this.setState({ state: null })
     }
 
-    // this.setState({ value })
-    !this.props.setValue || this.props.setValue(value)
+    !this.props.setValue || this.props.setValue(event.target.value)
   }
 
   render() {
@@ -39,7 +38,7 @@ class TextArea extends Component<ITextAreaProps, TextAreaProps> {
         {...this.props}
         label={t(this.props.label)}
         placeholder={t(this.props.placeholder)}
-        onChange={event => this.handleOnChange(event.target.value)}
+        onChange={this.handleOnChange}
         validation={this.props.validation}
         state={this.state.state}
         value={this.props.value}

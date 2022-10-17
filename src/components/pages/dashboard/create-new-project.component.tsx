@@ -1,9 +1,9 @@
-import React, { useRef, useState } from 'react'
+import React, { createRef, RefObject, useRef, useState } from 'react'
 import useTranslation from 'next-translate/useTranslation'
 import Input from '../../../themes/ui/forms/input'
 import TextArea from '../../../themes/ui/forms/text-area'
 import Select from '../../../themes/ui/forms/select'
-import { Button } from '@web3uikit/core'
+import { Button, Upload } from '@web3uikit/core'
 import { ethers } from 'ethers'
 import { IProjectType } from '../../../interfaces/api'
 import { deploy } from '../../../modules/deploy'
@@ -16,16 +16,17 @@ import { MUTATION_CREATE_PROJECT_DETAIL } from '../../../constants/queries/moral
 
 interface ICreateNewProjectProps {
   projectTypes: IProjectType[]
+  divRef: RefObject<HTMLTextAreaElement>
 }
 
-const CreateNewProjectComponent: React.FC<ICreateNewProjectProps> = ({ projectTypes }) => {
+const CreateNewProjectComponent: React.FC<ICreateNewProjectProps> = ({ projectTypes, divRef }) => {
   const { t } = useTranslation('common')
   const [title, setTitle] = useState<string>('')
   const [titleState, setTitleState] = useState()
   const [excerpt, setExcerpt] = useState<string>('')
   const [excerptState, setExcerptState] = useState()
   const [description, setDescription] = useState<string>('')
-  const [requirements, setRequirements] = useState<string>('')
+  const [requirements, setRequirements] = useState()
   const [goal, setGoal] = useState<string>('')
   const [goalState, setGoalState] = useState()
   const [types, setTypes] = useState<IProjectType[]>([])
@@ -43,33 +44,46 @@ const CreateNewProjectComponent: React.FC<ICreateNewProjectProps> = ({ projectTy
       variables
     })
 
+  // divRef = useRef<HTMLTextAreaElement>(null)
+  divRef = useRef<HTMLTextAreaElement>(null)
+
   const { mutateAsync: createProjectMutation } = useMutation(createProject)
   const { mutateAsync: createProjectDetailMutation } = useMutation(createProjectDetail)
 
   const create = async event => {
     event.preventDefault()
+    // setDescription('')
 
-    if (!formRef.current.checkValidity()) {
-      formRef.current.reportValidity()
-      return
-    }
+    // if (!formRef.current.checkValidity()) {
+    //   formRef.current.reportValidity()
+    //   return
+    // }
 
     // if (types.length === 0) {
     //   notify(t('fillOutAllRequiredFields'), 'warning')
     //   return
     // }
     console.log(description)
+    console.log(divRef)
 
-    setTitle('')
-    setTitleState(null)
-    setExcerpt('')
-    setExcerptState(null)
-    setDescription('')
-    setRequirements('')
-    setGoal('')
-    setGoalState(null)
+    // divRef.current.value = ''
+
+    // setTitle('')
+    // setTitleState(null)
+    // setExcerpt('')
+    // setExcerptState(null)
+    // setDescription('')
+    // setRequirements('')
+    // setGoal('')
+    // setGoalState(null)
     // setTypes([])
 
+    // Array.from(document.querySelectorAll("textarea")).forEach(
+    //   textarea => (textarea.value = ''),
+    //   // input => (input.value = '')
+    //   // input => (input.value = "")
+    //   // te
+    // );
     // const contract = await deploy([50320, ethers.utils.parseUnits(goal, 'gwei').toString()])
 
     // if (contract) {
@@ -92,6 +106,37 @@ const CreateNewProjectComponent: React.FC<ICreateNewProjectProps> = ({ projectTy
     //   notify(t('project.successfullyCreated'))
     // }
     // }
+  }
+
+  const state = {
+    file: null,
+    base64URL: ""
+  };
+
+  const getBase64 = file => {
+    return new Promise(resolve => {
+      let fileInfo;
+      let baseURL = "";
+      // Make new FileReader
+      let reader = new FileReader();
+
+      // Convert the file to base64 text
+      reader.readAsDataURL(file);
+
+      // on reader load somthing...
+      reader.onload = () => {
+        // Make a fileInfo Object
+        console.log("Called", reader);
+        baseURL = reader.result;
+        console.log(baseURL);
+        resolve(baseURL);
+      };
+      console.log(fileInfo);
+    });
+  };
+
+  const handleUpload = event => {
+    console.log(event.target.files[0]);
   }
 
   return (
@@ -126,8 +171,8 @@ const CreateNewProjectComponent: React.FC<ICreateNewProjectProps> = ({ projectTy
                         validation={{ required: false }}
                         value={description}
                         setValue={setDescription}
-                        onChange={setDescription}
-                        ignoreStates={true}
+                        // myRef={divRef}
+                        // onChange={event => setDescription(event.target.value)}
                       />
                     </div>
                     <div className='col-md-12 mb-5'>
@@ -158,6 +203,9 @@ const CreateNewProjectComponent: React.FC<ICreateNewProjectProps> = ({ projectTy
                     </div>
                     <div className='col-md-6 mb-5'>
                       <Input label='goal' validation={{ required: false }} state={goalState} value={goal} setValue={[setGoal, setGoalState]} type='number' />
+                    </div>
+                    <div className='col-md-12 mb-5'>
+                      <Upload onChange={handleUpload} theme='withIcon' />
                     </div>
                   </div>
                   <div className='row section-profile'>
