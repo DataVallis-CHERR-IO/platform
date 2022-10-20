@@ -1,11 +1,11 @@
-import React, { createRef, RefObject, useRef, useState } from 'react'
+import React, { createRef, RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import useTranslation from 'next-translate/useTranslation'
 import Input from '../../../themes/ui/forms/input'
 import TextArea from '../../../themes/ui/forms/text-area'
 import Select from '../../../themes/ui/forms/select'
-import { Button, Upload } from '@web3uikit/core'
+import { Button } from '@web3uikit/core'
 import { ethers } from 'ethers'
-import { IProjectType } from '../../../interfaces/api'
+import { IProject, IProjectType } from '../../../interfaces/api'
 import { deploy } from '../../../modules/deploy'
 import { useMutation } from 'react-query'
 import { apolloClient } from '../../../clients/graphql'
@@ -13,13 +13,15 @@ import { MUTATION_CREATE_PROJECT } from '../../../constants/queries/moralis/proj
 import { paramCase } from 'param-case'
 import { notify } from '../../../utils/notify'
 import { MUTATION_CREATE_PROJECT_DETAIL } from '../../../constants/queries/moralis/project-detail'
+import Dropzone from '../../../themes/ui/drop-zone'
+import { getBase64 } from '../../../modules/get-base64'
+import { MUTATION_CREATE_PROJECT_MEDIA } from '../../../constants/queries/moralis/project-media'
 
 interface ICreateNewProjectProps {
   projectTypes: IProjectType[]
-  divRef: RefObject<HTMLTextAreaElement>
 }
 
-const CreateNewProjectComponent: React.FC<ICreateNewProjectProps> = ({ projectTypes, divRef }) => {
+const CreateNewProjectComponent: React.FC<ICreateNewProjectProps> = ({ projectTypes }) => {
   const { t } = useTranslation('common')
   const [title, setTitle] = useState<string>('')
   const [titleState, setTitleState] = useState()
@@ -30,6 +32,7 @@ const CreateNewProjectComponent: React.FC<ICreateNewProjectProps> = ({ projectTy
   const [goal, setGoal] = useState<string>('')
   const [goalState, setGoalState] = useState()
   const [types, setTypes] = useState<IProjectType[]>([])
+  const [files, setFiles] = useState<any[]>([])
   const formRef = useRef<HTMLFormElement>(null)
 
   const createProject = variables =>
@@ -44,14 +47,36 @@ const CreateNewProjectComponent: React.FC<ICreateNewProjectProps> = ({ projectTy
       variables
     })
 
-  // divRef = useRef<HTMLTextAreaElement>(null)
-  divRef = useRef<HTMLTextAreaElement>(null)
+  const createProjectMedia = variables =>
+    apolloClient.mutate({
+      mutation: MUTATION_CREATE_PROJECT_MEDIA,
+      variables
+    })
 
   const { mutateAsync: createProjectMutation } = useMutation(createProject)
   const { mutateAsync: createProjectDetailMutation } = useMutation(createProjectDetail)
+  const { mutateAsync: createProjectMediaMutation } = useMutation(createProjectMedia)
+
+  const handleOnDropFiles = async files => {
+    console.log(files, 'files')
+    setFiles(files)
+
+    const base64 = await getBase64(files[0])
+    console.log(base64)
+  }
 
   const create = async event => {
     event.preventDefault()
+
+    console.log(await getBase64(files[0]))
+
+    await createProjectMediaMutation({
+      projectId: '63487a8b0047884c96c704ed',
+      title: files[0].name,
+      content: await getBase64(files[0]),
+      mediaTypeId: 1
+    })
+
     // setDescription('')
 
     // if (!formRef.current.checkValidity()) {
@@ -64,7 +89,6 @@ const CreateNewProjectComponent: React.FC<ICreateNewProjectProps> = ({ projectTy
     //   return
     // }
     console.log(description)
-    console.log(divRef)
 
     // divRef.current.value = ''
 
@@ -106,37 +130,6 @@ const CreateNewProjectComponent: React.FC<ICreateNewProjectProps> = ({ projectTy
     //   notify(t('project.successfullyCreated'))
     // }
     // }
-  }
-
-  const state = {
-    file: null,
-    base64URL: ""
-  };
-
-  const getBase64 = file => {
-    return new Promise(resolve => {
-      let fileInfo;
-      let baseURL = "";
-      // Make new FileReader
-      let reader = new FileReader();
-
-      // Convert the file to base64 text
-      reader.readAsDataURL(file);
-
-      // on reader load somthing...
-      reader.onload = () => {
-        // Make a fileInfo Object
-        console.log("Called", reader);
-        baseURL = reader.result;
-        console.log(baseURL);
-        resolve(baseURL);
-      };
-      console.log(fileInfo);
-    });
-  };
-
-  const handleUpload = event => {
-    console.log(event.target.files[0]);
   }
 
   return (
@@ -205,7 +198,7 @@ const CreateNewProjectComponent: React.FC<ICreateNewProjectProps> = ({ projectTy
                       <Input label='goal' validation={{ required: false }} state={goalState} value={goal} setValue={[setGoal, setGoalState]} type='number' />
                     </div>
                     <div className='col-md-12 mb-5'>
-                      <Upload onChange={handleUpload} theme='withIcon' />
+                      <Dropzone onDropFiles={handleOnDropFiles} />
                     </div>
                   </div>
                   <div className='row section-profile'>

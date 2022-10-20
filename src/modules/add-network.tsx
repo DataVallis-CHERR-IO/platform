@@ -1,6 +1,6 @@
 import { ethers } from 'ethers'
 
-export const addNetwork = () => {
+export const addNetwork = (): Promise<boolean> => {
   return new Promise<boolean>(resolve => {
     window.ethereum
       .request({
