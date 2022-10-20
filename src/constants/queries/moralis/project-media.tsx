@@ -4,18 +4,16 @@ export const QUERY_PROJECT_MEDIA = gql`
   query ProjectMedia($projectId: String!) {
     projectMedia(projectId: $projectId) {
       _id
+      type
       title
       path
-      mediaTypeId
+      format
     }
   }
 `
 
 export const MUTATION_CREATE_PROJECT_MEDIA = gql`
-  mutation CreateProjectMedia($projectId: String!, $title: String!, $content: String!, $mediaTypeId: Int!) {
-    createProjectMedia(projectId: $projectId, title: $title, content: $content, mediaTypeId: $mediaTypeId) {
-      _id
-      path
-    }
+  mutation CreateProjectMedia($projectId: String!, $type: String!, $title: String!, $format: String!, $content: String!) {
+    createProjectMedia(projectId: $projectId, type: $type, title: $title, format: $format, content: $content)
   }
 `

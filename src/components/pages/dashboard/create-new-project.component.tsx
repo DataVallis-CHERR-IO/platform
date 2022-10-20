@@ -16,6 +16,7 @@ import { MUTATION_CREATE_PROJECT_DETAIL } from '../../../constants/queries/moral
 import Dropzone from '../../../themes/ui/drop-zone'
 import { getBase64 } from '../../../modules/get-base64'
 import { MUTATION_CREATE_PROJECT_MEDIA } from '../../../constants/queries/moralis/project-media'
+import { MUTATION_UPLOAD } from '../../../constants/queries/upload'
 
 interface ICreateNewProjectProps {
   projectTypes: IProjectType[]
@@ -31,9 +32,17 @@ const CreateNewProjectComponent: React.FC<ICreateNewProjectProps> = ({ projectTy
   const [requirements, setRequirements] = useState()
   const [goal, setGoal] = useState<string>('')
   const [goalState, setGoalState] = useState()
+  const [duration, setDuration] = useState<string>('')
+  const [durationState, setDurationState] = useState()
   const [types, setTypes] = useState<IProjectType[]>([])
-  const [files, setFiles] = useState<any[]>([])
+  const [files, setFiles] = useState<File[]>([])
   const formRef = useRef<HTMLFormElement>(null)
+
+  const upload = variables =>
+    apolloClient.mutate({
+      mutation: MUTATION_UPLOAD,
+      variables
+    })
 
   const createProject = variables =>
     apolloClient.mutate({
@@ -53,6 +62,7 @@ const CreateNewProjectComponent: React.FC<ICreateNewProjectProps> = ({ projectTy
       variables
     })
 
+  const { mutateAsync: uploadMutation } = useMutation(upload)
   const { mutateAsync: createProjectMutation } = useMutation(createProject)
   const { mutateAsync: createProjectDetailMutation } = useMutation(createProjectDetail)
   const { mutateAsync: createProjectMediaMutation } = useMutation(createProjectMedia)
@@ -60,37 +70,28 @@ const CreateNewProjectComponent: React.FC<ICreateNewProjectProps> = ({ projectTy
   const handleOnDropFiles = async files => {
     console.log(files, 'files')
     setFiles(files)
+  }
 
-    const base64 = await getBase64(files[0])
-    console.log(base64)
+  const handleOnChangeFiles = async files => {
+    console.log(files, 'files')
+    setFiles(files)
   }
 
   const create = async event => {
     event.preventDefault()
 
-    console.log(await getBase64(files[0]))
-
-    await createProjectMediaMutation({
-      projectId: '63487a8b0047884c96c704ed',
-      title: files[0].name,
-      content: await getBase64(files[0]),
-      mediaTypeId: 1
-    })
-
     // setDescription('')
-
+    //
     // if (!formRef.current.checkValidity()) {
     //   formRef.current.reportValidity()
     //   return
     // }
-
+    //
     // if (types.length === 0) {
     //   notify(t('fillOutAllRequiredFields'), 'warning')
     //   return
     // }
-    console.log(description)
-
-    // divRef.current.value = ''
+    // console.log(description)
 
     // setTitle('')
     // setTitleState(null)
@@ -102,33 +103,63 @@ const CreateNewProjectComponent: React.FC<ICreateNewProjectProps> = ({ projectTy
     // setGoalState(null)
     // setTypes([])
 
-    // Array.from(document.querySelectorAll("textarea")).forEach(
-    //   textarea => (textarea.value = ''),
+    // Array.from(document.querySelectorAll('textarea')).forEach(
+    //   textarea => (textarea.value = '')
     //   // input => (input.value = '')
     //   // input => (input.value = "")
     //   // te
-    // );
-    // const contract = await deploy([50320, ethers.utils.parseUnits(goal, 'gwei').toString()])
-
-    // if (contract) {
-    // const project = await createProjectMutation({
-    //   title,
-    //   excerpt,
-    //   slug: paramCase(title),
-    //   goal: Number(goal),
-    //   image: '/img/campaign3.png',
-    //   contractAddress: '0x79655382A961fa6C9448A78BF508D3E57FB0D24E'
-    // })
+    // )
+    const contract = await deploy([duration, ethers.utils.parseUnits(goal, 'gwei').toString()])
     //
-    // if (project) {
-    //   await createProjectDetailMutation({
-    //     projectId: project.data.createProject._id,
-    //     description,
-    //     requirements
+    //
+    //
+    // console.log(files)
+    // console.log(files[0])
+    // for (const file of files) {
+    //   console.log(file.name, 'FILENAME')
+    //
+    //   const resp = await uploadMutation({
+    //     title: paramCase(file.name),
+    //     content: await getBase64(file)
+    //   })
+    //   console.log(resp)
+    // }
+    //
+    // if (contract) {
+    //   const project = await createProjectMutation({
+    //     title,
+    //     excerpt,
+    //     slug: paramCase(title),
+    //     goal: Number(goal),
+    //     image: '/img/campaign3.png',
+    //     contractAddress: '0x79655382A961fa6C9448A78BF508D3E57FB0D24E'
     //   })
     //
-    //   notify(t('project.successfullyCreated'))
-    // }
+    //   // console.log(files)
+    //   // console.log(files[0])
+    //   // for (const file of files) {
+    //   //   console.log(file.name, 'FILENAME')
+    //   //   const splitType = file.type.split('/')
+    //   //
+    //   //   const resp = await createProjectMediaMutation({
+    //   //     projectId: '63487a8b0047884c96c704ed',
+    //   //     title: paramCase(file.name),
+    //   //     content: await getBase64(file),
+    //   //     type: splitType[0],
+    //   //     format: splitType[1]
+    //   //   })
+    //   //   console.log(resp)
+    //   // }
+    //   //
+    //   // if (project) {
+    //   //   await createProjectDetailMutation({
+    //   //     projectId: project.data.createProject._id,
+    //   //     description,
+    //   //     requirements
+    //   //   })
+    //   //
+    //   //   notify(t('project.successfullyCreated'))
+    //   // }
     // }
   }
 
@@ -179,7 +210,7 @@ const CreateNewProjectComponent: React.FC<ICreateNewProjectProps> = ({ projectTy
                         ignoreStates={true}
                       />
                     </div>
-                    <div className='col-md-6 mb-5'>
+                    <div className='col-md-4 mb-5'>
                       <Select
                         isMulti
                         isSearch
@@ -194,11 +225,22 @@ const CreateNewProjectComponent: React.FC<ICreateNewProjectProps> = ({ projectTy
                         setValue={setTypes}
                       />
                     </div>
-                    <div className='col-md-6 mb-5'>
-                      <Input label='goal' validation={{ required: false }} state={goalState} value={goal} setValue={[setGoal, setGoalState]} type='number' />
+                    <div className='col-md-4 mb-5'>
+                      <Input label='goal' validation={{ required: true }} state={goalState} value={goal} setValue={[setGoal, setGoalState]} type='number' />
+                    </div>
+                    <div className='col-md-4 mb-5'>
+                      <Input
+                        label='durationInDays'
+                        id='duration'
+                        validation={{ required: true }}
+                        state={durationState}
+                        value={duration}
+                        setValue={[setDuration, setDurationState]}
+                        type='number'
+                      />
                     </div>
                     <div className='col-md-12 mb-5'>
-                      <Dropzone onDropFiles={handleOnDropFiles} />
+                      <Dropzone multiple={true} onDropFiles={handleOnDropFiles} onChangeFiles={handleOnChangeFiles} />
                     </div>
                   </div>
                   <div className='row section-profile'>
