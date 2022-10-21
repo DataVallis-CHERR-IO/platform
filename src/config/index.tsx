@@ -4,3 +4,8 @@ export const authConfig = {
   uri: process.env.NEXTAUTH_URL,
   timeout: 60
 }
+
+export const authGuard = {
+  publicPaths: ['/', '/projects'],
+  dynamicPaths: ['/projects']
+}

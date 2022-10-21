@@ -32,6 +32,7 @@ const Dropzone: React.FC<IDropzoneProps> = ({ multiple, uploadedFiles, onDropFil
 
   const handleOnRemove = index => {
     files.splice(index, 1)
+
     setFiles(_.cloneDeep(files))
     onChangeFiles(_.cloneDeep(files))
   }
@@ -78,17 +79,18 @@ const Dropzone: React.FC<IDropzoneProps> = ({ multiple, uploadedFiles, onDropFil
   ))
 
   useEffect(() => {
+    setFiles(uploadedFiles)
     return () => files.forEach(file => URL.revokeObjectURL(file.preview))
-  }, [])
+  }, [uploadedFiles])
 
   return (
     <div className='row'>
-      <div className='col-md-12 mb-5'>
+      <div className='col-md-12'>
         <div {...getRootProps({ style })}>
           <input {...getInputProps()} /> {isDragActive ? <p>Drop the files here ...</p> : <p>Drag 'n' drop some files here, or click to select files</p>}
         </div>
       </div>
-      <div className='col-md-12 mb-5'>
+      <div className='col-md-12'>
         <aside style={thumbsContainer}>{thumbs}</aside>
       </div>
     </div>

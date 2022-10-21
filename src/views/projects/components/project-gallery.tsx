@@ -11,7 +11,7 @@ interface IProjectMediaProps {
   projectId: string
 }
 
-const ProjectMedia: React.FC<IProjectMediaProps> = ({ projectId }) => {
+const ProjectGallery: React.FC<IProjectMediaProps> = ({ projectId }) => {
   const { t } = useTranslation('common')
   const [projectMedia, setProjectMedia] = useState<IProjectMedia[]>([])
 
@@ -22,7 +22,8 @@ const ProjectMedia: React.FC<IProjectMediaProps> = ({ projectId }) => {
         await apolloClient.query({
           query: QUERY_PROJECT_MEDIA,
           variables: {
-            projectId
+            projectId,
+            type: 'image'
           }
         })
       ).data.projectMedia
@@ -49,7 +50,7 @@ const ProjectMedia: React.FC<IProjectMediaProps> = ({ projectId }) => {
                 projectMedia.map((media: IProjectMedia) => (
                   <React.Fragment key={media._id}>
                     <div>
-                      <Image loader={() => media.image} src={media.image} alt={media.title} width={341} height={341} />
+                      <Image loader={() => media.path} src={media.path} alt={media.title} width={341} height={341} />
                     </div>
                   </React.Fragment>
                 ))
@@ -66,4 +67,4 @@ const ProjectMedia: React.FC<IProjectMediaProps> = ({ projectId }) => {
   )
 }
 
-export default ProjectMedia
+export default ProjectGallery

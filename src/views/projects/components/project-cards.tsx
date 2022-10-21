@@ -66,7 +66,7 @@ const ProjectCard: React.FC<IProjectCardProps> = ({ project }) => {
     useContractEvent({
       addressOrName: project.contractAddress,
       contractInterface: getCherrioProjectAbi(),
-      eventName: 'donations',
+      eventName: 'Donate',
       listener: event => {
         const amount = Number(ethers.utils.formatUnits(event[0].toString(), process.env.TOKEN_DECIMALS))
         notify(t('newContributionForProjectReceived', { project: project.title, contribution: amount }))
@@ -106,7 +106,7 @@ const ProjectCard: React.FC<IProjectCardProps> = ({ project }) => {
             <h4>
               <span>{project.title}</span>
             </h4>
-            <p>{project.description}</p>
+            <p>{project.excerpt}</p>
             <ProjectProgress progress={progress} balance={balance} />
             <ul className='list-inline clearfix mt-20 mb-20'>
               <li className='pull-left flip pr-0'>

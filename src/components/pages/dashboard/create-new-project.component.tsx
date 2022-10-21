@@ -1,11 +1,11 @@
-import React, { createRef, RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import useTranslation from 'next-translate/useTranslation'
 import Input from '../../../themes/ui/forms/input'
 import TextArea from '../../../themes/ui/forms/text-area'
 import Select from '../../../themes/ui/forms/select'
 import { Button } from '@web3uikit/core'
 import { ethers } from 'ethers'
-import { IProject, IProjectType } from '../../../interfaces/api'
+import { IProjectType } from '../../../interfaces/api'
 import { deploy } from '../../../modules/deploy'
 import { useMutation } from 'react-query'
 import { apolloClient } from '../../../clients/graphql'
@@ -17,6 +17,7 @@ import Dropzone from '../../../themes/ui/drop-zone'
 import { getBase64 } from '../../../modules/get-base64'
 import { MUTATION_CREATE_PROJECT_MEDIA } from '../../../constants/queries/moralis/project-media'
 import { MUTATION_UPLOAD } from '../../../constants/queries/upload'
+import * as _ from 'lodash'
 
 interface ICreateNewProjectProps {
   projectTypes: IProjectType[]
@@ -29,13 +30,13 @@ const CreateNewProjectComponent: React.FC<ICreateNewProjectProps> = ({ projectTy
   const [excerpt, setExcerpt] = useState<string>('')
   const [excerptState, setExcerptState] = useState()
   const [description, setDescription] = useState<string>('')
-  const [requirements, setRequirements] = useState()
+  const [requirements, setRequirements] = useState<string>('')
   const [goal, setGoal] = useState<string>('')
   const [goalState, setGoalState] = useState()
   const [duration, setDuration] = useState<string>('')
   const [durationState, setDurationState] = useState()
   const [types, setTypes] = useState<IProjectType[]>([])
-  const [files, setFiles] = useState<File[]>([])
+  const [files, setFiles] = useState<any[]>([])
   const formRef = useRef<HTMLFormElement>(null)
 
   const upload = variables =>
@@ -67,100 +68,83 @@ const CreateNewProjectComponent: React.FC<ICreateNewProjectProps> = ({ projectTy
   const { mutateAsync: createProjectDetailMutation } = useMutation(createProjectDetail)
   const { mutateAsync: createProjectMediaMutation } = useMutation(createProjectMedia)
 
-  const handleOnDropFiles = async files => {
-    console.log(files, 'files')
-    setFiles(files)
-  }
-
-  const handleOnChangeFiles = async files => {
-    console.log(files, 'files')
-    setFiles(files)
-  }
-
   const create = async event => {
     event.preventDefault()
 
-    // setDescription('')
-    //
-    // if (!formRef.current.checkValidity()) {
-    //   formRef.current.reportValidity()
-    //   return
-    // }
-    //
-    // if (types.length === 0) {
-    //   notify(t('fillOutAllRequiredFields'), 'warning')
-    //   return
-    // }
-    // console.log(description)
+    if (!formRef.current.checkValidity()) {
+      formRef.current.reportValidity()
+      return
+    }
 
-    // setTitle('')
-    // setTitleState(null)
-    // setExcerpt('')
-    // setExcerptState(null)
-    // setDescription('')
-    // setRequirements('')
-    // setGoal('')
-    // setGoalState(null)
-    // setTypes([])
+    if (types.length === 0) {
+      notify(t('fillOutAllRequiredFields'), 'warning')
+      return
+    }
 
-    // Array.from(document.querySelectorAll('textarea')).forEach(
-    //   textarea => (textarea.value = '')
-    //   // input => (input.value = '')
-    //   // input => (input.value = "")
-    //   // te
-    // )
+    if (!files.length) {
+      notify(t('uploadAtLeastOneImage'), 'warning')
+      return
+    }
+
     const contract = await deploy([duration, ethers.utils.parseUnits(goal, 'gwei').toString()])
-    //
-    //
-    //
-    // console.log(files)
-    // console.log(files[0])
-    // for (const file of files) {
-    //   console.log(file.name, 'FILENAME')
-    //
-    //   const resp = await uploadMutation({
-    //     title: paramCase(file.name),
-    //     content: await getBase64(file)
-    //   })
-    //   console.log(resp)
-    // }
-    //
-    // if (contract) {
-    //   const project = await createProjectMutation({
-    //     title,
-    //     excerpt,
-    //     slug: paramCase(title),
-    //     goal: Number(goal),
-    //     image: '/img/campaign3.png',
-    //     contractAddress: '0x79655382A961fa6C9448A78BF508D3E57FB0D24E'
-    //   })
-    //
-    //   // console.log(files)
-    //   // console.log(files[0])
-    //   // for (const file of files) {
-    //   //   console.log(file.name, 'FILENAME')
-    //   //   const splitType = file.type.split('/')
-    //   //
-    //   //   const resp = await createProjectMediaMutation({
-    //   //     projectId: '63487a8b0047884c96c704ed',
-    //   //     title: paramCase(file.name),
-    //   //     content: await getBase64(file),
-    //   //     type: splitType[0],
-    //   //     format: splitType[1]
-    //   //   })
-    //   //   console.log(resp)
-    //   // }
-    //   //
-    //   // if (project) {
-    //   //   await createProjectDetailMutation({
-    //   //     projectId: project.data.createProject._id,
-    //   //     description,
-    //   //     requirements
-    //   //   })
-    //   //
-    //   //   notify(t('project.successfullyCreated'))
-    //   // }
-    // }
+
+    if (contract) {
+      const uploadedFiles = _.cloneDeep(files)
+      const defaultFile = uploadedFiles.splice(
+        uploadedFiles.findIndex(file => file.isDefault),
+        1
+      )[0]
+
+      const image = (
+        await uploadMutation({
+          title: paramCase(defaultFile.name),
+          content: await getBase64(defaultFile)
+        })
+      ).data.upload
+
+      const project = (
+        await createProjectMutation({
+          contractAddress: contract.address,
+          slug: paramCase(title),
+          goal: Number(goal),
+          title,
+          excerpt,
+          image
+        })
+      ).data.createProject
+
+      await createProjectDetailMutation({
+        projectId: project._id,
+        description,
+        requirements
+      })
+
+      for (const file of uploadedFiles) {
+        const splitType = file.type.split('/')
+        await createProjectMediaMutation({
+          projectId: project._id,
+          title: paramCase(file.name),
+          content: await getBase64(file),
+          type: splitType[0],
+          format: splitType[1]
+        })
+      }
+
+      notify(t('project.successfullyCreated'))
+
+      setTitle('')
+      setTitleState(null)
+      setExcerpt('')
+      setExcerptState(null)
+      setDescription('')
+      setRequirements('')
+      setGoal('')
+      setGoalState(null)
+      setDuration('')
+      setDurationState(null)
+      setFiles([])
+      Array.from(document.querySelectorAll('textarea')).forEach(textarea => (textarea.value = ''))
+    }
   }
 
   return (
@@ -196,7 +180,7 @@ const CreateNewProjectComponent: React.FC<ICreateNewProjectProps> = ({ projectTy
                         value={description}
                         setValue={setDescription}
                         // myRef={divRef}
-                        // onChange={event => setDescription(event.target.value)}
+                        // onChangeValue={value => setDescription(value as any)}
                       />
                     </div>
                     <div className='col-md-12 mb-5'>
@@ -206,7 +190,7 @@ const CreateNewProjectComponent: React.FC<ICreateNewProjectProps> = ({ projectTy
                         placeholder='project.requirements'
                         value={requirements}
                         setValue={setRequirements}
-                        onChange={setRequirements}
+                        // onChange={setRequirements}
                         ignoreStates={true}
                       />
                     </div>
@@ -240,7 +224,7 @@ const CreateNewProjectComponent: React.FC<ICreateNewProjectProps> = ({ projectTy
                       />
                     </div>
                     <div className='col-md-12 mb-5'>
-                      <Dropzone multiple={true} onDropFiles={handleOnDropFiles} onChangeFiles={handleOnChangeFiles} />
+                      <Dropzone multiple={true} uploadedFiles={files} onDropFiles={setFiles} onChangeFiles={setFiles} />
                     </div>
                   </div>
                   <div className='row section-profile'>

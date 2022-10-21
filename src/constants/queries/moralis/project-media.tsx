@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client'
 
 export const QUERY_PROJECT_MEDIA = gql`
-  query ProjectMedia($projectId: String!) {
-    projectMedia(projectId: $projectId) {
+  query ProjectMedia($projectId: String!, $type: String) {
+    projectMedia(projectId: $projectId, type: $type) {
       _id
       type
       title

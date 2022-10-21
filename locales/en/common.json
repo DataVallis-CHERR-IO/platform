@@ -47,6 +47,7 @@
     "city": "City",
     "country": "Country",
     "holder": "Holder",
+    "uploadAtLeastOneImage": "Upload at least 1 image",
     "somethingWentWrong": "Something went wrong. Please try again later",
     "fillOutAllRequiredFields": "Please fill out all required fields",
     "chooseAtLeastOneOption": "Choose at least one option",

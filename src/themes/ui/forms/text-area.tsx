@@ -21,6 +21,7 @@ class TextArea extends Component<ITextAreaProps, TextAreaProps> {
   }
 
   handleOnChange = event => {
+    console.log(this.props.value, 'this.props.value handleOnChange')
     if (!_.get(this.props, 'ignoreStates', false)) {
       event.target.value.length === 0 || this.setState({ state: 'confirmed' })
       !_.get(this.props, 'validation.required', false) || event.target.value.length > 0 || this.setState({ state: 'error' })

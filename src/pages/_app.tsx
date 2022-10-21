@@ -12,6 +12,7 @@ import '../../public/vendor/bootstrap/css/bootstrap.min.css'
 import '../../public/css/styles.min.css'
 import { ApolloProvider } from '@apollo/client'
 import { apolloClient } from '../clients/graphql'
+import RouteGuard from '../guards/route.guard'
 
 const { provider, webSocketProvider } = configureChains(
   [chain[process.env.WAGMI_CHAIN]],
@@ -47,7 +48,9 @@ const MyApp = ({ Component, pageProps }: AppProps<{ session: Session }>) => {
         <QueryClientProvider client={queryClient}>
           <WagmiConfig client={client}>
             <SessionProvider session={pageProps.session} refetchInterval={0}>
-              <Component {...pageProps} /> <ToastContainer />
+              <RouteGuard>
+                <Component {...pageProps} /> <ToastContainer />
+              </RouteGuard>
             </SessionProvider>
           </WagmiConfig>
         </QueryClientProvider>

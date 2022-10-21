@@ -8,7 +8,7 @@ export interface IApiModel {
 
 export interface IProject extends IApiModel {
   title?: string
-  description?: string
+  excerpt?: string
   image?: string
   goal?: string
   slug?: string

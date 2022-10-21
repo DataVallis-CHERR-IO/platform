@@ -4,7 +4,7 @@ import ProjectCountdown from '../../../views/projects/components/project-countdo
 import useTranslation from 'next-translate/useTranslation'
 import Subscribe from '../../../views/subscribe'
 import ProjectDocuments from '../../../views/projects/components/project-documents'
-import ProjectMedia from '../../../views/projects/components/project-media'
+import ProjectGallery from '../../../views/projects/components/project-gallery'
 import Image from 'next/image'
 import ProjectContribution from '../../../views/projects/components/project-contribution'
 import { IProject, IProjectDetail } from '../../../interfaces/api'
@@ -169,7 +169,9 @@ const ProjectDetail: React.FC<IProjectDetailProps> = ({ project }) => {
           </div>
         </div>
       </section>
-      <ProjectMedia projectId={project._id} /> <ProjectDocuments projectId={project._id} /> <Subscribe />
+      <ProjectGallery projectId={project._id} />
+      <ProjectDocuments projectId={project._id} />
+      <Subscribe />
     </>
   )
 }
