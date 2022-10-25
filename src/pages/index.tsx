@@ -21,6 +21,7 @@ export async function getServerSideProps() {
     }
   })
 
+  console.log(data.projects, 'PROJECTS')
   return {
     props: {
       projects: data.projects

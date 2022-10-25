@@ -13,6 +13,7 @@ export const getServerSideProps = async context => {
     }
   })
 
+  console.log(data.project, 'PROJECT [SLUG]')
   return {
     props: {
       project: data.project,

@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import moment from 'moment/moment'
 import ProjectCountdown from '../../../views/projects/components/project-countdown'
 import useTranslation from 'next-translate/useTranslation'
 import Subscribe from '../../../views/subscribe'
-import ProjectDocuments from '../../../views/projects/components/project-documents'
 import ProjectGallery from '../../../views/projects/components/project-gallery'
 import Image from 'next/image'
 import ProjectContribution from '../../../views/projects/components/project-contribution'
@@ -12,6 +10,7 @@ import { useQuery } from 'react-query'
 import { apolloClient } from '../../../clients/graphql'
 import { QUERY_PROJECT_DETAIL } from '../../../constants/queries/moralis/project-detail'
 import { Loading } from '@web3uikit/core'
+import { StatusEnum } from '../../../enums/status.enum'
 
 interface IProjectDetailProps {
   project: IProject
@@ -20,7 +19,7 @@ interface IProjectDetailProps {
 const ProjectDetail: React.FC<IProjectDetailProps> = ({ project }) => {
   const { t } = useTranslation('common')
   const [projectDetail, setProjectDetail] = useState<IProjectDetail>(null)
-  const [displayDonateBtn, setDisplayDonateBtn] = useState<boolean>(true)
+  const [displayDonateBtn, setDisplayDonateBtn] = useState<boolean>(false)
 
   const { data, isLoading } = useQuery(
     ['projectDetail'],
@@ -36,14 +35,14 @@ const ProjectDetail: React.FC<IProjectDetailProps> = ({ project }) => {
     },
     {
       onError: error => {
-        console.log('❌ GraphQL error (query subscribers): ', error)
+        console.log('❌ GraphQL error (query detail): ', error)
       }
     }
   )
 
   useEffect(() => {
-    if (displayDonateBtn && (moment().isAfter(moment(project.endedAt, 'x')) || moment().isBefore(moment(project.startedAt, 'x')))) {
-      setDisplayDonateBtn(false)
+    if (project.statusId === StatusEnum.ACTIVE) {
+      setDisplayDonateBtn(true)
     }
     !data || setProjectDetail(data)
   }, [data, displayDonateBtn])
@@ -125,7 +124,7 @@ const ProjectDetail: React.FC<IProjectDetailProps> = ({ project }) => {
                   <Image src='/img/platform/header-2.jpg' alt='header' className='img-fluid' width={920} height={355} />
                 </div>
                 <div className='project-content clearfix'>
-                  <ProjectCountdown startedAt={project.startedAt} endedAt={project.endedAt} />
+                  <ProjectCountdown project={project} />
                   <ProjectContribution project={project} />
                 </div>
               </div>
@@ -170,7 +169,6 @@ const ProjectDetail: React.FC<IProjectDetailProps> = ({ project }) => {
         </div>
       </section>
       <ProjectGallery projectId={project._id} />
-      <ProjectDocuments projectId={project._id} />
       <Subscribe />
     </>
   )

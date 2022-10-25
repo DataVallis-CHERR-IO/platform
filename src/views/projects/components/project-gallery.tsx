@@ -30,7 +30,7 @@ const ProjectGallery: React.FC<IProjectMediaProps> = ({ projectId }) => {
     },
     {
       onError: error => {
-        console.log('❌ GraphQL error (query subscribers): ', error)
+        console.log('❌ GraphQL error (query media): ', error)
       }
     }
   )
@@ -50,7 +50,7 @@ const ProjectGallery: React.FC<IProjectMediaProps> = ({ projectId }) => {
                 projectMedia.map((media: IProjectMedia) => (
                   <React.Fragment key={media._id}>
                     <div>
-                      <Image loader={() => media.path} src={media.path} alt={media.title} width={341} height={341} />
+                      <Image loader={() => media.path} src={media.path} alt={media.title} width={341} height={341} unoptimized={true} />
                     </div>
                   </React.Fragment>
                 ))

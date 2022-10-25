@@ -10,12 +10,8 @@ export interface IProject extends IApiModel {
   title?: string
   excerpt?: string
   image?: string
-  goal?: string
   slug?: string
   contractAddress?: string
-  statusId?: number
-  startedAt?: any
-  endedAt?: any
 }
 
 export interface IProjectDetail extends IApiModel {

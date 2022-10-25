@@ -18,6 +18,8 @@ import { getBase64 } from '../../../modules/get-base64'
 import { MUTATION_CREATE_PROJECT_MEDIA } from '../../../constants/queries/moralis/project-media'
 import { MUTATION_UPLOAD } from '../../../constants/queries/upload'
 import * as _ from 'lodash'
+import { MUTATION_NEW_PROJECT } from '../../../constants/queries/contract/cherrio-project-activator'
+import { FadeLoader } from 'react-spinners'
 
 interface ICreateNewProjectProps {
   projectTypes: IProjectType[]
@@ -37,11 +39,18 @@ const CreateNewProjectComponent: React.FC<ICreateNewProjectProps> = ({ projectTy
   const [durationState, setDurationState] = useState()
   const [types, setTypes] = useState<IProjectType[]>([])
   const [files, setFiles] = useState<any[]>([])
+  const [loading, setLoading] = useState<boolean>(false)
   const formRef = useRef<HTMLFormElement>(null)
 
   const upload = variables =>
     apolloClient.mutate({
       mutation: MUTATION_UPLOAD,
+      variables
+    })
+
+  const newProject = variables =>
+    apolloClient.mutate({
+      mutation: MUTATION_NEW_PROJECT,
       variables
     })
 
@@ -64,6 +73,7 @@ const CreateNewProjectComponent: React.FC<ICreateNewProjectProps> = ({ projectTy
     })
 
   const { mutateAsync: uploadMutation } = useMutation(upload)
+  const { mutateAsync: newProjectMutation } = useMutation(newProject)
   const { mutateAsync: createProjectMutation } = useMutation(createProject)
   const { mutateAsync: createProjectDetailMutation } = useMutation(createProjectDetail)
   const { mutateAsync: createProjectMediaMutation } = useMutation(createProjectMedia)
@@ -86,6 +96,8 @@ const CreateNewProjectComponent: React.FC<ICreateNewProjectProps> = ({ projectTy
       return
     }
 
+    setLoading(true)
+
     const contract = await deploy([duration, ethers.utils.parseUnits(goal, 'gwei').toString()])
 
     if (contract) {
@@ -106,7 +118,6 @@ const CreateNewProjectComponent: React.FC<ICreateNewProjectProps> = ({ projectTy
         await createProjectMutation({
           contractAddress: contract.address,
           slug: paramCase(title),
-          goal: Number(goal),
           title,
           excerpt,
           image
@@ -130,6 +141,11 @@ const CreateNewProjectComponent: React.FC<ICreateNewProjectProps> = ({ projectTy
         })
       }
 
+      await newProjectMutation({
+        contractAddress: contract.address,
+        goal: Number(goal)
+      })
+
       notify(t('project.successfullyCreated'))
 
       setTitle('')
@@ -144,6 +160,8 @@ const CreateNewProjectComponent: React.FC<ICreateNewProjectProps> = ({ projectTy
       setDurationState(null)
       setFiles([])
       Array.from(document.querySelectorAll('textarea')).forEach(textarea => (textarea.value = ''))
+
+      setLoading(false)
     }
   }
 
@@ -229,7 +247,7 @@ const CreateNewProjectComponent: React.FC<ICreateNewProjectProps> = ({ projectTy
                   </div>
                   <div className='row section-profile'>
                     <div className='col-md-12'>
-                      <Button onClick={create} text={t('create')} theme='primary' />
+                      {!loading ? <Button onClick={create} text={t('create')} theme='primary' /> : <FadeLoader color='#CA354C' loading={loading} />}
                     </div>
                   </div>
                 </form>

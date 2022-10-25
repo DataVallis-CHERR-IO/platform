@@ -28,7 +28,7 @@ const ProjectContribution: React.FC<IProjectContributionProps> = ({ project }) =
     useContractEvent({
       addressOrName: project.contractAddress,
       contractInterface: getCherrioProjectAbi(),
-      eventName: 'Donate',
+      eventName: 'Donation',
       listener: event => {
         const amount = Number(ethers.utils.formatUnits(event[0].toString(), process.env.TOKEN_DECIMALS))
         notify(t('newContributionForProjectReceived', { project: project.title, contribution: amount }))
