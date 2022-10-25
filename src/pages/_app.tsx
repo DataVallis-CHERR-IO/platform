@@ -1,18 +1,18 @@
 import type { AppProps } from 'next/app'
 import React from 'react'
 import I18nProvider from 'next-translate/I18nProvider'
+import RouteGuard from '../guards/route.guard'
 import { Session } from 'next-auth'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { ToastContainer } from 'react-toastify'
 import { chain, configureChains, createClient, WagmiConfig } from 'wagmi'
 import { SessionProvider } from 'next-auth/react'
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
+import { ApolloProvider } from '@apollo/client'
+import { apolloClient } from '../clients/graphql'
 import 'react-toastify/dist/ReactToastify.css'
 import '../../public/vendor/bootstrap/css/bootstrap.min.css'
 import '../../public/css/styles.min.css'
-import { ApolloProvider } from '@apollo/client'
-import { apolloClient } from '../clients/graphql'
-import RouteGuard from '../guards/route.guard'
 
 const { provider, webSocketProvider } = configureChains(
   [chain[process.env.WAGMI_CHAIN]],

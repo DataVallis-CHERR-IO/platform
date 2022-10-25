@@ -10,6 +10,7 @@ export const deploy = async (args: any[]): Promise<ethers.Contract> => {
 
     return contract
   } catch (error) {
+    console.log(error)
     return null
   }
 }

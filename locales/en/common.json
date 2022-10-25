@@ -55,7 +55,7 @@
     "referenceNumber": "Reference number",
     "purposeOfPayment": "Purpose of payment",
     "donationApproveByAdmin": "Your donation will be approved by the administrator once the transfer will be completed.",
-    "newContributionForProjectReceived": "New contribution for project: {{project}}. Contribution: {{contribution}}",
+    "newDonationForProjectReceived": "New donation for project: {{project}}. Donation: {{donation}}",
     "home": {
         "text": "Home",
         "header": {
@@ -133,7 +133,7 @@
         "description": "Type long description of project",
         "requirements": "Type if project has any requirements",
         "willStartSoon": "Project will start soon",
-        "activationNeeded": "Activation needed",
+        "activationIsNeeded": "Activation is needed",
         "isLiveNow": "Project is Live Now",
         "hasEnded": "Project has ended",
         "endsIn": "Project ends in",
@@ -142,7 +142,8 @@
         "createNew": "Create new project",
         "createNewDescription": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
         "clickToCreateNew": "Click to create new project",
-        "createNewTooltip": "You can create your own project"
+        "createNewTooltip": "You can create your own project",
+        "numberOfActivators": "Number of activators"
     },
     "projectType": {
         "text": "Project type",

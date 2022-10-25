@@ -4,13 +4,15 @@ import useTranslation from 'next-translate/useTranslation'
 import Subscribe from '../../../views/subscribe'
 import ProjectGallery from '../../../views/projects/components/project-gallery'
 import Image from 'next/image'
-import ProjectContribution from '../../../views/projects/components/project-contribution'
+import ProjectDonation from '../../../views/projects/components/project-donation'
 import { IProject, IProjectDetail } from '../../../interfaces/api'
 import { useQuery } from 'react-query'
 import { apolloClient } from '../../../clients/graphql'
 import { QUERY_PROJECT_DETAIL } from '../../../constants/queries/moralis/project-detail'
 import { Loading } from '@web3uikit/core'
-import { StatusEnum } from '../../../enums/status.enum'
+import { useContractRead } from 'wagmi'
+import { getCherrioProjectAbi } from '../../../contracts/abi/cherrio-project'
+import { StageEnum } from '../../../enums/stage.enum'
 
 interface IProjectDetailProps {
   project: IProject
@@ -20,6 +22,7 @@ const ProjectDetail: React.FC<IProjectDetailProps> = ({ project }) => {
   const { t } = useTranslation('common')
   const [projectDetail, setProjectDetail] = useState<IProjectDetail>(null)
   const [displayDonateBtn, setDisplayDonateBtn] = useState<boolean>(false)
+  const [btnText, setBtnText] = useState<string>('donateNow')
 
   const { data, isLoading } = useQuery(
     ['projectDetail'],
@@ -40,12 +43,22 @@ const ProjectDetail: React.FC<IProjectDetailProps> = ({ project }) => {
     }
   )
 
+  const { data: dataStage, isLoading: isLoadingStage } = useContractRead({
+    addressOrName: project.contractAddress,
+    contractInterface: getCherrioProjectAbi(),
+    functionName: 'stage'
+  })
+
   useEffect(() => {
-    if (project.statusId === StatusEnum.ACTIVE) {
+    console.log(dataStage, 'dataStage')
+    if (!isLoadingStage && dataStage && Number(dataStage) !== StageEnum.ENDED) {
       setDisplayDonateBtn(true)
+
+      Number(dataStage) !== StageEnum.PENDING || setBtnText('activate')
     }
+
     !data || setProjectDetail(data)
-  }, [data, displayDonateBtn])
+  }, [data, isLoadingStage])
 
   // 0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0 MATIC CONTRACT
   const donate = async () => {
@@ -125,7 +138,7 @@ const ProjectDetail: React.FC<IProjectDetailProps> = ({ project }) => {
                 </div>
                 <div className='project-content clearfix'>
                   <ProjectCountdown project={project} />
-                  <ProjectContribution project={project} />
+                  <ProjectDonation project={project} />
                 </div>
               </div>
             </div>
@@ -140,7 +153,7 @@ const ProjectDetail: React.FC<IProjectDetailProps> = ({ project }) => {
                 <h2 className='c-gray'>{t('description')}</h2>
                 {displayDonateBtn && (
                   <div className='btn btn-primary js-scroll-trigger' onClick={donate}>
-                    {t('donateNow')}
+                    {t(btnText)}
                   </div>
                 )}
               </div>

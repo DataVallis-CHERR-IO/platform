@@ -10,17 +10,9 @@ export const getServerSideProps = async () => {
     query: QUERY_PROJECT_TYPES
   })
 
-  const projectTypes = []
-  data.projectTypes.forEach((projectType: IProjectType) =>
-    projectTypes.push({
-      id: projectType._id,
-      label: projectType.lkName
-    })
-  )
-
   return {
     props: {
-      projectTypes
+      projectTypes: data.projectTypes
     }
   }
 }

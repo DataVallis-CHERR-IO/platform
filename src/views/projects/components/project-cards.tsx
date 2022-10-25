@@ -1,8 +1,7 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import useTranslation from 'next-translate/useTranslation'
 import ProjectProgress from './project-progress'
-import { ethers } from 'ethers'
 import { IProject } from '../../../interfaces/api'
 import { notify } from '../../../utils/notify'
 import { useProjectsContext } from '../../../contexts/projects/provider'
@@ -15,6 +14,7 @@ import { BeatLoader } from 'react-spinners'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEthereum } from '@fortawesome/free-brands-svg-icons'
 import { StageEnum } from '../../../enums/stage.enum'
+import { getEthers } from '../../../utils'
 
 const ProjectCards: React.FC = () => {
   const { projects } = useProjectsContext()
@@ -52,10 +52,8 @@ interface IProjectCardProps {
 const ProjectCard: React.FC<IProjectCardProps> = ({ project }) => {
   const { t } = useTranslation('common')
   const [balance, setBalance] = useState<number>(0)
-  const [contribution, setContribution] = useState<number>(0)
   const [progress, setProgress] = useState<number>(0)
   const [goal, setGoal] = useState<number>(0)
-  const [stage, setStage] = useState<number>(StageEnum.PENDING)
   const [btnText, setBtnText] = useState<string>('activate')
 
   const { data: dataBalance, isLoading: isLoadingBalance } = useBalance({
@@ -74,72 +72,44 @@ const ProjectCard: React.FC<IProjectCardProps> = ({ project }) => {
     functionName: 'stage'
   })
 
-  !ethers.utils.isAddress(project.contractAddress) ||
-    useContractEvent({
-      addressOrName: project.contractAddress,
-      contractInterface: getCherrioProjectAbi(),
-      eventName: 'Donation',
-      listener: data => {
-        const amount = Number(ethers.utils.formatUnits(data[0].toString(), process.env.TOKEN_DECIMALS))
-        notify(t('newContributionForProjectReceived', { project: project.title, contribution: amount }))
-        handleContribution(amount)
-      }
-    })
+  useContractEvent({
+    addressOrName: project.contractAddress,
+    contractInterface: getCherrioProjectAbi(),
+    eventName: 'Donation',
+    listener: data => {
+      const donation = Number(getEthers(data[0]))
+      notify(t('newDonationForProjectReceived', { project: project.title, donation }))
+      setBalance(balance + donation)
+      setProgress(Math.floor(((balance + donation) / Number(goal)) * 100))
+    }
+  })
 
-  !ethers.utils.isAddress(project.contractAddress) ||
-    useContractEvent({
-      addressOrName: project.contractAddress,
-      contractInterface: getCherrioProjectAbi(),
-      eventName: 'StageChanged',
-      listener: data => {
-        console.log(data, 'StageChanged')
-        // notify(t('newContributionForProjectReceived', { project: project.title, contribution: amount }))
-        handleStageChanged(Number(data[0]))
-      }
-    })
+  useContractEvent({
+    addressOrName: project.contractAddress,
+    contractInterface: getCherrioProjectAbi(),
+    eventName: 'ProjectActivated',
+    listener: () => setBtnText('donateNow')
+  })
 
-  const handleContribution = useCallback((donation?: number) => {
-    console.log(donation, 'handleContribution')
-    setBalance(balance + donation)
-    setProgress(Math.floor(((balance + donation) / Number(goal)) * 100))
-    // !donation || setContribution(donation)
-  }, [])
-
-  const handleStageChanged = useCallback((stage?: number) => {
-    console.log(stage, 'handleStageChanged')
-    setBtnText(stage === StageEnum.ACTIVE ? 'donateNow' : 'readMore')
-  }, [])
+  useContractEvent({
+    addressOrName: project.contractAddress,
+    contractInterface: getCherrioProjectAbi(),
+    eventName: 'ProjectEnded',
+    listener: () => setBtnText('readMore')
+  })
 
   useEffect(() => {
-    // console.log(dataBalance.formatted, 'dataBalance')
-    // console.log(dataGoal.toString(), 'dataGoal')
-    // console.log(dataStage, 'dataStage')
-    // setLoading(isLoading)
-
-    // if (displayDonateBtn && (moment().isAfter(moment(project.endedAt, 'x')) || moment().isBefore(moment(project.startedAt, 'x')))) {
-    //   setDisplayDonateBtn(false)
-    // }
-    if (!isLoadingStage && !stage) {
-      setStage(Number(dataStage))
-      // setContribution(Number(data?.formatted || 0))
-      // setProgress(Math.floor(((balance + contribution) / Number(project.goal)) * 100))
+    if (!isLoadingStage && Number(dataStage) !== StageEnum.PENDING) {
+      setBtnText(Number(dataStage) === StageEnum.ACTIVE ? 'donateNow' : 'readMore')
     }
     if (!isLoadingBalance && !balance) {
       setBalance(Number(dataBalance.formatted))
-      // setContribution(Number(data?.formatted || 0))
-      // setProgress(Math.floor(((balance + contribution) / Number(project.goal)) * 100))
+      setProgress(Math.floor((Number(dataBalance.formatted) / getEthers(dataGoal)) * 100))
     }
     if (!isLoadingGoal && !goal) {
-      setGoal(Number(ethers.utils.formatUnits(dataGoal.toString(), process.env.TOKEN_DECIMALS)))
-      // setContribution(Number(data?.formatted || 0))
-      // setProgress(Math.floor(((balance + contribution) / Number(project.goal)) * 100))
+      setGoal(getEthers(dataGoal))
     }
-    if (contribution) {
-      setBalance(balance + contribution)
-      setProgress(Math.floor(((balance + contribution) / Number(goal)) * 100))
-      setContribution(0)
-    }
-  }, [isLoadingBalance, isLoadingGoal, contribution])
+  }, [isLoadingStage, isLoadingBalance, isLoadingGoal])
 
   return (
     <div className='col-sm-12 col-md-12 col-lg-4 animation-1 mt-4'>
@@ -161,7 +131,11 @@ const ProjectCard: React.FC<IProjectCardProps> = ({ project }) => {
                   <div className='row justify-content-center mt-2'>
                     <div>
                       <BeatLoader color='#FFFFFF' loading={isLoadingBalance} size={5} />
-                      {!isLoadingBalance && balance}
+                      {!isLoadingBalance && (
+                        <>
+                          <FontAwesomeIcon icon={faEthereum} /> <span>{balance}</span>
+                        </>
+                      )}
                     </div>
                     <div className='mx-2'>{t('raisedOf')}</div>
                     <div>

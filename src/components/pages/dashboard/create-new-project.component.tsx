@@ -1,9 +1,5 @@
 import React, { useRef, useState } from 'react'
 import useTranslation from 'next-translate/useTranslation'
-import Input from '../../../themes/ui/forms/input'
-import TextArea from '../../../themes/ui/forms/text-area'
-import Select from '../../../themes/ui/forms/select'
-import { Button } from '@web3uikit/core'
 import { ethers } from 'ethers'
 import { IProjectType } from '../../../interfaces/api'
 import { deploy } from '../../../modules/deploy'
@@ -20,6 +16,7 @@ import { MUTATION_UPLOAD } from '../../../constants/queries/upload'
 import * as _ from 'lodash'
 import { MUTATION_NEW_PROJECT } from '../../../constants/queries/contract/cherrio-project-activator'
 import { FadeLoader } from 'react-spinners'
+import { Button, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material'
 
 interface ICreateNewProjectProps {
   projectTypes: IProjectType[]
@@ -28,16 +25,12 @@ interface ICreateNewProjectProps {
 const CreateNewProjectComponent: React.FC<ICreateNewProjectProps> = ({ projectTypes }) => {
   const { t } = useTranslation('common')
   const [title, setTitle] = useState<string>('')
-  const [titleState, setTitleState] = useState()
   const [excerpt, setExcerpt] = useState<string>('')
-  const [excerptState, setExcerptState] = useState()
   const [description, setDescription] = useState<string>('')
   const [requirements, setRequirements] = useState<string>('')
   const [goal, setGoal] = useState<string>('')
-  const [goalState, setGoalState] = useState()
   const [duration, setDuration] = useState<string>('')
-  const [durationState, setDurationState] = useState()
-  const [types, setTypes] = useState<IProjectType[]>([])
+  const [types, setTypes] = useState<any>([])
   const [files, setFiles] = useState<any[]>([])
   const [loading, setLoading] = useState<boolean>(false)
   const formRef = useRef<HTMLFormElement>(null)
@@ -78,16 +71,11 @@ const CreateNewProjectComponent: React.FC<ICreateNewProjectProps> = ({ projectTy
   const { mutateAsync: createProjectDetailMutation } = useMutation(createProjectDetail)
   const { mutateAsync: createProjectMediaMutation } = useMutation(createProjectMedia)
 
-  const create = async event => {
+  const onClickCreate = async event => {
     event.preventDefault()
 
     if (!formRef.current.checkValidity()) {
       formRef.current.reportValidity()
-      return
-    }
-
-    if (types.length === 0) {
-      notify(t('fillOutAllRequiredFields'), 'warning')
       return
     }
 
@@ -98,8 +86,11 @@ const CreateNewProjectComponent: React.FC<ICreateNewProjectProps> = ({ projectTy
 
     setLoading(true)
 
+    console.log('here 1')
+    console.log([duration, ethers.utils.parseUnits(goal, 'gwei').toString()]);
     const contract = await deploy([duration, ethers.utils.parseUnits(goal, 'gwei').toString()])
 
+    console.log('here 2')
     if (contract) {
       const uploadedFiles = _.cloneDeep(files)
       const defaultFile = uploadedFiles.splice(
@@ -149,15 +140,12 @@ const CreateNewProjectComponent: React.FC<ICreateNewProjectProps> = ({ projectTy
       notify(t('project.successfullyCreated'))
 
       setTitle('')
-      setTitleState(null)
       setExcerpt('')
-      setExcerptState(null)
       setDescription('')
       setRequirements('')
       setGoal('')
-      setGoalState(null)
       setDuration('')
-      setDurationState(null)
+      setTypes([])
       setFiles([])
       Array.from(document.querySelectorAll('textarea')).forEach(textarea => (textarea.value = ''))
 
@@ -177,69 +165,96 @@ const CreateNewProjectComponent: React.FC<ICreateNewProjectProps> = ({ projectTy
                   <p>{t('project.createNewDescription')}</p>
                   <div className='row'>
                     <div className='col-md-6 mb-5'>
-                      <Input label='title' id='title' validation={{ required: false }} state={titleState} value={title} setValue={[setTitle, setTitleState]} />
+                      <TextField
+                        required
+                        label={t('title')}
+                        id='title'
+                        variant='standard'
+                        fullWidth={true}
+                        value={title}
+                        onChange={event => setTitle(event.target.value)}
+                      />
                     </div>
                     <div className='col-md-6 mb-5'>
-                      <Input
-                        label='excerpt'
+                      <TextField
+                        required
+                        label={t('excerpt')}
                         id='excerpt'
-                        validation={{ required: false }}
-                        state={excerptState}
+                        variant='standard'
+                        fullWidth={true}
                         value={excerpt}
-                        setValue={[setExcerpt, setExcerptState]}
+                        onChange={event => setExcerpt(event.target.value)}
                       />
                     </div>
                     <div className='col-md-12 mb-5'>
-                      <TextArea
-                        label='description'
+                      <TextField
+                        required
+                        label={t('description')}
+                        multiline={true}
+                        rows={4}
                         id='description'
-                        placeholder='project.description'
-                        validation={{ required: false }}
+                        variant='standard'
+                        fullWidth={true}
                         value={description}
-                        setValue={setDescription}
-                        // myRef={divRef}
-                        // onChangeValue={value => setDescription(value as any)}
+                        onChange={event => setDescription(event.target.value)}
                       />
                     </div>
                     <div className='col-md-12 mb-5'>
-                      <TextArea
-                        label='requirements'
+                      <TextField
+                        label={t('requirements')}
+                        multiline={true}
+                        rows={4}
                         id='requirements'
-                        placeholder='project.requirements'
+                        variant='standard'
+                        fullWidth={true}
                         value={requirements}
-                        setValue={setRequirements}
-                        // onChange={setRequirements}
-                        ignoreStates={true}
+                        onChange={event => setRequirements(event.target.value)}
                       />
                     </div>
                     <div className='col-md-4 mb-5'>
-                      <Select
-                        isMulti
-                        isSearch
-                        label='projectType.text'
-                        max={3}
-                        name='projectType'
-                        validation={{ required: true }}
-                        options={projectTypes}
-                        placeholder='chooseAtLeastOneOption'
-                        tryBeta
-                        value={types}
-                        setValue={setTypes}
-                      />
-                    </div>
-                    <div className='col-md-4 mb-5'>
-                      <Input label='goal' validation={{ required: true }} state={goalState} value={goal} setValue={[setGoal, setGoalState]} type='number' />
-                    </div>
-                    <div className='col-md-4 mb-5'>
-                      <Input
-                        label='durationInDays'
-                        id='duration'
-                        validation={{ required: true }}
-                        state={durationState}
-                        value={duration}
-                        setValue={[setDuration, setDurationState]}
+                      <TextField
+                        required
+                        label={t('goal')}
+                        id='goal'
+                        variant='standard'
+                        fullWidth={true}
+                        value={goal}
+                        onChange={event => setGoal(event.target.value)}
                         type='number'
                       />
+                      {/*<Input label='goal' validation={{ required: true }} state={goalState} value={goal} setValue={[setGoal, setGoalState]} type='number' />*/}
+                    </div>
+                    <div className='col-md-4 mb-5'>
+                      <TextField
+                        required
+                        label={t('durationInDays')}
+                        id='duration'
+                        variant='standard'
+                        fullWidth={true}
+                        value={duration}
+                        onChange={event => setDuration(event.target.value)}
+                        type='number'
+                      />
+                    </div>
+                    <div className='col-md-4 mb-5'>
+                      <FormControl variant='standard' fullWidth={true}>
+                        <InputLabel id='projectTypesLabel'>{t('projectType.text')}</InputLabel>
+                        <Select
+                          labelId='projectTypesLabel'
+                          id='projectTypes'
+                          multiple={true}
+                          value={types}
+                          onChange={event => setTypes(event.target.value)}
+                          label='projectType.text'
+                        >
+                          {!!projectTypes.length &&
+                            projectTypes.map((projectType: IProjectType) => (
+                              <MenuItem key={projectType._id} value={projectType._id}>
+                                {t(`projectType.${projectType.lkName}`)}
+                              </MenuItem>
+                            ))}
+                        </Select>
+                      </FormControl>
                     </div>
                     <div className='col-md-12 mb-5'>
                       <Dropzone multiple={true} uploadedFiles={files} onDropFiles={setFiles} onChangeFiles={setFiles} />
@@ -247,7 +262,13 @@ const CreateNewProjectComponent: React.FC<ICreateNewProjectProps> = ({ projectTy
                   </div>
                   <div className='row section-profile'>
                     <div className='col-md-12'>
-                      {!loading ? <Button onClick={create} text={t('create')} theme='primary' /> : <FadeLoader color='#CA354C' loading={loading} />}
+                      {!loading ? (
+                        <Button onClick={onClickCreate} variant='contained' color='success'>
+                          {t('create')}
+                        </Button>
+                      ) : (
+                        <FadeLoader color='#CA354C' loading={loading} />
+                      )}
                     </div>
                   </div>
                 </form>
