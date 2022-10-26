@@ -2272,3 +2272,23 @@ section.resume-section .section-inner {
 .dashboard-cards footer {
     padding: unset;
 }
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.color-success {
+    color: #1e7e34;
+}
+
+.color-danger {
+    color: #d21242;
+}
+
+.color-info {
+    color: #3374BD;
+}
+
+.table-p-remove-styles p {
+    margin: unset;
+}

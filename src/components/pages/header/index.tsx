@@ -3,7 +3,7 @@ import axios from 'axios'
 import Link from 'next/link'
 import Image from 'next/image'
 import useTranslation from 'next-translate/useTranslation'
-import { signIn } from 'next-auth/react'
+import { signIn, signOut } from 'next-auth/react'
 import { chain as supportedChain, useAccount, useConnect, useDisconnect, useSignMessage } from 'wagmi'
 import { MetaMaskConnector } from 'wagmi/connectors/metaMask'
 import { permalink } from '../../../constants/routes'
@@ -62,6 +62,7 @@ const Header: React.FC = () => {
 
   const logout = async () => {
     await disconnectAsync()
+    await signOut()
 
     setLoggedIn(false)
   }

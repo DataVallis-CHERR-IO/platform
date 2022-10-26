@@ -38,8 +38,17 @@ export const getCherrioProjectAbi = (): any[] => [
   {
     anonymous: false,
     inputs: [
+      { indexed: true, internalType: 'address', name: 'oldOwner', type: 'address' },
+      { indexed: true, internalType: 'address', name: 'newOwner', type: 'address' }
+    ],
+    name: 'OwnerSet',
+    type: 'event'
+  },
+  {
+    anonymous: false,
+    inputs: [
       { indexed: false, internalType: 'uint256', name: 'startedAt', type: 'uint256' },
-      { indexed: false, internalType: 'uint256', name: 'endedAt', type: 'uint256' }
+      { indexed: false, internalType: 'uint256', name: 'deadline', type: 'uint256' }
     ],
     name: 'ProjectActivated',
     type: 'event'
@@ -56,6 +65,13 @@ export const getCherrioProjectAbi = (): any[] => [
   },
   { inputs: [], name: 'activate', outputs: [], stateMutability: 'nonpayable', type: 'function' },
   { inputs: [], name: 'admin', outputs: [{ internalType: 'address', name: '', type: 'address' }], stateMutability: 'view', type: 'function' },
+  {
+    inputs: [{ internalType: 'address', name: 'newOwner', type: 'address' }],
+    name: 'changeOwner',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
   { inputs: [], name: 'cherrioProjectActivator', outputs: [{ internalType: 'address', name: '', type: 'address' }], stateMutability: 'view', type: 'function' },
   {
     inputs: [
@@ -68,6 +84,7 @@ export const getCherrioProjectAbi = (): any[] => [
     stateMutability: 'nonpayable',
     type: 'function'
   },
+  { inputs: [], name: 'deadline', outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }], stateMutability: 'view', type: 'function' },
   { inputs: [], name: 'donate', outputs: [], stateMutability: 'payable', type: 'function' },
   {
     inputs: [{ internalType: 'address', name: '', type: 'address' }],
@@ -79,11 +96,52 @@ export const getCherrioProjectAbi = (): any[] => [
   { inputs: [], name: 'duration', outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }], stateMutability: 'view', type: 'function' },
   { inputs: [], name: 'endedAt', outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }], stateMutability: 'view', type: 'function' },
   { inputs: [], name: 'getCurrentTime', outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }], stateMutability: 'view', type: 'function' },
+  { inputs: [], name: 'getOwner', outputs: [{ internalType: 'address', name: '', type: 'address' }], stateMutability: 'view', type: 'function' },
   { inputs: [], name: 'getRefund', outputs: [], stateMutability: 'nonpayable', type: 'function' },
+  {
+    inputs: [{ internalType: 'uint256', name: 'index', type: 'uint256' }],
+    name: 'getRequest',
+    outputs: [
+      { internalType: 'string', name: 'description', type: 'string' },
+      { internalType: 'uint256', name: 'amount', type: 'uint256' },
+      { internalType: 'address', name: 'recipient', type: 'address' },
+      { internalType: 'bool', name: 'completed', type: 'bool' },
+      { internalType: 'uint256', name: 'numberOfVoters', type: 'uint256' }
+    ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [],
+    name: 'getRequests',
+    outputs: [
+      { internalType: 'string[]', name: 'descriptions', type: 'string[]' },
+      { internalType: 'uint256[]', name: 'amounts', type: 'uint256[]' },
+      { internalType: 'address[]', name: 'recipients', type: 'address[]' },
+      { internalType: 'bool[]', name: 'completed', type: 'bool[]' },
+      { internalType: 'uint256[]', name: 'numberOfVoters', type: 'uint256[]' }
+    ],
+    stateMutability: 'view',
+    type: 'function'
+  },
   { inputs: [], name: 'goal', outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }], stateMutability: 'view', type: 'function' },
   { inputs: [{ internalType: 'uint256', name: 'index', type: 'uint256' }], name: 'makePayment', outputs: [], stateMutability: 'nonpayable', type: 'function' },
   { inputs: [], name: 'minimumDonation', outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }], stateMutability: 'view', type: 'function' },
+  { inputs: [], name: 'numRequests', outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }], stateMutability: 'view', type: 'function' },
   { inputs: [], name: 'raisedAmount', outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }], stateMutability: 'view', type: 'function' },
+  {
+    inputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    name: 'requests',
+    outputs: [
+      { internalType: 'string', name: 'description', type: 'string' },
+      { internalType: 'uint256', name: 'value', type: 'uint256' },
+      { internalType: 'address', name: 'recipient', type: 'address' },
+      { internalType: 'bool', name: 'completed', type: 'bool' },
+      { internalType: 'uint256', name: 'numberOfVoters', type: 'uint256' }
+    ],
+    stateMutability: 'view',
+    type: 'function'
+  },
   {
     inputs: [{ internalType: 'uint256', name: '_value', type: 'uint256' }],
     name: 'setMinimumDonation',
@@ -93,6 +151,7 @@ export const getCherrioProjectAbi = (): any[] => [
   },
   { inputs: [], name: 'stage', outputs: [{ internalType: 'enum CherrioProject.Stages', name: '', type: 'uint8' }], stateMutability: 'view', type: 'function' },
   { inputs: [], name: 'startedAt', outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }], stateMutability: 'view', type: 'function' },
+  { inputs: [], name: 'totalDonations', outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }], stateMutability: 'view', type: 'function' },
   { inputs: [], name: 'totalDonors', outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }], stateMutability: 'view', type: 'function' },
   {
     inputs: [{ internalType: 'uint256', name: 'index', type: 'uint256' }],

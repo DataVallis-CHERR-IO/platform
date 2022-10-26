@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import Image from 'next/image'
 import useTranslation from 'next-translate/useTranslation'
 import { IProjectMedia } from '../../../interfaces/api'
 import { useQuery } from 'react-query'
 import { apolloClient } from '../../../clients/graphql'
 import { QUERY_PROJECT_MEDIA } from '../../../constants/queries/moralis/project-media'
-import { Loading } from '@web3uikit/core'
+import { FadeLoader } from 'react-spinners'
 
 interface IProjectMediaProps {
   projectId: string
@@ -13,9 +13,8 @@ interface IProjectMediaProps {
 
 const ProjectGallery: React.FC<IProjectMediaProps> = ({ projectId }) => {
   const { t } = useTranslation('common')
-  const [projectMedia, setProjectMedia] = useState<IProjectMedia[]>([])
 
-  const { data, isLoading } = useQuery(
+  const { data: projectMedia, isLoading } = useQuery(
     ['projectMedia'],
     async () => {
       return (
@@ -35,10 +34,6 @@ const ProjectGallery: React.FC<IProjectMediaProps> = ({ projectId }) => {
     }
   )
 
-  useEffect(() => {
-    !data || setProjectMedia(data)
-  }, [data])
-
   return (
     <section className='section-3 pt-0'>
       <div className='container'>
@@ -56,7 +51,7 @@ const ProjectGallery: React.FC<IProjectMediaProps> = ({ projectId }) => {
                 ))
               ) : (
                 <div>
-                  <Loading size={12} spinnerColor='#000000' />
+                  <FadeLoader color='#CA354C' loading={isLoading} />
                 </div>
               )}
             </div>

@@ -10,13 +10,13 @@ import { paramCase } from 'param-case'
 import { notify } from '../../../utils/notify'
 import { MUTATION_CREATE_PROJECT_DETAIL } from '../../../constants/queries/moralis/project-detail'
 import Dropzone from '../../../themes/ui/drop-zone'
-import { getBase64 } from '../../../modules/get-base64'
 import { MUTATION_CREATE_PROJECT_MEDIA } from '../../../constants/queries/moralis/project-media'
 import { MUTATION_UPLOAD } from '../../../constants/queries/upload'
 import * as _ from 'lodash'
 import { MUTATION_NEW_PROJECT } from '../../../constants/queries/contract/cherrio-project-activator'
 import { FadeLoader } from 'react-spinners'
 import { Button, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material'
+import { getBase64 } from '../../../utils'
 
 interface ICreateNewProjectProps {
   projectTypes: IProjectType[]
@@ -71,7 +71,7 @@ const CreateNewProjectComponent: React.FC<ICreateNewProjectProps> = ({ projectTy
   const { mutateAsync: createProjectDetailMutation } = useMutation(createProjectDetail)
   const { mutateAsync: createProjectMediaMutation } = useMutation(createProjectMedia)
 
-  const onClickCreate = async event => {
+  const handleCreate = async event => {
     event.preventDefault()
 
     if (!formRef.current.checkValidity()) {
@@ -86,11 +86,8 @@ const CreateNewProjectComponent: React.FC<ICreateNewProjectProps> = ({ projectTy
 
     setLoading(true)
 
-    console.log('here 1')
-    console.log([duration, ethers.utils.parseUnits(goal, 'gwei').toString()]);
     const contract = await deploy([duration, ethers.utils.parseUnits(goal, 'gwei').toString()])
 
-    console.log('here 2')
     if (contract) {
       const uploadedFiles = _.cloneDeep(files)
       const defaultFile = uploadedFiles.splice(
@@ -148,9 +145,9 @@ const CreateNewProjectComponent: React.FC<ICreateNewProjectProps> = ({ projectTy
       setTypes([])
       setFiles([])
       Array.from(document.querySelectorAll('textarea')).forEach(textarea => (textarea.value = ''))
-
-      setLoading(false)
     }
+
+    setLoading(false)
   }
 
   return (
@@ -263,7 +260,7 @@ const CreateNewProjectComponent: React.FC<ICreateNewProjectProps> = ({ projectTy
                   <div className='row section-profile'>
                     <div className='col-md-12'>
                       {!loading ? (
-                        <Button onClick={onClickCreate} variant='contained' color='success'>
+                        <Button onClick={handleCreate} variant='contained' color='success'>
                           {t('create')}
                         </Button>
                       ) : (

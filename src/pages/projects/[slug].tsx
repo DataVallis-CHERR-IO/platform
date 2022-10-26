@@ -4,6 +4,7 @@ import ProjectDetail from '../../components/pages/projects/project-detail'
 import { apolloClient } from '../../clients/graphql'
 import { QUERY_PROJECT } from '../../constants/queries/moralis/project'
 import { IProject } from '../../interfaces/api'
+import ContractProvider from '../../contexts/contract'
 
 export const getServerSideProps = async context => {
   const { data } = await apolloClient.query({
@@ -13,13 +14,21 @@ export const getServerSideProps = async context => {
     }
   })
 
-  console.log(data.project, 'PROJECT [SLUG]')
+  if (!data.project) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false
+      }
+    }
+  }
+
   return {
     props: {
       project: data.project,
       seo: {
-        title: data.project.title,
-        description: data.project.excerpt
+        title: data.project?.title,
+        description: data.project?.excerpt
       }
     }
   }
@@ -32,7 +41,9 @@ interface IProjectProps {
 const Slug: React.FC<IProjectProps> = ({ project }) => {
   return (
     <Layout>
-      <ProjectDetail project={project} />'
+      <ContractProvider project={project}>
+        <ProjectDetail project={project} />
+      </ContractProvider>
     </Layout>
   )
 }

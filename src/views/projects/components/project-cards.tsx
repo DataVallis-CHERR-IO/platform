@@ -1,20 +1,19 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import useTranslation from 'next-translate/useTranslation'
 import ProjectProgress from './project-progress'
 import { IProject } from '../../../interfaces/api'
-import { notify } from '../../../utils/notify'
 import { useProjectsContext } from '../../../contexts/projects/provider'
-import { useBalance, useContractEvent, useContractRead } from 'wagmi'
+import { useContractReads } from 'wagmi'
 import { getCherrioProjectAbi } from '../../../contracts/abi/cherrio-project'
 import { useSubscription } from '@apollo/client'
 import { SUBSCRIPTION_PROJECT_CREATED } from '../../../constants/queries/moralis/project'
-import * as _ from 'lodash'
 import { BeatLoader } from 'react-spinners'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEthereum } from '@fortawesome/free-brands-svg-icons'
 import { StageEnum } from '../../../enums/stage.enum'
-import { getEthers } from '../../../utils'
+import { getEther } from '../../../utils'
+import * as _ from 'lodash'
 
 const ProjectCards: React.FC = () => {
   const { projects } = useProjectsContext()
@@ -51,65 +50,53 @@ interface IProjectCardProps {
 
 const ProjectCard: React.FC<IProjectCardProps> = ({ project }) => {
   const { t } = useTranslation('common')
-  const [balance, setBalance] = useState<number>(0)
   const [progress, setProgress] = useState<number>(0)
-  const [goal, setGoal] = useState<number>(0)
   const [btnText, setBtnText] = useState<string>('activate')
 
-  const { data: dataBalance, isLoading: isLoadingBalance } = useBalance({
-    addressOrName: project.contractAddress
-  })
+  const contract = useMemo(
+    () => ({
+      addressOrName: project.contractAddress
+    }),
+    [project.contractAddress]
+  )
+  const contractInterface = useMemo(
+    () => ({
+      contractInterface: getCherrioProjectAbi()
+    }),
+    []
+  )
 
-  const { data: dataGoal, isLoading: isLoadingGoal } = useContractRead({
-    addressOrName: project.contractAddress,
-    contractInterface: getCherrioProjectAbi(),
-    functionName: 'goal'
-  })
-
-  const { data: dataStage, isLoading: isLoadingStage } = useContractRead({
-    addressOrName: project.contractAddress,
-    contractInterface: getCherrioProjectAbi(),
-    functionName: 'stage'
-  })
-
-  useContractEvent({
-    addressOrName: project.contractAddress,
-    contractInterface: getCherrioProjectAbi(),
-    eventName: 'Donation',
-    listener: data => {
-      const donation = Number(getEthers(data[0]))
-      notify(t('newDonationForProjectReceived', { project: project.title, donation }))
-      setBalance(balance + donation)
-      setProgress(Math.floor(((balance + donation) / Number(goal)) * 100))
-    }
-  })
-
-  useContractEvent({
-    addressOrName: project.contractAddress,
-    contractInterface: getCherrioProjectAbi(),
-    eventName: 'ProjectActivated',
-    listener: () => setBtnText('donateNow')
-  })
-
-  useContractEvent({
-    addressOrName: project.contractAddress,
-    contractInterface: getCherrioProjectAbi(),
-    eventName: 'ProjectEnded',
-    listener: () => setBtnText('readMore')
+  const { data: projectContract, isLoading } = useContractReads({
+    contracts: [
+      {
+        ...contract,
+        ...contractInterface,
+        functionName: 'stage'
+      },
+      {
+        ...contract,
+        ...contractInterface,
+        functionName: 'goal'
+      },
+      {
+        ...contract,
+        ...contractInterface,
+        functionName: 'raisedAmount'
+      }
+    ],
+    watch: true
   })
 
   useEffect(() => {
-    if (!isLoadingStage && Number(dataStage) !== StageEnum.PENDING) {
-      setBtnText(Number(dataStage) === StageEnum.ACTIVE ? 'donateNow' : 'readMore')
-    }
-    if (!isLoadingBalance && !balance) {
-      setBalance(Number(dataBalance.formatted))
-      setProgress(Math.floor((Number(dataBalance.formatted) / getEthers(dataGoal)) * 100))
-    }
-    if (!isLoadingGoal && !goal) {
-      setGoal(getEthers(dataGoal))
-    }
-  }, [isLoadingStage, isLoadingBalance, isLoadingGoal])
+    setBtnText(
+      Number(_.get(projectContract, '[0]')) === StageEnum.ACTIVE
+        ? 'donateNow'
+        : Number(_.get(projectContract, '[0]')) === StageEnum.ENDED
+        ? 'readMore'
+        : 'activate'
+    )
+    setProgress(Math.floor((getEther(_.get(projectContract, '[2]')) / getEther(_.get(projectContract, '[1]'))) * 100))
+  }, [_.get(projectContract, '[0]'), _.get(projectContract, '[1]'), _.get(projectContract, '[2]')])
 
   return (
     <div className='col-sm-12 col-md-12 col-lg-4 animation-1 mt-4'>
@@ -123,26 +110,26 @@ const ProjectCard: React.FC<IProjectCardProps> = ({ project }) => {
               <span>{project.title}</span>
             </h4>
             <p>{project.excerpt}</p>
-            <ProjectProgress progress={progress} balance={balance} />
+            <ProjectProgress progress={progress} balance={_.get(projectContract, '[2]')} />
             <ul className='list-inline clearfix mt-20 mb-20'>
               <li className='pull-left flip pr-0'>
                 <i className='fab fa-ethereum' />
                 <span className='font-weight-bold text-lowercase'>
                   <div className='row justify-content-center mt-2'>
                     <div>
-                      <BeatLoader color='#FFFFFF' loading={isLoadingBalance} size={5} />
-                      {!isLoadingBalance && (
+                      <BeatLoader color='#FFFFFF' loading={isLoading} size={5} />
+                      {!isLoading && (
                         <>
-                          <FontAwesomeIcon icon={faEthereum} /> <span>{balance}</span>
+                          <FontAwesomeIcon icon={faEthereum} /> <span>{getEther(_.get(projectContract, '[2]'))}</span>
                         </>
                       )}
                     </div>
                     <div className='mx-2'>{t('raisedOf')}</div>
                     <div>
-                      <BeatLoader color='#FFFFFF' loading={isLoadingGoal} size={5} />
-                      {!isLoadingGoal && (
+                      <BeatLoader color='#FFFFFF' loading={isLoading} size={5} />
+                      {!isLoading && (
                         <>
-                          <FontAwesomeIcon icon={faEthereum} /> <span>{goal}</span>
+                          <FontAwesomeIcon icon={faEthereum} /> <span>{getEther(_.get(projectContract, '[1]'))}</span>
                         </>
                       )}
                     </div>

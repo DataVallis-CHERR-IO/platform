@@ -1,4 +1,5 @@
 import type { AppProps } from 'next/app'
+import App from 'next/app'
 import React from 'react'
 import I18nProvider from 'next-translate/I18nProvider'
 import RouteGuard from '../guards/route.guard'
@@ -6,7 +7,7 @@ import { Session } from 'next-auth'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { ToastContainer } from 'react-toastify'
 import { chain, configureChains, createClient, WagmiConfig } from 'wagmi'
-import { SessionProvider } from 'next-auth/react'
+import { getSession, SessionProvider } from 'next-auth/react'
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
 import { ApolloProvider } from '@apollo/client'
 import { apolloClient } from '../clients/graphql'
@@ -49,7 +50,8 @@ const MyApp = ({ Component, pageProps }: AppProps<{ session: Session }>) => {
           <WagmiConfig client={client}>
             <SessionProvider session={pageProps.session} refetchInterval={0}>
               <RouteGuard>
-                <Component {...pageProps} /> <ToastContainer />
+                <Component {...pageProps} />
+                <ToastContainer />
               </RouteGuard>
             </SessionProvider>
           </WagmiConfig>
@@ -57,6 +59,13 @@ const MyApp = ({ Component, pageProps }: AppProps<{ session: Session }>) => {
       </ApolloProvider>
     </I18nProvider>
   )
+}
+
+MyApp.getInitialProps = async appContext => {
+  const appProps = await App.getInitialProps(appContext)
+  appProps.pageProps.session = await getSession(appContext)
+
+  return { ...appProps }
 }
 
 export default MyApp
