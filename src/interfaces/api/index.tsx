@@ -1,5 +1,3 @@
-import { ISelectOptions } from '../component'
-
 export interface IApiModel {
   _id?: string
   createdAt?: any
@@ -43,7 +41,7 @@ export interface IProjectMedia extends IApiModel {
   deletedAt?: any
 }
 
-export interface IProjectType extends IApiModel, ISelectOptions {
+export interface IProjectType extends IApiModel {
   name?: string
   lkName?: string
   statusId?: number
