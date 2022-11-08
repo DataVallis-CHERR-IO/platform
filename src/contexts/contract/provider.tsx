@@ -5,7 +5,7 @@ import { getCherrioProjectAbi } from '../../contracts/abi/cherrio-project'
 import { getCherrioProjectActivatorAbi } from '../../contracts/abi/cherrio-project-activator'
 import { IProject } from '../../interfaces/api'
 import * as _ from 'lodash'
-import { getEther } from '../../utils'
+import { fromSun } from '../../utils'
 
 export const useContractContext = () => useContext(ContractContext)
 
@@ -112,13 +112,13 @@ const ContractProvider: React.FC<IContractProviderProps> = ({ children, project 
         projectContract: {
           owner: _.get(data, '[0]'),
           stage: _.get(data, '[1]'),
-          goal: getEther(_.get(data, '[2]')),
+          goal: fromSun(_.get(data, '[2]')),
           minimumDonation: _.get(data, '[3]', '').toString(),
           startedAt: _.get(data, '[4]', '').toString(),
           deadline: _.get(data, '[5]', '').toString(),
           endedAt: _.get(data, '[6]', '').toString(),
-          raisedAmount: getEther(_.get(data, '[7]')),
-          donations: getEther(_.get(data, '[12]')),
+          raisedAmount: fromSun(_.get(data, '[7]')),
+          donations: fromSun(_.get(data, '[12]')),
           totalDonations: Number(_.get(data, '[9]', '').toString()),
           requests: {
             descriptions: _.get(data, '[8].descriptions'),
@@ -134,12 +134,12 @@ const ContractProvider: React.FC<IContractProviderProps> = ({ children, project 
             flag: _.get(data, '[10].flag'),
             rewarded: _.get(data, '[10].rewarded'),
             numActivators: +_.get(data, '[10].numActivators', '').toString(),
-            activateSize: getEther(_.get(data, '[10].activateSize')),
-            activatedAmount: getEther(_.get(data, '[10].activatedAmount')),
-            reward: getEther(_.get(data, '[10].reward')),
+            activateSize: fromSun(_.get(data, '[10].activateSize')),
+            activatedAmount: fromSun(_.get(data, '[10].activatedAmount')),
+            reward: fromSun(_.get(data, '[10].reward')),
             activators: _.get(data, '[11]')
           },
-          activatedAmount: getEther(_.get(data, '[13]'))
+          activatedAmount: fromSun(_.get(data, '[13]'))
         },
         isLoading,
         isError

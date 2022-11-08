@@ -1,14 +1,38 @@
-import { ethers } from 'ethers'
+import TronWeb from 'tronweb'
 import { getCherrioProjectAbi } from '../contracts/abi/cherrio-project'
 import { getCherrioProjectBytecode } from '../contracts/bytecode/cherrio-project'
 
-export const deploy = async (args: any[]): Promise<ethers.Contract> => {
-  try {
-    const signer = new ethers.providers.Web3Provider(window.ethereum).getSigner()
-    const contract = await new ethers.ContractFactory(getCherrioProjectAbi(), getCherrioProjectBytecode(), signer).connect(signer).deploy(...args)
-    await contract.deployed()
+interface IDeployRes {
+  address: string
+  txId: string
+}
 
-    return contract
+export const deploy = async (parameters: any[]): Promise<IDeployRes> => {
+  try {
+    console.log(parameters)
+    const contract = await (window as any).tronWeb.trx.sendRawTransaction(
+      await (window as any).tronWeb.trx.sign(
+        await (window as any).tronWeb.transactionBuilder.createSmartContract(
+          {
+            abi: getCherrioProjectAbi(),
+            bytecode: getCherrioProjectBytecode(),
+            feeLimit: 1e9,
+            callValue: 0,
+            userFeePercentage: 0,
+            originEnergyLimit: 1e7,
+            parameters
+          },
+          (window as any).tronWeb.defaultAddress.base58
+        )
+      )
+    )
+
+    console.log(contract)
+
+    return {
+      address: TronWeb.address.fromHex(contract.transaction.contract_address),
+      txId: contract.transaction.txID
+    }
   } catch (error) {
     console.log(error)
     return null

@@ -1,86 +1,15 @@
-import React, { useEffect, useState } from 'react'
-import axios from 'axios'
+import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import useTranslation from 'next-translate/useTranslation'
-import { signIn, signOut } from 'next-auth/react'
-import { chain as supportedChain, useAccount, useConnect, useDisconnect, useSignMessage } from 'wagmi'
-import { MetaMaskConnector } from 'wagmi/connectors/metaMask'
-import { permalink } from '../../../constants/routes'
+import useConnect from '../../../hooks/use-connect'
 import { truncateAddress } from '../../../utils'
-import { notify } from '../../../utils/notify'
-import { changeNetwork } from '../../../modules/change-network'
+import { useSession } from 'next-auth/react'
 
 const Header: React.FC = () => {
   const { t } = useTranslation('common')
-  const { connectAsync, status } = useConnect()
-  const { disconnectAsync } = useDisconnect()
-  const { isConnected, address } = useAccount()
-  const { signMessageAsync } = useSignMessage()
-  const [loggedIn, setLoggedIn] = useState<boolean>(false)
-
-  const login = async () => {
-    const ethereum = window.ethereum
-
-    if (!ethereum) {
-      notify(t('metamaskInstanceMissing'), 'warning')
-      return
-    }
-
-    const { account, chain } = await connectAsync({
-      connector: new MetaMaskConnector({
-        chains: [supportedChain.polygonMumbai]
-      })
-    })
-
-    if (chain.unsupported) {
-      await logout()
-      await changeNetwork()
-
-      return
-    }
-
-    const userData = { address: account, chain: chain.id, network: 'evm' }
-    const { data } = await axios.post(permalink.auth, userData, {
-      headers: {
-        'content-type': 'application/json'
-      }
-    })
-
-    const message = data.message
-
-    try {
-      const signature = await signMessageAsync({ message })
-
-      await signIn('credentials', { message, signature })
-
-      setLoggedIn(true)
-    } catch (error) {
-      await logout()
-    }
-  }
-
-  const logout = async () => {
-    await disconnectAsync()
-    await signOut()
-
-    setLoggedIn(false)
-  }
-
-  useEffect(() => {
-    !isConnected || status === 'loading' || setLoggedIn(isConnected)
-
-    if (window.ethereum) {
-      window.ethereum.on('chainChanged', async () => {
-        await logout()
-        window.location.reload()
-      })
-      window.ethereum.on('accountsChanged', async () => {
-        await logout()
-        window.location.reload()
-      })
-    }
-  }, [isConnected])
+  const { data: session } = useSession()
+  const { connect, disconnect } = useConnect()
 
   return (
     <nav className='navbar navbar-expand-lg navbar-light fixed-top' id='mainNav'>
@@ -105,10 +34,10 @@ const Header: React.FC = () => {
                 <a className='nav-link js-scroll-trigger'>{t('about')}</a>
               </Link>
             </li>
-            {!loggedIn ? (
+            {!session ? (
               <li className='nav-item'>
-                <div className='nav-link js-scroll-trigger' onClick={() => login()}>
-                  {t('login')}
+                <div className='nav-link js-scroll-trigger' onClick={connect}>
+                  {t('connect')}
                 </div>
               </li>
             ) : (
@@ -119,11 +48,11 @@ const Header: React.FC = () => {
                   </Link>
                 </li>
                 <li className='nav-item'>
-                  <div className='nav-link js-scroll-trigger'>{truncateAddress(address)}</div>
+                  <div className='nav-link js-scroll-trigger'>{truncateAddress(session?.user?.name)}</div>
                 </li>
                 <li className='nav-item'>
-                  <div className='nav-link js-scroll-trigger' onClick={() => logout()}>
-                    {t('logout')}
+                  <div className='nav-link js-scroll-trigger' onClick={disconnect}>
+                    {t('disconnect')}
                   </div>
                 </li>
               </>

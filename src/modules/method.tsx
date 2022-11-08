@@ -1,6 +1,6 @@
 import { ethers } from 'ethers'
 import { getCherrioProjectAbi } from '../contracts/abi/cherrio-project'
-import { getCherrioProjectActivatorAbi } from '../../server/src/web3/abi/cherrio-project-activator'
+import { getCherrioProjectActivatorAbi } from '../contracts/abi/cherrio-project-activator'
 
 export const method = async (method: string, args?: any[], value?: string, address?: string): Promise<boolean> => {
   try {

@@ -3,7 +3,7 @@ import { Button, TextField } from '@mui/material'
 import { FadeLoader } from 'react-spinners'
 import useTranslation from 'next-translate/useTranslation'
 import { method } from '../../../modules/method'
-import { getWei, isAddress } from '../../../utils'
+import { toSun, isAddress } from '../../../utils'
 import { notify } from '../../../utils/notify'
 import { IProject } from '../../../interfaces/api'
 
@@ -34,7 +34,7 @@ const ProjectCreateSpendingRequest: React.FC<IProjectCreateSpendingRequestProps>
 
     setLoading(true)
 
-    await method('createSpendingRequest', [description, recipient, getWei(value)], null, project.contractAddress)
+    await method('createSpendingRequest', [description, recipient, toSun(value)], null, project.contractAddress)
 
     setRecipient('')
     setValue('')

@@ -11,7 +11,7 @@ import { useQuery } from 'react-query'
 import { apolloClient } from '../../../clients/graphql'
 import { QUERY_PROJECT_DETAIL } from '../../../constants/queries/moralis/project-detail'
 import { StageEnum } from '../../../enums/stage.enum'
-import { getWei } from '../../../utils'
+import { toSun } from '../../../utils'
 import { method } from '../../../modules/method'
 import { useContractContext } from '../../../contexts/contract/provider'
 import { FadeLoader } from 'react-spinners'
@@ -74,9 +74,9 @@ const ProjectDetail: React.FC<IProjectDetailProps> = ({ project }) => {
 
     if (value) {
       if (projectContract?.stage === StageEnum.PENDING) {
-        await method('activateProject', [project.contractAddress], getWei(value))
+        await method('activateProject', [project.contractAddress], toSun(value))
       } else {
-        await method('donate', [], getWei(value), project.contractAddress)
+        await method('donate', [], toSun(value), project.contractAddress)
       }
     }
   }

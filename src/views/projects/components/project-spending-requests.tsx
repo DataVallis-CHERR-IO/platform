@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import StickyHeadTable from '../../../themes/components/data/sticky-head.table'
 import { useContractContext } from '../../../contexts/contract/provider'
 import useTranslation from 'next-translate/useTranslation'
-import { getEther, truncateAddress } from '../../../utils'
+import { fromSun, truncateAddress } from '../../../utils'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheck, faThumbsUp, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { faEthereum } from '@fortawesome/free-brands-svg-icons'
@@ -43,7 +43,7 @@ const ProjectSpendingRequests: React.FC<IProjectSpendingRequests> = ({ project }
         recipient: truncateAddress(projectContract?.requests?.recipients[i]),
         amount: (
           <>
-            <FontAwesomeIcon icon={faEthereum} /> {getEther(projectContract?.requests?.amounts[i])}
+            <FontAwesomeIcon icon={faEthereum} /> {fromSun(projectContract?.requests?.amounts[i])}
           </>
         ),
         description: projectContract?.requests?.descriptions[i],

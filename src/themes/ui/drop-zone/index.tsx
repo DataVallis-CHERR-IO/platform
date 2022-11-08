@@ -8,9 +8,10 @@ interface IDropzoneProps extends DropzoneInputProps {
   uploadedFiles?: any[]
   onDropFiles?: any
   onChangeFiles?: any
+  hideUpload?: boolean
 }
 
-const Dropzone: React.FC<IDropzoneProps> = ({ multiple, uploadedFiles, onDropFiles, onChangeFiles }) => {
+const Dropzone: React.FC<IDropzoneProps> = ({ multiple, uploadedFiles, onDropFiles, onChangeFiles, hideUpload = false }) => {
   const [files, setFiles] = useState([])
   const { getRootProps, getInputProps, isFocused, isDragAccept, isDragReject, isDragActive } = useDropzone({
     accept: {
@@ -85,11 +86,13 @@ const Dropzone: React.FC<IDropzoneProps> = ({ multiple, uploadedFiles, onDropFil
 
   return (
     <div className='row'>
-      <div className='col-md-12'>
-        <div {...getRootProps({ style })}>
-          <input {...getInputProps()} /> {isDragActive ? <p>Drop the files here ...</p> : <p>Drag 'n' drop some files here, or click to select files</p>}
+      {!hideUpload && (
+        <div className='col-md-12'>
+          <div {...getRootProps({ style })}>
+            <input {...getInputProps()} /> {isDragActive ? <p>Drop the files here ...</p> : <p>Drag 'n' drop some files here, or click to select files</p>}
+          </div>
         </div>
-      </div>
+      )}
       <div className='col-md-12'>
         <aside style={thumbsContainer}>{thumbs}</aside>
       </div>

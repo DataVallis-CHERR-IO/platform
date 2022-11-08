@@ -1,6 +1,5 @@
 import React, { useRef, useState } from 'react'
 import useTranslation from 'next-translate/useTranslation'
-import { ethers } from 'ethers'
 import { IProjectType } from '../../../interfaces/api'
 import { deploy } from '../../../modules/deploy'
 import { useMutation } from 'react-query'
@@ -16,7 +15,9 @@ import * as _ from 'lodash'
 import { MUTATION_NEW_PROJECT } from '../../../constants/queries/contract/cherrio-project-activator'
 import { FadeLoader } from 'react-spinners'
 import { Button, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material'
-import { getBase64 } from '../../../utils'
+import { getBase64, toSun } from '../../../utils'
+import path from 'path'
+import { FileTypeEnum } from '../../../enums/file-type.enum'
 
 interface ICreateNewProjectProps {
   projectTypes: IProjectType[]
@@ -84,70 +85,120 @@ const CreateNewProjectComponent: React.FC<ICreateNewProjectProps> = ({ projectTy
       return
     }
 
-    setLoading(true)
+    // setLoading(true)
 
-    const contract = await deploy([duration, ethers.utils.parseUnits(goal, 'gwei').toString()])
+    const uploadedFiles = _.cloneDeep(files)
+    const defaultFile = uploadedFiles.splice(
+      uploadedFiles.findIndex(file => file.isDefault),
+      1
+    )[0]
 
-    if (contract) {
-      const uploadedFiles = _.cloneDeep(files)
-      const defaultFile = uploadedFiles.splice(
-        uploadedFiles.findIndex(file => file.isDefault),
-        1
-      )[0]
-
-      const image = (
-        await uploadMutation({
-          title: paramCase(defaultFile.name),
-          content: await getBase64(defaultFile)
-        })
-      ).data.upload
-
-      const project = (
-        await createProjectMutation({
-          contractAddress: contract.address,
-          slug: paramCase(title),
-          title,
-          excerpt,
-          image
-        })
-      ).data.createProject
-
-      await createProjectDetailMutation({
-        projectId: project._id,
-        description,
-        requirements
+    const image = (
+      await uploadMutation({
+        title: paramCase(defaultFile.name.split(path.extname(defaultFile.name)).shift()),
+        extension: path.extname(defaultFile.name),
+        content: await getBase64(defaultFile)
       })
+    ).data.upload
 
-      for (const file of uploadedFiles) {
-        const splitType = file.type.split('/')
-        await createProjectMediaMutation({
-          projectId: project._id,
-          title: paramCase(file.name),
-          content: await getBase64(file),
-          type: splitType[0],
-          format: splitType[1]
-        })
-      }
+    const images: string[] = []
 
+    for (const file of uploadedFiles) {
+      images.push(
+        (
+          await uploadMutation({
+            title: paramCase(file.name.split(path.extname(file.name)).shift()),
+            extension: path.extname(file.name),
+            content: await getBase64(file)
+          })
+        ).data.upload
+      )
+    }
+
+    const metadata = {
+      title,
+      excerpt,
+      description,
+      image,
+      slug: paramCase(title),
+      images
+    }
+
+    const metadataUrl = (
+      await uploadMutation({
+        title: 'metadata',
+        extension: FileTypeEnum.JSON,
+        content: JSON.stringify(metadata),
+        isObject: true
+      })
+    ).data.upload
+
+    console.log(metadataUrl)
+    const { address } = await deploy([toSun(goal), duration, metadataUrl])
+
+    console.log(address)
+    if (address) {
+      // const uploadedFiles = _.cloneDeep(files)
+      // const defaultFile = uploadedFiles.splice(
+      //   uploadedFiles.findIndex(file => file.isDefault),
+      //   1
+      // )[0]
+      //
+      // const image = (
+      //   await uploadMutation({
+      //     title: paramCase(defaultFile.name.split(path.extname(defaultFile.name)).shift()),
+      //     extension: path.extname(defaultFile.name),
+      //     content: await getBase64(defaultFile)
+      //   })
+      // ).data.upload
+      //
+      // const project = (
+      //   await createProjectMutation({
+      //     contractAddress: address,
+      //     slug: paramCase(title),
+      //     title,
+      //     excerpt,
+      //     image
+      //   })
+      // ).data.createProject
+      //
+      // await createProjectDetailMutation({
+      //   projectId: project._id,
+      //   description,
+      //   requirements
+      // })
+      //
+      // for (const file of uploadedFiles) {
+      //   const splitType = file.type.split('/')
+      //   await createProjectMediaMutation({
+      //     projectId: project._id,
+      //     title: paramCase(file.name.split(path.extname(file.name)).shift()),
+      //     extension: path.extname(file.name),
+      //     content: await getBase64(file),
+      //     type: splitType[0],
+      //     format: splitType[1]
+      //   })
+      // }
+      //
       await newProjectMutation({
-        contractAddress: contract.address,
+        contractAddress: address,
         goal: Number(goal)
       })
 
       notify(t('project.successfullyCreated'))
 
-      setTitle('')
-      setExcerpt('')
-      setDescription('')
-      setRequirements('')
-      setGoal('')
-      setDuration('')
-      setTypes([])
-      setFiles([])
-      Array.from(document.querySelectorAll('textarea')).forEach(textarea => (textarea.value = ''))
+      // setTitle('')
+      // setExcerpt('')
+      // setDescription('')
+      // setRequirements('')
+      // setGoal('')
+      // setDuration('')
+      // setTypes([])
+      // setFiles([])
+      // Array.from(document.querySelectorAll('textarea')).forEach(textarea => (textarea.value = ''))
     }
 
-    setLoading(false)
+    // setLoading(false)
   }
 
   return (

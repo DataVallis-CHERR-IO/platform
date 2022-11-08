@@ -1,5 +1,5 @@
 export const getCherrioProjectActivatorAbi = (): any[] => [
-  { inputs: [], stateMutability: 'nonpayable', type: 'constructor' },
+  { inputs: [{ internalType: 'uint256', name: '_cherrioTokenAddress', type: 'uint256' }], stateMutability: 'nonpayable', type: 'constructor' },
   {
     anonymous: false,
     inputs: [
@@ -73,7 +73,21 @@ export const getCherrioProjectActivatorAbi = (): any[] => [
     type: 'function'
   },
   { inputs: [], name: 'getBalance', outputs: [{ internalType: 'uint256', name: '_balance', type: 'uint256' }], stateMutability: 'view', type: 'function' },
+  {
+    inputs: [],
+    name: 'getNumProjects',
+    outputs: [{ internalType: 'uint256', name: 'numProjects', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function'
+  },
   { inputs: [], name: 'getOwner', outputs: [{ internalType: 'address', name: '', type: 'address' }], stateMutability: 'view', type: 'function' },
+  {
+    inputs: [{ internalType: 'uint256', name: '_numOfProjects', type: 'uint256' }],
+    name: 'getProjects',
+    outputs: [{ internalType: 'address[]', name: 'projectContracts', type: 'address[]' }],
+    stateMutability: 'view',
+    type: 'function'
+  },
   {
     inputs: [
       { internalType: 'address', name: '_address', type: 'address' },
@@ -84,6 +98,13 @@ export const getCherrioProjectActivatorAbi = (): any[] => [
     name: 'newProject',
     outputs: [],
     stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    name: 'projectAddresses',
+    outputs: [{ internalType: 'address', name: '', type: 'address' }],
+    stateMutability: 'view',
     type: 'function'
   },
   {

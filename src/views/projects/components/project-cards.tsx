@@ -12,7 +12,7 @@ import { BeatLoader } from 'react-spinners'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEthereum } from '@fortawesome/free-brands-svg-icons'
 import { StageEnum } from '../../../enums/stage.enum'
-import { getEther } from '../../../utils'
+import { fromSun } from '../../../utils'
 import * as _ from 'lodash'
 
 const ProjectCards: React.FC = () => {
@@ -95,7 +95,7 @@ const ProjectCard: React.FC<IProjectCardProps> = ({ project }) => {
         ? 'readMore'
         : 'activate'
     )
-    setProgress(Math.floor((getEther(_.get(projectContract, '[2]')) / getEther(_.get(projectContract, '[1]'))) * 100))
+    setProgress(Math.floor((fromSun(_.get(projectContract, '[2]')) / fromSun(_.get(projectContract, '[1]'))) * 100))
   }, [_.get(projectContract, '[0]'), _.get(projectContract, '[1]'), _.get(projectContract, '[2]')])
 
   return (
@@ -120,7 +120,7 @@ const ProjectCard: React.FC<IProjectCardProps> = ({ project }) => {
                       <BeatLoader color='#FFFFFF' loading={isLoading} size={5} />
                       {!isLoading && (
                         <>
-                          <FontAwesomeIcon icon={faEthereum} /> <span>{getEther(_.get(projectContract, '[2]'))}</span>
+                          <FontAwesomeIcon icon={faEthereum} /> <span>{fromSun(_.get(projectContract, '[2]'))}</span>
                         </>
                       )}
                     </div>
@@ -129,7 +129,7 @@ const ProjectCard: React.FC<IProjectCardProps> = ({ project }) => {
                       <BeatLoader color='#FFFFFF' loading={isLoading} size={5} />
                       {!isLoading && (
                         <>
-                          <FontAwesomeIcon icon={faEthereum} /> <span>{getEther(_.get(projectContract, '[1]'))}</span>
+                          <FontAwesomeIcon icon={faEthereum} /> <span>{fromSun(_.get(projectContract, '[1]'))}</span>
                         </>
                       )}
                     </div>

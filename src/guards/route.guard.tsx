@@ -1,11 +1,11 @@
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { authGuard } from '../config'
-import { useAccount } from 'wagmi'
+import { useSession } from 'next-auth/react'
 
 const RouteGuard = ({ children }) => {
   const router = useRouter()
-  const { isConnected } = useAccount()
+  const { data: session } = useSession()
   const [authorized, setAuthorized] = useState(false)
 
   useEffect(() => {
@@ -32,7 +32,7 @@ const RouteGuard = ({ children }) => {
       }
     }
 
-    if (!isConnected && !authGuard.publicPaths.includes(path)) {
+    if (!session && !authGuard.publicPaths.includes(path)) {
       setAuthorized(false)
       router.push({
         pathname: '/'
