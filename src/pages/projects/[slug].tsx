@@ -1,10 +1,10 @@
 import React from 'react'
 import Layout from '../../components/pages/layout'
 import ProjectDetail from '../../components/pages/projects/project-detail'
-import { apolloClient } from '../../clients/graphql'
-import { QUERY_PROJECT } from '../../constants/queries/moralis/project'
-import { IProject } from '../../interfaces/api'
 import ContractProvider from '../../contexts/contract'
+import { apolloClient } from '../../clients/graphql'
+import { QUERY_PROJECT } from '../../constants/queries/database/project'
+import { IProject } from '../../interfaces/api'
 
 export const getServerSideProps = async context => {
   const { data } = await apolloClient.query({

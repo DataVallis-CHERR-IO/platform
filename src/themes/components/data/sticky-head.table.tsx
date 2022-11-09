@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from '@mui/material'
+import * as React from 'react'
 
 interface IStickyHeadTable {
   columns: any[]
@@ -10,8 +11,7 @@ const StickyHeadTable = ({ columns, rows }: IStickyHeadTable) => {
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
 
-  const handleChangePage = (event: unknown, newPage: number) => {
-    console.log(event)
+  const handleChangePage = (_event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
     setPage(newPage)
   }
 

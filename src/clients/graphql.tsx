@@ -53,6 +53,6 @@ const defaultOptions: DefaultOptions = {
 export const apolloClient = new ApolloClient({
   link: errorLink.concat(splitLink),
   ssrMode: typeof window === 'undefined',
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache({ addTypename: false }),
   defaultOptions
 })

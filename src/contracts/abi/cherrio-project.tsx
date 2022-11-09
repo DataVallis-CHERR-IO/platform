@@ -10,11 +10,6 @@ export const getCherrioProjectAbi = (): any[] => [
         internalType: 'uint256',
         name: '_duration',
         type: 'uint256'
-      },
-      {
-        internalType: 'string',
-        name: '_tokenURI',
-        type: 'string'
       }
     ],
     stateMutability: 'nonpayable',
@@ -523,19 +518,6 @@ export const getCherrioProjectAbi = (): any[] => [
         internalType: 'uint256',
         name: '',
         type: 'uint256'
-      }
-    ],
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    inputs: [],
-    name: 'tokenURI',
-    outputs: [
-      {
-        internalType: 'string',
-        name: '',
-        type: 'string'
       }
     ],
     stateMutability: 'view',

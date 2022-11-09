@@ -31,8 +31,6 @@ const BTFSDemo = () => {
   const [uploadedFiles, setUploadedFiles] = useState<IUploadedFile[]>([])
 
   const handleLogin = async () => {
-    console.log(email, password)
-
     const response = (
       await axios.post(
         `${btfsUrl}/v1/auth/login`,
@@ -52,7 +50,6 @@ const BTFSDemo = () => {
   }
 
   const handleUpload = async () => {
-    console.log(files[0])
     const formData = new FormData()
     formData.append('file', files[0])
 

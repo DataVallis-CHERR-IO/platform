@@ -1,18 +1,18 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import useTranslation from 'next-translate/useTranslation'
 import ProjectProgress from './project-progress'
 import { IProject } from '../../../interfaces/api'
 import { useProjectsContext } from '../../../contexts/projects/provider'
-import { useContractReads } from 'wagmi'
-import { getCherrioProjectAbi } from '../../../contracts/abi/cherrio-project'
 import { useSubscription } from '@apollo/client'
-import { SUBSCRIPTION_PROJECT_CREATED } from '../../../constants/queries/moralis/project'
+import { SUBSCRIPTION_PROJECT_CREATED } from '../../../constants/queries/database/project'
 import { BeatLoader } from 'react-spinners'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEthereum } from '@fortawesome/free-brands-svg-icons'
 import { StageEnum } from '../../../enums/stage.enum'
 import { fromSun } from '../../../utils'
+import { useQuery } from 'react-query'
+import { useTronWebContext } from '../../../contexts/tronweb/provider'
 import * as _ from 'lodash'
 
 const ProjectCards: React.FC = () => {
@@ -35,7 +35,7 @@ const ProjectCards: React.FC = () => {
       <div className='row mtli-row-clearfix'>
         {!!lastProjects.length &&
           lastProjects.map((project: IProject) => (
-            <React.Fragment key={project._id}>
+            <React.Fragment key={project.id}>
               <ProjectCard project={project} />
             </React.Fragment>
           ))}
@@ -52,51 +52,65 @@ const ProjectCard: React.FC<IProjectCardProps> = ({ project }) => {
   const { t } = useTranslation('common')
   const [progress, setProgress] = useState<number>(0)
   const [btnText, setBtnText] = useState<string>('activate')
+  const { tronWeb } = useTronWebContext()
 
-  const contract = useMemo(
-    () => ({
-      addressOrName: project.contractAddress
-    }),
-    [project.contractAddress]
-  )
-  const contractInterface = useMemo(
-    () => ({
-      contractInterface: getCherrioProjectAbi()
-    }),
-    []
-  )
+  const { data: projectContract, isLoading } = useQuery(
+    ['projectContract'],
+    async () => {
+      const contract = await tronWeb.contract().at(project.contractAddress)
+      const raisedAmount = await contract.raisedAmount().call()
+      const stage = await contract.stage().call()
 
-  const { data: projectContract, isLoading } = useContractReads({
-    contracts: [
-      {
-        ...contract,
-        ...contractInterface,
-        functionName: 'stage'
-      },
-      {
-        ...contract,
-        ...contractInterface,
-        functionName: 'goal'
-      },
-      {
-        ...contract,
-        ...contractInterface,
-        functionName: 'raisedAmount'
+      return {
+        raisedAmount,
+        stage
       }
-    ],
-    watch: true
-  })
+    },
+    {
+      onError: error => {
+        console.log('❌ GraphQL error (query media): ', error)
+      }
+    }
+  )
+
+  // const contract = useMemo(
+  //   () => ({
+  //     addressOrName: project.contractAddress
+  //   }),
+  //   [project.contractAddress]
+  // )
+  // const contractInterface = useMemo(
+  //   () => ({
+  //     contractInterface: getCherrioProjectAbi()
+  //   }),
+  //   []
+  // )
+
+  // const { data: projectContract, isLoading } = useContractReads({
+  //   contracts: [
+  //     {
+  //       ...contract,
+  //       ...contractInterface,
+  //       functionName: 'stage'
+  //     },
+  //     {
+  //       ...contract,
+  //       ...contractInterface,
+  //       functionName: 'goal'
+  //     },
+  //     {
+  //       ...contract,
+  //       ...contractInterface,
+  //       functionName: 'raisedAmount'
+  //     }
+  //   ],
+  //   watch: true
+  // })
 
   useEffect(() => {
-    setBtnText(
-      Number(_.get(projectContract, '[0]')) === StageEnum.ACTIVE
-        ? 'donateNow'
-        : Number(_.get(projectContract, '[0]')) === StageEnum.ENDED
-        ? 'readMore'
-        : 'activate'
-    )
-    setProgress(Math.floor((fromSun(_.get(projectContract, '[2]')) / fromSun(_.get(projectContract, '[1]'))) * 100))
-  }, [_.get(projectContract, '[0]'), _.get(projectContract, '[1]'), _.get(projectContract, '[2]')])
+    setBtnText(Number(projectContract?.stage) === StageEnum.ACTIVE ? 'donateNow' : Number(projectContract?.stage) === StageEnum.ENDED ? 'readMore' : 'activate')
+    setProgress(Math.floor(fromSun(projectContract?.raisedAmount / project.goal) * 100))
+  }, [projectContract?.stage, projectContract?.raisedAmount])
 
   return (
     <div className='col-sm-12 col-md-12 col-lg-4 animation-1 mt-4'>
@@ -120,7 +134,7 @@ const ProjectCard: React.FC<IProjectCardProps> = ({ project }) => {
                       <BeatLoader color='#FFFFFF' loading={isLoading} size={5} />
                       {!isLoading && (
                         <>
-                          <FontAwesomeIcon icon={faEthereum} /> <span>{fromSun(_.get(projectContract, '[2]'))}</span>
+                          <FontAwesomeIcon icon={faEthereum} /> <span>{fromSun(projectContract?.raisedAmount)}</span>
                         </>
                       )}
                     </div>
@@ -129,7 +143,7 @@ const ProjectCard: React.FC<IProjectCardProps> = ({ project }) => {
                       <BeatLoader color='#FFFFFF' loading={isLoading} size={5} />
                       {!isLoading && (
                         <>
-                          <FontAwesomeIcon icon={faEthereum} /> <span>{fromSun(_.get(projectContract, '[1]'))}</span>
+                          <FontAwesomeIcon icon={faEthereum} /> <span>{project.goal}</span>
                         </>
                       )}
                     </div>

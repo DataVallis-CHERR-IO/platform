@@ -4,8 +4,8 @@ import LinearWithLabelProgress from '../../../themes/components/feedback/progres
 import { StageEnum } from '../../../enums/stage.enum'
 import { faEthereum } from '@fortawesome/free-brands-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import moment from 'moment'
 import { useContractContext } from '../../../contexts/contract/provider'
+import moment from 'moment'
 
 const ProjectCountdown: React.FC = () => {
   const { t } = useTranslation('common')

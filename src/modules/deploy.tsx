@@ -9,7 +9,6 @@ interface IDeployRes {
 
 export const deploy = async (parameters: any[]): Promise<IDeployRes> => {
   try {
-    console.log(parameters)
     const contract = await (window as any).tronWeb.trx.sendRawTransaction(
       await (window as any).tronWeb.trx.sign(
         await (window as any).tronWeb.transactionBuilder.createSmartContract(
@@ -27,14 +26,11 @@ export const deploy = async (parameters: any[]): Promise<IDeployRes> => {
       )
     )
 
-    console.log(contract)
-
     return {
       address: TronWeb.address.fromHex(contract.transaction.contract_address),
       txId: contract.transaction.txID
     }
   } catch (error) {
-    console.log(error)
     return null
   }
 }

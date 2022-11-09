@@ -49,7 +49,7 @@
     "invalidAddress": "Invalid address",
     "metamaskConnectMissing": "You are not logged in. Please login first",
     "tronWebInstanceMissing": "You don't have TronLink installed",
-    "tronWebInvalidNetwork": "You don't have the right network. Only '{{network}}' is supported.",
+    "tronWebInvalidNetwork": "You don't have the right network. Only {{network}} is supported.",
     "sepa": "Sepa",
     "bank": "Bank",
     "swift": "Swift",

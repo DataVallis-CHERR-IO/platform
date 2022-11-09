@@ -14,7 +14,6 @@ export const method = async (method: string, args?: any[], value?: string, addre
 
     return true
   } catch (error) {
-    console.log(error)
     return false
   }
 }

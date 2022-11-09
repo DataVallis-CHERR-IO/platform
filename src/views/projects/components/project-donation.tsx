@@ -11,7 +11,6 @@ const ProjectDonation: React.FC = () => {
   const { projectContract } = useContractContext()
 
   useEffect(() => {
-    console.log(projectContract)
     setProgress(Math.floor((projectContract?.raisedAmount / projectContract?.goal) * 100))
   }, [projectContract?.raisedAmount, projectContract?.totalDonations])
 

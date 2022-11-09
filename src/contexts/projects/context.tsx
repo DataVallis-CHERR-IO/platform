@@ -1,5 +1,9 @@
 import { createContext } from 'react'
-import { IProjectsContext } from '../../interfaces/api'
+import { IProject } from '../../interfaces/api'
+
+interface IProjectsContext {
+  projects: IProject[]
+}
 
 const ProjectsContext = createContext<IProjectsContext>({
   projects: []

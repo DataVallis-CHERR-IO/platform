@@ -3,9 +3,9 @@ import ContractContext from './context'
 import { useAccount, useContractReads } from 'wagmi'
 import { getCherrioProjectAbi } from '../../contracts/abi/cherrio-project'
 import { getCherrioProjectActivatorAbi } from '../../contracts/abi/cherrio-project-activator'
+import { fromSun } from '../../utils'
 import { IProject } from '../../interfaces/api'
 import * as _ from 'lodash'
-import { fromSun } from '../../utils'
 
 export const useContractContext = () => useContext(ContractContext)
 

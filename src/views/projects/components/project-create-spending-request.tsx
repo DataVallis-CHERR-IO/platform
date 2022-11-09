@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react'
+import useTranslation from 'next-translate/useTranslation'
 import { Button, TextField } from '@mui/material'
 import { FadeLoader } from 'react-spinners'
-import useTranslation from 'next-translate/useTranslation'
 import { method } from '../../../modules/method'
 import { toSun, isAddress } from '../../../utils'
 import { notify } from '../../../utils/notify'

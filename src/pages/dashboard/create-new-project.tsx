@@ -2,8 +2,8 @@ import React from 'react'
 import Layout from '../../components/pages/layout'
 import CreateNewProjectComponent from '../../components/pages/dashboard/create-new-project.component'
 import { apolloClient } from '../../clients/graphql'
+import { QUERY_PROJECT_TYPES } from '../../constants/queries/database/project-type'
 import { IProjectType } from '../../interfaces/api'
-import { QUERY_PROJECT_TYPES } from '../../constants/queries/moralis/project-type'
 
 export const getServerSideProps = async () => {
   const { data } = await apolloClient.query({

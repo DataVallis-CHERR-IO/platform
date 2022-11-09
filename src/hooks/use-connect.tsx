@@ -17,6 +17,7 @@ const useConnect = (): IUseConnectRes => {
     !tronLink || (await tronLink.request({ method: 'tron_requestAccounts' }))
 
     if (!tronWeb) {
+      notify(t('tronWebInstanceMissing'), 'warning')
       return false
     }
 

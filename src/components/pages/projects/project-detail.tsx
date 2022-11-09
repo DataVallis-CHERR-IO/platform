@@ -8,8 +8,6 @@ import ProjectDonation from '../../../views/projects/components/project-donation
 import SendTransactionDialog from '../../../themes/components/feedback/dialog/send-transaction.dialog'
 import { IProject } from '../../../interfaces/api'
 import { useQuery } from 'react-query'
-import { apolloClient } from '../../../clients/graphql'
-import { QUERY_PROJECT_DETAIL } from '../../../constants/queries/moralis/project-detail'
 import { StageEnum } from '../../../enums/stage.enum'
 import { toSun } from '../../../utils'
 import { method } from '../../../modules/method'
@@ -35,14 +33,15 @@ const ProjectDetail: React.FC<IProjectDetailProps> = ({ project }) => {
   const { data: projectDetail, isLoading } = useQuery(
     ['projectDetail'],
     async () => {
-      return (
-        await apolloClient.query({
-          query: QUERY_PROJECT_DETAIL,
-          variables: {
-            projectId: project._id
-          }
-        })
-      ).data.projectDetail
+      return null
+      // return (
+      //   await apolloClient.query({
+      //     query: QUERY_PROJECT_DETAIL,
+      //     variables: {
+      //       projectId: project.id
+      //     }
+      //   })
+      // ).data.projectDetail
     },
     {
       onError: error => {
@@ -139,7 +138,7 @@ const ProjectDetail: React.FC<IProjectDetailProps> = ({ project }) => {
           </div>
         </div>
       </section>
-      <ProjectGallery projectId={project._id} />
+      <ProjectGallery projectId={project.id} />
       {session && session.user.address.toLowerCase() === projectContract?.owner?.toLowerCase() && <ProjectCreateSpendingRequest project={project} />}{' '}
       {projectContract?.requests?.descriptions?.length > 0 && <ProjectSpendingRequests project={project} />}
       <Subscribe />

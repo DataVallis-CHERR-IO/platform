@@ -4,11 +4,12 @@ import useTranslation from 'next-translate/useTranslation'
 import { IProjectMedia } from '../../../interfaces/api'
 import { useQuery } from 'react-query'
 import { apolloClient } from '../../../clients/graphql'
-import { QUERY_PROJECT_MEDIA } from '../../../constants/queries/moralis/project-media'
+import { QUERY_PROJECT_MEDIA } from '../../../constants/queries/database/project-media'
 import { FadeLoader } from 'react-spinners'
+import { MediaTypeEnum } from '../../../enums/media-type.enum'
 
 interface IProjectMediaProps {
-  projectId: string
+  projectId: number
 }
 
 const ProjectGallery: React.FC<IProjectMediaProps> = ({ projectId }) => {
@@ -22,7 +23,7 @@ const ProjectGallery: React.FC<IProjectMediaProps> = ({ projectId }) => {
           query: QUERY_PROJECT_MEDIA,
           variables: {
             projectId,
-            type: 'image'
+            mediaTypeId: MediaTypeEnum.IMAGE
           }
         })
       ).data.projectMedia
@@ -43,9 +44,9 @@ const ProjectGallery: React.FC<IProjectMediaProps> = ({ projectId }) => {
             <div className='popup-gallery' data-aos='fade-up' data-aos-delay={300}>
               {!isLoading ? (
                 projectMedia.map((media: IProjectMedia) => (
-                  <React.Fragment key={media._id}>
+                  <React.Fragment key={media.id}>
                     <div>
-                      <Image loader={() => media.path} src={media.path} alt={media.title} width={341} height={341} unoptimized={true} />
+                      <Image loader={() => media.path} src={media.path} alt={media.name} width={341} height={341} unoptimized={true} />
                     </div>
                   </React.Fragment>
                 ))

@@ -1,7 +1,7 @@
 import useTranslation from 'next-translate/useTranslation'
 import React, { useRef } from 'react'
 import { apolloClient } from '../../clients/graphql'
-import { MUTATION_SUBSCRIBE } from '../../constants/queries/moralis/subscriber'
+import { MUTATION_SUBSCRIBE } from '../../constants/queries/database/subscriber'
 import { useMutation } from 'react-query'
 import { notify } from '../../utils/notify'
 

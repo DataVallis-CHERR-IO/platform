@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import StickyHeadTable from '../../../themes/components/data/sticky-head.table'
-import { useContractContext } from '../../../contexts/contract/provider'
 import useTranslation from 'next-translate/useTranslation'
+import { useContractContext } from '../../../contexts/contract/provider'
 import { fromSun, truncateAddress } from '../../../utils'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheck, faThumbsUp, faXmark } from '@fortawesome/free-solid-svg-icons'

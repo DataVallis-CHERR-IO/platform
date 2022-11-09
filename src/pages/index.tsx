@@ -6,18 +6,13 @@ import Home from '../components/pages/home'
 import Footer from '../components/pages/footer'
 import ProjectsProvider, { IProject } from '../contexts/projects'
 import { apolloClient } from '../clients/graphql'
-import { QUERY_PROJECTS } from '../constants/queries/moralis/project'
-import { OrderDirection } from '../../server/src/graphql'
+import { QUERY_PROJECTS } from '../constants/queries/database/project'
 
-export async function getServerSideProps() {
+export const getServerSideProps = async () => {
   const { data } = await apolloClient.query({
     query: QUERY_PROJECTS,
     variables: {
-      sort: {
-        orderBy: 'createdAt',
-        orderDirection: OrderDirection.DESC
-      },
-      limit: 3
+      take: 3
     }
   })
 
