@@ -69,71 +69,79 @@
     "home": {
         "text": "Home",
         "header": {
-            "title": "Blockchain solution for charitable donations that aims to increase transparency and reinforce trust back to the people",
-            "subtitle": "A global ecosystem for charitable causes, based on blockchain technology, to improve and expand the existing fundraising processes, advance their efficiency and real-time transparency, resulting in the increase of trust and in public welfare improvement."
+            "title": "PROOF OF CHARITY DAO PROTOCOL",
+            "subtitle": "SETTING ONLINE TRUSTED STANDARD FOR CHARITY USING INTEGRATED WEB3 PROTOCOLS"
         },
         "lastProjects": {
             "title": "Last projects",
             "subtitle": "Learn more about charity projects and donate for a good cause.",
             "description": {
-                "title": "Charity DAO",
-                "text1": "Community is the core of the CHERR.IO platform and is the reason why we built such mechanisms to promote charitable giving.",
-                "text2": "We recognize online social networking activities as fundamental to building a presence online and reaching out to people. Word spreads fast and far on the Internet, and to motivate our community for active participation, we have decided to gamify the social activities of our user base and attribute points. We call this mechanism Proof of Charity.\nProof of Charity is the most important part of the whole CHERR.IO platform, because it serves as a basis for all other mechanisms built on top of it. As such, it is the driving force behind the community, and a feature that fundamentally challenges the current operational structure of charitable organizations. It is a new way of reaching out to society and asking for help, i.e. a way of leveraging the power of community to expand\nitself. It makes advertising and the resulting heavy costs obsolete because it tasks the community with that job. Since advertising costs have a severe impact on the budgets of charities, using the CHERR.IO platform to drastically reduce these costs can result in more funds going to the people who need them the most."
+                "title": "CHERR.IO Vision",
+                "text1": "CHERR.IO is setting an online trusted standard for charity. By using this standard anyone will be able to post a charity project on any platform, and thus benefit from CHERR.IO’s features and functionalities.",
+                "text2": "We envision CHERR.IO as a DAO – community-run and owned, with complete user data ownership, where individuals are empowered and incentivized to maintain the system, and help through direct ownership, and are rewarded for participation. Protocol enables secure, immutable, censorship resistant, scalable & accessible on-chain donations, and presents governance by using the consensus mechanism."
             }
         },
         "problemAndSolution": {
             "title": "Problem & Solution",
             "subtitle": "At vero eos et accusamus et iusto odio dignissimos ducimus qui blan ditiis praes entium volup tatum deleniti.",
             "problem": {
-                "title": "Problem",
-                "subtitle": "Centralize Network",
-                "text1": "There’s still low trust/high doubt concerning charity sector",
-                "text2": "No real transparency of where the funds go and how successful was the project",
-                "text3": "Slow and expensive execution of donations and other charity activities",
-                "text4": "High organizational and marketing fees for NGOs",
-                "text5": "There is no privacy & anonymity of the donors, personal data shared with third parties",
-                "text6": "Fake news increase in the media",
-                "text7": "Besides being too centralized, current web3 solutions are mostly not led by, nor designed with the community",
-                "text8": "The solutions are still quite basic and merely enable crypto payments"
+                "title": "BACKGROUND",
+                "subtitle": "",
+                "text1": "Emerging technologies enable helping those who are in need to raise funds and spread the word without the middle-men",
+                "text3": "No real transparency of where the funds went and how successful was the project",
+                "text4": "Slow and expensive execution of donations and other charity activities",
+                "text5": "There is no real privacy & anonymity of the donors, personal data shared with third parties ",
+                "text7": "Current web3 solutions are neither led by, nor designed with the community",
+                "text8": "The solutions are still too centralized, quite basic and merely enable crypto payments",
+                "text9": "A new era of brand loyalty in Web3 – rewarding mechanisms",
+                "text10": "Earning protocols are an emerging trend – DeFi passive income",
+                "text11": "DeFi may very well present the best opportunity to attract the younger generation"
             },
             "solution": {
                 "title": "Solution",
-                "subtitle": "Centralize Network",
-                "text1": "Bringing charity to the Web3 Ecosystem and exploiting its every opportunity to expand donation streams",
-                "text2": "DAO – community-run and owned",
-                "text3": "Individuals are empowered and incentivized to maintain the system and help through direct ownership, and are rewarded for participation",
-                "text4": "Secure, immutable, censorship resistant, scalable & accessible »on-chain« donations and charity statistics",
-                "text5": "Data ownership",
-                "text6": "No false information, no fraud",
-                "text7": "Interoperable multi-chain ecosystem  featuring a program of incentives for active participation from the community that will facilitate organic growth of the platform"
+                "subtitle": "",
+                "text1": "Anyone can list a cause as an inactive project that needs people, so called Cherrions, to activate it and thus receive rewards for their action.",
+                "text2": "To activate the project, we need Cherrions who show support for the project and back it up with native tokens. When this goal is reached, the project becomes ready for donations",
+                "text3": "Donors can donate in TRX. To mark the project as successful only 10 % of approximate project value needs to be collected. Project is finished when duration time expires. If we collect more than 60 % of approximate project value we also reward the activators for their support. Donors can vote for credibility of spent funds. Smart Contract releases collecting amount to the end party through milestones every time when conditions are met. Each milestone is completed when organization submits any proof of progress.",
+                "text4": "CHERR.IO leverages the power of DeFi to fund charity causes. Using an innovative funding mechanism to allow users to contribute to public good while preserving their initial deposit. CHERR.IO enables users to earn APY rewards, while indirectly filling charity pools and donating to charity projects by performing peer-to-peer transactions."
+
+
             }
         },
         "topFeatures": {
             "title": "CHERR.IO's top features",
             "subtitle": "A global ecosystem exploiting every opportunity that Web3 has to offer.",
             "text1": {
-                "title": "Distributed Ledger Technology",
-                "subtitle": "Software Development Kit \nSDK provided for easy integration as an added value service of web3 projects"
+                "title": "Integrated DeFi protocols",
+                "subtitle": "Using the “money legos” phenomenon (token staking, lending, yield farming, liquidity providing, etc.) enable users to earn APY rewards, while indirectly donating to charity projects by performing DeFi activities"
             },
             "text2": {
-                "title": "Proof of charity - Rewarding System",
-                "subtitle": "Sharing projects on social networks creating community effect and organic marketing "
+                "title": "SDK",
+                "subtitle": "SDK for easy integration as an added value service of Web3 projects"
             },
             "text3": {
-                "title": "Voting Mechanism",
-                "subtitle": "Give people the decision power back to their hands, where it belongs (DAO)"
+                "title": "Proof of Charity",
+                "subtitle": "A rewarding gamification system, where community members act as governors – Cherrions, and receive tokens as rewards for online volunteering – any activity with regard to governance, or promotion (sharing projects on social networks has a large community effect and it enables organic marketing)"
             },
             "text4": {
-                "title": "NFTs",
-                "subtitle": "Each donation project created as an NFT collection "
+                "title": "Charity Market Analytics",
+                "subtitle": "An analysis module, with a database of registered charities and their projects’ history and statistics (e.g. “CoinMarketCap”), and an algorithm sorting of organizations determining a trust score (based on transparency and performance), acting as a source of trusted information (e.g. “TripAdvisor”)."
             },
             "text5": {
-                "title": "Charity Market Cap",
-                "subtitle": "Database of registered charities and their projects’ history and statistics will serve as a source of trusted information (trust score)"
+                "title": "NFTs launchpad",
+                "subtitle": "Selling NFTs and giving a share of profit to charity projects"
             },
             "text6": {
+                "title": "SBD",
+                "subtitle": "A soul bound token (received by Cherrions who will show effort to spread the good word around that will enable them more voting power for activating projects and greater CHERR.IO benefits)"
+            },
+            "text7": {
+                "title": "GameFi",
+                "subtitle": "play-to-(l)earn games"
+            },
+            "text8": {
                 "title": "Metaverse",
-                "subtitle": "Endless opportunities for charity: use case showing, fundraising events, promotion, dcommerce (D2A), play-to-(l)earn etc."
+                "subtitle": "For use case showing, fundraising events, promotion, dCommerce -D2A model"
             }
         }
     },
@@ -175,6 +183,6 @@
         "alreadySubscribed": "You are already subscribed",
         "failed": "Subscribe unsuccessful. Please try later",
         "title": "Don't miss out, Stay updated",
-        "subtitle": "Sign up for updates and market news. Subscribe to our newsletter and receive update about ICOs and other crypto tips."
+        "subtitle": "The power to help and reap rewards is placed back in the hands of the people – where it belongs."
     }
 }

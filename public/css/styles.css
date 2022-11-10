@@ -1943,7 +1943,7 @@ label div {
 
 .section-2 {
     background-color: #fff5f6;
-    padding: 150px 0;
+    padding: 0;
 }
 
 @media (max-width: 991px) {
@@ -2324,3 +2324,8 @@ section.resume-section .section-inner {
         margin-right: 0;
     }
 }
+
+/*
+
+
+ */
