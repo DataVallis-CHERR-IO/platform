@@ -25,7 +25,7 @@ const ProjectCards: React.FC = () => {
 
     if (!loading && data) {
       lastProjects.unshift(data.projectCreated)
-      lastProjects.length < 4 || lastProjects.pop()
+      lastProjects.length < 14 || lastProjects.pop()
       setLastProjects(_.cloneDeep(lastProjects))
     }
   }, [data, loading, error])
@@ -127,7 +127,7 @@ const ProjectCard: React.FC<IProjectCardProps> = ({ project }) => {
             <ProjectProgress progress={progress} balance={_.get(projectContract, '[2]')} />
             <ul className='list-inline clearfix mt-20 mb-20'>
               <li className='pull-left flip pr-0'>
-                <i className='fab fa-ethereum' />
+                <i className='fab fa-s' />
                 <span className='font-weight-bold text-lowercase'>
                   <div className='row justify-content-center mt-2'>
                     <div>
