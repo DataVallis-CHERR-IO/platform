@@ -1,5 +1,5 @@
 import useTranslation from 'next-translate/useTranslation'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect } from 'react'
 import { signIn, signOut } from 'next-auth/react'
 import { notify } from '../utils/notify'
 import { tronNetworkOptions } from '../config'
@@ -51,25 +51,27 @@ const useConnect = (): IUseConnectRes => {
     await signOut()
   }, [])
 
-  const tronLinkEventListener = useCallback(() => {
-    // window.addEventListener('load', connect)
-    window.addEventListener('message', async msg => {
-      const { message } = msg.data
-      console.log('tronLinkEventListener useCallback !!!!!!', message)
-
-      if (!message) {
-        return
-      }
-
-      if (message.action === 'connect') {
-        await handleConnect()
-      } else if (message.action === 'accountsChanged') {
-        await connect()
-      } else if (message.action === 'disconnect' || message.action === 'setNode') {
-        await disconnect()
-      }
-    })
-  }, [])
+  // const tronLinkEventListener = useCallback(() => {
+  //   // window.addEventListener('load', connect)
+  //   window.addEventListener('message', async msg => {
+  //     const { message } = msg.data
+  //     console.log('tronLinkEventListener useCallback !!!!!!', message)
+  //
+  //     if (!message) {
+  //       return
+  //     }
+  //
+  //     if (message.action === 'connect') {
+  //       await handleConnect()
+  //     } else if (message.action === 'accountsChanged') {
+  //       await connect()
+  //     } else if (message.action === 'disconnect' || message.action === 'setNode') {
+  //       await disconnect()
+  //     } else {
+  //       return
+  //     }
+  //   })
+  // }, [])
 
   useEffect(() => {
     // tronLinkEventListener()
