@@ -1,18 +1,16 @@
 import React, { useEffect, useState } from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
 import useTranslation from 'next-translate/useTranslation'
 import ProjectProgress from './project-progress'
+import useContractData from '../../../hooks/use-contract-data'
 import { IProject } from '../../../interfaces/api'
 import { useProjectsContext } from '../../../contexts/projects/provider'
 import { useSubscription } from '@apollo/client'
 import { SUBSCRIPTION_PROJECT_CREATED } from '../../../constants/queries/database/project'
 import { BeatLoader } from 'react-spinners'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEthereum } from '@fortawesome/free-brands-svg-icons'
 import { StageEnum } from '../../../enums/stage.enum'
 import { fromSun } from '../../../utils'
-import { useQuery } from 'react-query'
-import { useTronWebContext } from '../../../contexts/tronweb/provider'
 import * as _ from 'lodash'
 
 const ProjectCards: React.FC = () => {
@@ -52,65 +50,15 @@ const ProjectCard: React.FC<IProjectCardProps> = ({ project }) => {
   const { t } = useTranslation('common')
   const [progress, setProgress] = useState<number>(0)
   const [btnText, setBtnText] = useState<string>('activate')
-  const { tronWeb } = useTronWebContext()
-
-  const { data: projectContract, isLoading } = useQuery(
-    ['projectContract'],
-    async () => {
-      const contract = await tronWeb.contract().at(project.contractAddress)
-      const raisedAmount = await contract.raisedAmount().call()
-      const stage = await contract.stage().call()
-
-      return {
-        raisedAmount,
-        stage
-      }
-    },
-    {
-      onError: error => {
-        console.log('❌ GraphQL error (query media): ', error)
-      }
-    }
-  )
-
-  // const contract = useMemo(
-  //   () => ({
-  //     addressOrName: project.contractAddress
-  //   }),
-  //   [project.contractAddress]
-  // )
-  // const contractInterface = useMemo(
-  //   () => ({
-  //     contractInterface: getCherrioProjectAbi()
-  //   }),
-  //   []
-  // )
-
-  // const { data: projectContract, isLoading } = useContractReads({
-  //   contracts: [
-  //     {
-  //       ...contract,
-  //       ...contractInterface,
-  //       functionName: 'stage'
-  //     },
-  //     {
-  //       ...contract,
-  //       ...contractInterface,
-  //       functionName: 'goal'
-  //     },
-  //     {
-  //       ...contract,
-  //       ...contractInterface,
-  //       functionName: 'raisedAmount'
-  //     }
-  //   ],
-  //   watch: true
-  // })
+  const { data: contractData, isLoading } = useContractData({
+    contractAddress: project.contractAddress,
+    data: { project: ['getData'] }
+  })
 
   useEffect(() => {
-    setBtnText(Number(projectContract?.stage) === StageEnum.ACTIVE ? 'donateNow' : Number(projectContract?.stage) === StageEnum.ENDED ? 'readMore' : 'activate')
-    setProgress(Math.floor(fromSun(projectContract?.raisedAmount / project.goal) * 100))
-  }, [projectContract?.stage, projectContract?.raisedAmount])
+    setBtnText(contractData?.project?.stage === StageEnum.ACTIVE ? 'donateNow' : contractData?.project?.stage === StageEnum.ENDED ? 'readMore' : 'activate')
+    setProgress(Math.floor((contractData?.project?.raisedAmount / fromSun(project.goal)) * 100))
+  }, [contractData?.project?.stage, contractData?.project?.raisedAmount])
 
   return (
     <div className='col-sm-12 col-md-12 col-lg-4 animation-1 mt-4'>
@@ -124,7 +72,7 @@ const ProjectCard: React.FC<IProjectCardProps> = ({ project }) => {
               <span>{project.title}</span>
             </h4>
             <p>{project.excerpt}</p>
-            <ProjectProgress progress={progress} balance={_.get(projectContract, '[2]')} />
+            <ProjectProgress progress={progress} balance={contractData?.project?.raisedAmount} />
             <ul className='list-inline clearfix mt-20 mb-20'>
               <li className='pull-left flip pr-0'>
                 <i className='fab fa-ethereum' />
@@ -134,7 +82,7 @@ const ProjectCard: React.FC<IProjectCardProps> = ({ project }) => {
                       <BeatLoader color='#FFFFFF' loading={isLoading} size={5} />
                       {!isLoading && (
                         <>
-                          <FontAwesomeIcon icon={faEthereum} /> <span>{fromSun(projectContract?.raisedAmount)}</span>
+                          <Image src='/img/tron-white.png' width={14} height={14} /> <span>{contractData?.project?.raisedAmount}</span>
                         </>
                       )}
                     </div>
@@ -143,7 +91,7 @@ const ProjectCard: React.FC<IProjectCardProps> = ({ project }) => {
                       <BeatLoader color='#FFFFFF' loading={isLoading} size={5} />
                       {!isLoading && (
                         <>
-                          <FontAwesomeIcon icon={faEthereum} /> <span>{project.goal}</span>
+                          <Image src='/img/tron-white.png' width={14} height={14} /> <span>{fromSun(project.goal)}</span>
                         </>
                       )}
                     </div>

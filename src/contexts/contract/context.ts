@@ -1,53 +1,50 @@
 import { createContext } from 'react'
 
-interface IProjectRequestsContract {
+interface IContractProjectRequests {
   descriptions?: string[]
-  amounts?: number[]
+  values?: number[]
   recipients?: string[]
   completed?: boolean[]
-  numberOfVoters?: number[]
+  numVoters?: number[]
 }
 
-interface IProjectContract {
+interface IContractProject {
   owner?: string
   stage?: number
-  goal?: number
-  minimumDonation?: string
+  minimumDonation?: number
   startedAt?: string
   deadline?: string
   endedAt?: string
   donations?: number
   raisedAmount?: number
-  totalDonations?: number
-  requests?: IProjectRequestsContract
+  numDonations?: number
+  requests?: IContractProjectRequests
 }
 
-interface IProjectActivatorProjectContract {
+interface IContractActivatorProject {
   stage?: number
-  flag?: boolean
   rewarded?: boolean
   numActivators?: number
   activateSize?: number
   activatedAmount?: number
-  reward?: number
   activators?: string[]
 }
 
 interface IProjectActivatorContract {
-  project?: IProjectActivatorProjectContract
+  project?: IContractActivatorProject
   activatedAmount?: number
 }
 
 interface IContractContext {
-  projectContract: IProjectContract
-  projectActivatorContract: IProjectActivatorContract
-  isLoading: boolean
-  isError: boolean
+  contractProject: IContractProject
+  contractProjectActivator: IProjectActivatorContract
+  isLoading?: boolean
+  isError?: boolean
 }
 
 const ContractContext = createContext<IContractContext>({
-  projectContract: null,
-  projectActivatorContract: null,
+  contractProject: null,
+  contractProjectActivator: null,
   isLoading: true,
   isError: false
 })

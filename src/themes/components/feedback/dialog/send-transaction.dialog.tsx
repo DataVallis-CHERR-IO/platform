@@ -1,17 +1,19 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from '@mui/material'
-import { useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
+import Image from 'next/image'
 import useTranslation from 'next-translate/useTranslation'
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from '@mui/material'
 
 interface ISendTransactionDialog {
   open: boolean
   onClose: any
   title: string
   contentText: string
+  balance?: number
   min?: number
   max?: number
 }
 
-const SendTransactionDialog = ({ title, contentText, open, onClose, min, max }: ISendTransactionDialog) => {
+const SendTransactionDialog = ({ title, contentText, open, onClose, balance, min, max }: ISendTransactionDialog) => {
   const { t } = useTranslation('common')
   const [value, setValue] = useState<string>('')
   const formRef = useRef<HTMLFormElement>(null)
@@ -36,6 +38,9 @@ const SendTransactionDialog = ({ title, contentText, open, onClose, min, max }: 
       <DialogTitle>{t(title)}</DialogTitle>
       <DialogContent>
         <DialogContentText>{t(contentText)}</DialogContentText>
+        <p>
+          {t('balance')}: <Image src='/img/tron-black.png' width={14} height={14} /> {balance}
+        </p>
         <form ref={formRef}>
           <TextField
             required

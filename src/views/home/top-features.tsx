@@ -1,8 +1,7 @@
 import React from 'react'
 import useTranslation from 'next-translate/useTranslation'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChartLine, faMedal, faUsers, faVrCardboard } from '@fortawesome/free-solid-svg-icons'
-import { faConnectdevelop } from '@fortawesome/free-brands-svg-icons'
+import { faCertificate, faChartLine, faGears, faMedal, faUsers, faVrCardboard } from '@fortawesome/free-solid-svg-icons'
 
 const TopFeatures: React.FC = () => {
   const { t } = useTranslation('common')
@@ -21,7 +20,7 @@ const TopFeatures: React.FC = () => {
             <div className='row'>
               <div className='col-lg-6 col-md-6 col-xl-4'>
                 <div className='mt-5'>
-                  <FontAwesomeIcon icon={faConnectdevelop} className='text-primary mb-4' size='2x' />
+                  <FontAwesomeIcon icon={faGears} className='text-primary mb-4' size='2x' />
                   <h3 className='h4 mb-2'>{t('home.topFeatures.text1.title')}</h3>
                   <p className='text-muted mb-0'>{t('home.topFeatures.text1.subtitle')}</p>
                 </div>
@@ -42,7 +41,7 @@ const TopFeatures: React.FC = () => {
               </div>
               <div className='col-lg-6 col-md-6 col-xl-4'>
                 <div className='mt-5'>
-                  {<FontAwesomeIcon icon={faChartLine} className='text-primary mb-4' size='2x' />}
+                  {<FontAwesomeIcon icon={faCertificate} className='text-primary mb-4' size='2x' />}
                   <h3 className='h4 mb-2'>{t('home.topFeatures.text4.title')}</h3>
                   <p className='text-muted mb-0'>{t('home.topFeatures.text4.subtitle')}</p>
                 </div>

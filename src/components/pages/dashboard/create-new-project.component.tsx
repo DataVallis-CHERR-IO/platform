@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useCallback, useRef, useState } from 'react'
 import path from 'path'
 import useTranslation from 'next-translate/useTranslation'
 import Dropzone from '../../../themes/ui/drop-zone'
@@ -62,7 +62,7 @@ const CreateNewProjectComponent: React.FC<ICreateNewProjectProps> = ({ projectTy
   const { mutateAsync: createProjectMutation } = useMutation(createProject)
   const { mutateAsync: createProjectMediaMutation } = useMutation(createProjectMedia)
 
-  const handleCreate = async event => {
+  const handleCreate = useCallback(async event => {
     event.preventDefault()
 
     if (!formRef.current.checkValidity()) {
@@ -75,7 +75,7 @@ const CreateNewProjectComponent: React.FC<ICreateNewProjectProps> = ({ projectTy
       return
     }
 
-    setOpen(!open)
+    setOpen(true)
 
     const { address } = await deploy([toSun(goal), duration])
 
@@ -104,7 +104,7 @@ const CreateNewProjectComponent: React.FC<ICreateNewProjectProps> = ({ projectTy
           slug: paramCase(title),
           image,
           contractAddress: address,
-          goal: Number(goal),
+          goal: toSun(goal),
           duration: Number(duration),
           projectTypes: projectTypesSelected
         })
@@ -144,7 +144,7 @@ const CreateNewProjectComponent: React.FC<ICreateNewProjectProps> = ({ projectTy
     }
 
     setOpen(false)
-  }
+  }, [])
 
   return (
     <>

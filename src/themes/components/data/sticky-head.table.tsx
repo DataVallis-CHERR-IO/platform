@@ -1,6 +1,6 @@
+import React from 'react'
 import { useState } from 'react'
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from '@mui/material'
-import * as React from 'react'
 
 interface IStickyHeadTable {
   columns: any[]

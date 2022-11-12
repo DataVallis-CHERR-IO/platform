@@ -1,5 +1,6 @@
 export enum StatusEnum {
   PENDING,
   ACTIVE,
-  INACTIVE
+  INACTIVE,
+  DELETED
 }

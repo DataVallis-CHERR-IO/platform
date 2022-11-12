@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client'
 
 export const QUERY_PROJECT_MEDIA = gql`
-  query ProjectMedia($where: Where!) {
+  query ProjectMedia($where: WhereMediaInput!) {
     projectMedia(where: $where) {
       id
       projectId

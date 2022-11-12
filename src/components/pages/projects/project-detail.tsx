@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import ProjectCountdown from '../../../views/projects/components/project-countdown'
 import useTranslation from 'next-translate/useTranslation'
 import Subscribe from '../../../views/subscribe'
@@ -6,16 +6,15 @@ import ProjectGallery from '../../../views/projects/components/project-gallery'
 import Image from 'next/image'
 import ProjectDonation from '../../../views/projects/components/project-donation'
 import SendTransactionDialog from '../../../themes/components/feedback/dialog/send-transaction.dialog'
-import { IProject } from '../../../interfaces/api'
-import { useQuery } from 'react-query'
-import { StageEnum } from '../../../enums/stage.enum'
-import { toSun } from '../../../utils'
-import { method } from '../../../modules/method'
-import { useContractContext } from '../../../contexts/contract/provider'
-import { FadeLoader } from 'react-spinners'
-import { useSession } from 'next-auth/react'
 import ProjectCreateSpendingRequest from '../../../views/projects/components/project-create-spending-request'
 import ProjectSpendingRequests from '../../../views/projects/components/project-spending-requests'
+import { IProject } from '../../../interfaces/api'
+import { StageEnum } from '../../../enums/stage.enum'
+import { fromSun, toSun } from '../../../utils'
+import { method } from '../../../modules/method'
+import { useContractContext } from '../../../contexts/contract/provider'
+import { useSession } from 'next-auth/react'
+import { useTronWebContext } from '../../../contexts/tronweb/provider'
 
 interface IProjectDetailProps {
   project: IProject
@@ -23,62 +22,53 @@ interface IProjectDetailProps {
 
 const ProjectDetail: React.FC<IProjectDetailProps> = ({ project }) => {
   const { t } = useTranslation('common')
+  const { tronWeb } = useTronWebContext()
   const [displayButton, setDisplayButton] = useState<boolean>(false)
   const [showSendTransactionDialog, setShowSendTransactionDialog] = useState<boolean>(false)
   const [buttonText, setButtonText] = useState<string>('activate')
   const [max, setMax] = useState<number>(null)
-  const { projectContract, projectActivatorContract } = useContractContext()
+  const [balance, setBalance] = useState<number>(null)
+  const { contractProject, contractProjectActivator } = useContractContext()
   const { data: session }: { data: any } = useSession()
 
-  const { data: projectDetail, isLoading } = useQuery(
-    ['projectDetail'],
-    async () => {
-      return null
-      // return (
-      //   await apolloClient.query({
-      //     query: QUERY_PROJECT_DETAIL,
-      //     variables: {
-      //       projectId: project.id
-      //     }
-      //   })
-      // ).data.projectDetail
-    },
-    {
-      onError: error => {
-        console.log('❌ GraphQL error (query detail): ', error)
-      }
-    }
-  )
+  const getBalance = useCallback(async (handleSetMax: boolean = false) => {
+    const currentBalance = fromSun(await tronWeb.trx.getBalance(session.user.name))
+    setBalance(currentBalance)
+    !handleSetMax || setMax(currentBalance)
+  }, [])
 
-  useEffect(() => {
-    if (session && projectContract?.stage !== StageEnum.ENDED) {
-      if (projectContract?.stage === StageEnum.PENDING) {
-        const availableAmount = projectActivatorContract?.project?.activateSize - projectActivatorContract?.project?.activatedAmount
-        const maxAmount =
-          projectActivatorContract?.project?.activateSize / projectActivatorContract?.project?.numActivators - projectActivatorContract?.activatedAmount
-
-        setMax(maxAmount > availableAmount ? availableAmount : maxAmount)
-      }
-      setDisplayButton(true)
-      setButtonText(projectContract?.stage === StageEnum.PENDING ? 'activate' : 'donateNow')
-    }
-  }, [projectContract?.stage, projectActivatorContract?.activatedAmount, session])
-
-  const handleClick = async () => {
+  const handleClick = useCallback(async () => {
     setShowSendTransactionDialog(true)
-  }
+  }, [])
 
-  const handleOnClose = async value => {
+  const handleOnClose = useCallback(async value => {
     setShowSendTransactionDialog(false)
 
     if (value) {
-      if (projectContract?.stage === StageEnum.PENDING) {
+      if (contractProject?.stage === StageEnum.PENDING) {
         await method('activateProject', [project.contractAddress], toSun(value))
       } else {
         await method('donate', [], toSun(value), project.contractAddress)
       }
     }
-  }
+  }, [])
+
+  useEffect(() => {
+    if (session && contractProject?.stage !== StageEnum.ENDED) {
+      if (contractProject?.stage === StageEnum.PENDING) {
+        const availableAmount = contractProjectActivator?.project?.activateSize - contractProjectActivator?.project?.activatedAmount
+        const maxAmount =
+          contractProjectActivator?.project?.activateSize / contractProjectActivator?.project?.numActivators - contractProjectActivator?.activatedAmount
+
+        setMax(maxAmount > availableAmount ? availableAmount : maxAmount)
+        getBalance()
+      } else {
+        getBalance(true)
+      }
+      setDisplayButton(true)
+      setButtonText(contractProject?.stage === StageEnum.PENDING ? 'activate' : 'donateNow')
+    }
+  }, [contractProject?.stage, contractProjectActivator?.activatedAmount, session])
 
   return (
     <>
@@ -95,7 +85,7 @@ const ProjectDetail: React.FC<IProjectDetailProps> = ({ project }) => {
                 </div>
                 <div className='project-content clearfix'>
                   <ProjectCountdown />
-                  <ProjectDonation />
+                  <ProjectDonation project={project} />
                 </div>
               </div>
             </div>
@@ -114,7 +104,7 @@ const ProjectDetail: React.FC<IProjectDetailProps> = ({ project }) => {
                   </div>
                 )}
               </div>
-              {!isLoading ? <p>{projectDetail?.description || '/'}</p> : <FadeLoader color='#CA354C' loading={true} />}
+              <p>{project?.description || '/'}</p>
             </div>
           </div>
           <div className='row'>
@@ -128,25 +118,17 @@ const ProjectDetail: React.FC<IProjectDetailProps> = ({ project }) => {
           </div>
         </div>
       </section>
-      <section className='section-3 pt-0'>
-        <div className='container'>
-          <div className='row'>
-            <div className='col-lg-12'>
-              <h2 className='c-gray'>{t('requirements')}</h2>
-              {!isLoading ? <p>{projectDetail?.requirements || '/'}</p> : <FadeLoader color='#CA354C' loading={true} />}
-            </div>
-          </div>
-        </div>
-      </section>
       <ProjectGallery projectId={project.id} />
-      {session && session.user.address.toLowerCase() === projectContract?.owner?.toLowerCase() && <ProjectCreateSpendingRequest project={project} />}{' '}
-      {projectContract?.requests?.descriptions?.length > 0 && <ProjectSpendingRequests project={project} />}
+      {session && session.user.name.toLowerCase() === contractProject?.owner?.toLowerCase() && <ProjectCreateSpendingRequest project={project} />}{' '}
+      {contractProject?.requests?.descriptions?.length > 0 && <ProjectSpendingRequests project={project} />}
       <Subscribe />
       <SendTransactionDialog
         title={buttonText}
-        contentText={projectContract?.stage === StageEnum.PENDING ? 'project.activateContentText' : 'project.donateContentText'}
+        contentText={contractProject?.stage === StageEnum.PENDING ? 'project.activateContentText' : 'project.donateContentText'}
         open={showSendTransactionDialog}
         onClose={handleOnClose}
+        balance={balance}
+        min={contractProject?.minimumDonation}
         max={max}
       />
     </>

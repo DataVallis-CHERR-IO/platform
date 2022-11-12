@@ -22,8 +22,10 @@ const ProjectGallery: React.FC<IProjectMediaProps> = ({ projectId }) => {
         await apolloClient.query({
           query: QUERY_PROJECT_MEDIA,
           variables: {
-            projectId,
-            mediaTypeId: MediaTypeEnum.IMAGE
+            where: {
+              projectId,
+              mediaTypeId: MediaTypeEnum.IMAGE
+            }
           }
         })
       ).data.projectMedia

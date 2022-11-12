@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react'
+import moment from 'moment'
+import Image from 'next/image'
 import useTranslation from 'next-translate/useTranslation'
 import LinearWithLabelProgress from '../../../themes/components/feedback/progress/linear-with-label.progress'
 import { StageEnum } from '../../../enums/stage.enum'
-import { faEthereum } from '@fortawesome/free-brands-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useContractContext } from '../../../contexts/contract/provider'
-import moment from 'moment'
 
 const ProjectCountdown: React.FC = () => {
   const { t } = useTranslation('common')
@@ -16,18 +15,18 @@ const ProjectCountdown: React.FC = () => {
   const [progress, setProgress] = useState<number>(0)
   const [title, setTitle] = useState<string>(t('project.activationIsNeeded'))
   const [subtitle, setSubtitle] = useState<string>(t('project.numberOfActivators'))
-  const { projectContract, projectActivatorContract } = useContractContext()
+  const { contractProject, contractProjectActivator } = useContractContext()
 
   useEffect(() => {
-    if (projectContract?.stage !== StageEnum.PENDING) {
-      setTitle(t(projectContract?.stage === StageEnum.ACTIVE ? 'project.isLiveNow' : 'project.hasEnded'))
-      setSubtitle(t(projectContract?.stage === StageEnum.ACTIVE ? 'project.endsIn' : 'project.endedBefore'))
+    if (contractProject?.stage !== StageEnum.PENDING) {
+      setTitle(t(contractProject?.stage === StageEnum.ACTIVE ? 'project.isLiveNow' : 'project.hasEnded'))
+      setSubtitle(t(contractProject?.stage === StageEnum.ACTIVE ? 'project.endsIn' : 'project.endedBefore'))
 
       const endedAt = new Date(
-        moment(projectContract?.stage === StageEnum.ACTIVE ? projectContract?.deadline : projectContract?.endedAt, 'X').format('YYYY-MM-DD HH:mm:ss')
+        moment(contractProject?.stage === StageEnum.ACTIVE ? contractProject?.deadline : contractProject?.endedAt, 'X').format('YYYY-MM-DD HH:mm:ss')
       )
       const interval = setInterval(() => {
-        const difference = projectContract?.stage === StageEnum.ACTIVE ? endedAt.getTime() - new Date().getTime() : new Date().getTime() - endedAt.getTime()
+        const difference = contractProject?.stage === StageEnum.ACTIVE ? endedAt.getTime() - new Date().getTime() : new Date().getTime() - endedAt.getTime()
 
         const d = Math.floor(difference / (1000 * 60 * 60 * 24))
         const h = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
@@ -43,22 +42,22 @@ const ProjectCountdown: React.FC = () => {
       return () => clearInterval(interval)
     }
 
-    !projectActivatorContract ||
-      setProgress(Math.floor((projectActivatorContract?.project?.activatedAmount / projectActivatorContract?.project?.activateSize) * 100))
-  }, [projectContract?.stage, projectActivatorContract?.project?.activatedAmount, projectActivatorContract?.project?.activators])
+    !contractProjectActivator ||
+      setProgress(Math.floor((contractProjectActivator?.project?.activatedAmount / contractProjectActivator?.project?.activateSize) * 100))
+  }, [contractProject?.stage, contractProjectActivator?.project?.activatedAmount, contractProjectActivator?.project?.activators])
 
   return (
     <div className='project-content-left'>
       <div className='project-title'>{title}</div>
       <div className='project-subtitle'>
         {subtitle}
-        {projectContract?.stage === StageEnum.PENDING && (
+        {contractProject?.stage === StageEnum.PENDING && (
           <span>
-            : {projectActivatorContract?.project?.activators?.length} / {projectActivatorContract?.project?.numActivators}
+            : {contractProjectActivator?.project?.activators?.length} / {contractProjectActivator?.project?.numActivators}
           </span>
         )}
       </div>
-      {projectContract?.stage !== StageEnum.PENDING ? (
+      {contractProject?.stage !== StageEnum.PENDING ? (
         <div className='project-countdown'>
           <div className='project-cd-item project-day'>
             <div className='project-cd-item-inner'>
@@ -85,10 +84,10 @@ const ProjectCountdown: React.FC = () => {
         <div className='project-countdown'>
           <div className='row'>
             <div className='col-md-6'>
-              <FontAwesomeIcon icon={faEthereum} /> {projectActivatorContract?.project?.activatedAmount}
+              <Image src='/img/tron-black.png' width={14} height={14} /> {contractProjectActivator?.project?.activatedAmount}
             </div>
             <div className='col-md-6'>
-              <FontAwesomeIcon icon={faEthereum} /> {projectActivatorContract?.project?.activateSize}
+              <Image src='/img/tron-black.png' width={14} height={14} /> {contractProjectActivator?.project?.activateSize}
             </div>
             <div className='col-md-12'>
               <LinearWithLabelProgress value={progress} />

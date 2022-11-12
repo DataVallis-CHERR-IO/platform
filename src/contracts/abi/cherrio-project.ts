@@ -290,6 +290,54 @@ export const getCherrioProjectAbi = (): any[] => [
   },
   {
     inputs: [],
+    name: 'getData',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '_owner',
+        type: 'address'
+      },
+      {
+        internalType: 'enum CherrioProject.Stages',
+        name: '_stage',
+        type: 'uint8'
+      },
+      {
+        internalType: 'uint256',
+        name: '_minimumDonation',
+        type: 'uint256'
+      },
+      {
+        internalType: 'uint256',
+        name: '_startedAt',
+        type: 'uint256'
+      },
+      {
+        internalType: 'uint256',
+        name: '_deadline',
+        type: 'uint256'
+      },
+      {
+        internalType: 'uint256',
+        name: '_endedAt',
+        type: 'uint256'
+      },
+      {
+        internalType: 'uint256',
+        name: '_raisedAmount',
+        type: 'uint256'
+      },
+      {
+        internalType: 'uint256',
+        name: '_numDonations',
+        type: 'uint256'
+      }
+    ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [],
     name: 'getOwner',
     outputs: [
       {
@@ -320,27 +368,27 @@ export const getCherrioProjectAbi = (): any[] => [
     outputs: [
       {
         internalType: 'string',
-        name: 'description',
+        name: '_description',
         type: 'string'
       },
       {
         internalType: 'uint256',
-        name: 'amount',
+        name: '_value',
         type: 'uint256'
       },
       {
         internalType: 'address',
-        name: 'recipient',
+        name: '_recipient',
         type: 'address'
       },
       {
         internalType: 'bool',
-        name: 'completed',
+        name: '_completed',
         type: 'bool'
       },
       {
         internalType: 'uint256',
-        name: 'numberOfVoters',
+        name: '_numVoters',
         type: 'uint256'
       }
     ],
@@ -353,27 +401,27 @@ export const getCherrioProjectAbi = (): any[] => [
     outputs: [
       {
         internalType: 'string[]',
-        name: 'descriptions',
+        name: '_descriptions',
         type: 'string[]'
       },
       {
         internalType: 'uint256[]',
-        name: 'amounts',
+        name: '_values',
         type: 'uint256[]'
       },
       {
         internalType: 'address[]',
-        name: 'recipients',
+        name: '_recipients',
         type: 'address[]'
       },
       {
         internalType: 'bool[]',
-        name: 'completed',
+        name: '_completed',
         type: 'bool[]'
       },
       {
         internalType: 'uint256[]',
-        name: 'numberOfVoters',
+        name: '_numVoters',
         type: 'uint256[]'
       }
     ],
@@ -394,21 +442,34 @@ export const getCherrioProjectAbi = (): any[] => [
     type: 'function'
   },
   {
-    inputs: [
+    inputs: [],
+    name: 'minimumDonation',
+    outputs: [
       {
         internalType: 'uint256',
-        name: 'index',
+        name: '',
         type: 'uint256'
       }
     ],
-    name: 'makePayment',
-    outputs: [],
-    stateMutability: 'nonpayable',
+    stateMutability: 'view',
     type: 'function'
   },
   {
     inputs: [],
-    name: 'minimumDonation',
+    name: 'numDonations',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256'
+      }
+    ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [],
+    name: 'numDonors',
     outputs: [
       {
         internalType: 'uint256',
@@ -456,6 +517,11 @@ export const getCherrioProjectAbi = (): any[] => [
     name: 'requests',
     outputs: [
       {
+        internalType: 'address',
+        name: 'recipient',
+        type: 'address'
+      },
+      {
         internalType: 'string',
         name: 'description',
         type: 'string'
@@ -466,19 +532,14 @@ export const getCherrioProjectAbi = (): any[] => [
         type: 'uint256'
       },
       {
-        internalType: 'address',
-        name: 'recipient',
-        type: 'address'
+        internalType: 'uint256',
+        name: 'numVoters',
+        type: 'uint256'
       },
       {
         internalType: 'bool',
         name: 'completed',
         type: 'bool'
-      },
-      {
-        internalType: 'uint256',
-        name: 'numberOfVoters',
-        type: 'uint256'
       }
     ],
     stateMutability: 'view',
@@ -513,32 +574,6 @@ export const getCherrioProjectAbi = (): any[] => [
   {
     inputs: [],
     name: 'startedAt',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256'
-      }
-    ],
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    inputs: [],
-    name: 'totalDonations',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256'
-      }
-    ],
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    inputs: [],
-    name: 'totalDonors',
     outputs: [
       {
         internalType: 'uint256',

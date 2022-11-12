@@ -23,6 +23,7 @@
     "donate": "Donate",
     "donateNow": "Donate now",
     "activate": "Activate",
+    "balance": "Balance",
     "getStarted": "Get started",
     "enterYourEmailAddress": "Enter your e-mail address",
     "raisedOf": "Raised of",
@@ -58,6 +59,7 @@
     "city": "City",
     "country": "Country",
     "holder": "Holder",
+    "invalidEmailAddress": "Invalid email address",
     "uploadAtLeastOneImage": "Upload at least 1 image",
     "somethingWentWrong": "Something went wrong. Please try again later",
     "fillOutAllRequiredFields": "Please fill out all required fields",
@@ -163,7 +165,10 @@
         "text": "Project type",
         "animals": "Animals",
         "health": "Health",
-        "school": "School"
+        "environment": "Environment",
+        "education": "Education",
+        "school": "School",
+        "other": "Other"
     },
     "input": {
         "required": "This field is required",

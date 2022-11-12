@@ -1,148 +1,55 @@
-import React, { useContext, useMemo } from 'react'
+import React, { useContext } from 'react'
 import ContractContext from './context'
-import { useAccount, useContractReads } from 'wagmi'
-import { getCherrioProjectAbi } from '../../contracts/abi/cherrio-project'
-import { getCherrioProjectActivatorAbi } from '../../contracts/abi/cherrio-project-activator'
-import { fromSun } from '../../utils'
+import useContractData from '../../hooks/use-contract-data'
 import { IProject } from '../../interfaces/api'
-import * as _ from 'lodash'
 
 export const useContractContext = () => useContext(ContractContext)
 
 interface IContractProviderProps {
   children: React.ReactNode
   project: IProject
+  initialData: any
 }
 
-const ContractProvider: React.FC<IContractProviderProps> = ({ children, project }) => {
-  const { address } = useAccount()
-
-  const cherrioProjectContract = useMemo(
-    () => ({
-      addressOrName: project.contractAddress,
-      contractInterface: getCherrioProjectAbi()
-    }),
-    [project?.contractAddress]
-  )
-
-  const cherrioProjectActivatorContract = useMemo(
-    () => ({
-      addressOrName: process.env.CONTRACT_CHERRIO_PROJECT_ACTIVATOR_ADDRESS,
-      contractInterface: getCherrioProjectActivatorAbi()
-    }),
-    []
-  )
-
-  const contracts = useMemo(() => {
-    if (!address) return []
-    return [
-      {
-        ...cherrioProjectContract,
-        functionName: 'donations',
-        args: [address]
-      },
-      {
-        ...cherrioProjectActivatorContract,
-        functionName: 'getActivatedAmount',
-        args: [project?.contractAddress, address]
-      }
-    ]
-  }, [address, cherrioProjectContract, cherrioProjectActivatorContract, project?.contractAddress])
-
-  const { data, isLoading, isError } = useContractReads({
-    contracts: [
-      {
-        ...cherrioProjectContract,
-        functionName: 'getOwner'
-      },
-      {
-        ...cherrioProjectContract,
-        functionName: 'stage'
-      },
-      {
-        ...cherrioProjectContract,
-        functionName: 'goal'
-      },
-      {
-        ...cherrioProjectContract,
-        functionName: 'minimumDonation'
-      },
-      {
-        ...cherrioProjectContract,
-        functionName: 'startedAt'
-      },
-      {
-        ...cherrioProjectContract,
-        functionName: 'deadline'
-      },
-      {
-        ...cherrioProjectContract,
-        functionName: 'endedAt'
-      },
-      {
-        ...cherrioProjectContract,
-        functionName: 'raisedAmount'
-      },
-      {
-        ...cherrioProjectContract,
-        functionName: 'getRequests'
-      },
-      {
-        ...cherrioProjectContract,
-        functionName: 'totalDonations'
-      },
-      {
-        ...cherrioProjectActivatorContract,
-        functionName: 'projects',
-        args: [project.contractAddress]
-      },
-      {
-        ...cherrioProjectActivatorContract,
-        functionName: 'getActivators',
-        args: [project.contractAddress]
-      },
-      ...contracts
-    ],
-    watch: true
+const ContractProvider: React.FC<IContractProviderProps> = ({ children, project, initialData }) => {
+  const { data: contractData } = useContractData({
+    contractAddress: project.contractAddress,
+    data: { project: ['getData', 'getRequests', 'donations'], projectActivator: ['getProject', 'getActivators', 'getActivatedAmount'] },
+    initialData: JSON.parse(initialData)
   })
 
   return (
     <ContractContext.Provider
       value={{
-        projectContract: {
-          owner: _.get(data, '[0]'),
-          stage: _.get(data, '[1]'),
-          goal: fromSun(_.get(data, '[2]')),
-          minimumDonation: _.get(data, '[3]', '').toString(),
-          startedAt: _.get(data, '[4]', '').toString(),
-          deadline: _.get(data, '[5]', '').toString(),
-          endedAt: _.get(data, '[6]', '').toString(),
-          raisedAmount: fromSun(_.get(data, '[7]')),
-          donations: fromSun(_.get(data, '[12]')),
-          totalDonations: Number(_.get(data, '[9]', '').toString()),
+        contractProject: {
+          owner: contractData?.project?.owner,
+          stage: contractData?.project?.stage,
+          minimumDonation: contractData?.project?.minimumDonation,
+          startedAt: contractData?.project?.startedAt,
+          deadline: contractData?.project?.deadline,
+          endedAt: contractData?.project?.endedAt,
+          raisedAmount: contractData?.project?.raisedAmount,
+          numDonations: contractData?.project?.numDonations,
+          donations: contractData?.project?.donations,
           requests: {
-            descriptions: _.get(data, '[8].descriptions'),
-            amounts: _.get(data, '[8].amounts'),
-            recipients: _.get(data, '[8].recipients'),
-            completed: _.get(data, '[8].completed'),
-            numberOfVoters: _.get(data, '[8].numberOfVoters')
+            descriptions: contractData?.project?.requests?.descriptions,
+            values: contractData?.project?.requests?.values,
+            recipients: contractData?.project?.requests?.recipients,
+            completed: contractData?.project?.requests?.completed,
+            numVoters: contractData?.project?.requests?.numVoters
           }
         },
-        projectActivatorContract: {
+        contractProjectActivator: {
           project: {
-            stage: _.get(data, '[10].stage'),
-            flag: _.get(data, '[10].flag'),
-            rewarded: _.get(data, '[10].rewarded'),
-            numActivators: +_.get(data, '[10].numActivators', '').toString(),
-            activateSize: fromSun(_.get(data, '[10].activateSize')),
-            activatedAmount: fromSun(_.get(data, '[10].activatedAmount')),
-            reward: fromSun(_.get(data, '[10].reward')),
-            activators: _.get(data, '[11]')
+            stage: contractData?.projectActivator?.project?.stage,
+            rewarded: contractData?.projectActivator?.project?.rewarded,
+            numActivators: contractData?.projectActivator?.project?.numActivators,
+            activateSize: contractData?.projectActivator?.project?.activateSize,
+            activatedAmount: contractData?.projectActivator?.project?.activatedAmount,
+            activators: contractData?.projectActivator?.project?.activators
           },
-          activatedAmount: fromSun(_.get(data, '[13]'))
-        },
-        isLoading,
-        isError
+          activatedAmount: contractData?.projectActivator?.activatedAmount
+        }
       }}
     >
       {children}

@@ -10,9 +10,18 @@ import { ToastContainer } from 'react-toastify'
 import { getSession, SessionProvider } from 'next-auth/react'
 import { ApolloProvider } from '@apollo/client'
 import { apolloClient } from '../clients/graphql'
+import { configureChains, createClient, defaultChains, WagmiConfig } from 'wagmi'
+import { publicProvider } from 'wagmi/providers/public'
 import 'react-toastify/dist/ReactToastify.css'
 import '../../public/vendor/bootstrap/css/bootstrap.min.css'
 import '../../public/css/styles.min.css'
+
+const { provider, webSocketProvider } = configureChains(defaultChains, [publicProvider()])
+
+const client = createClient({
+  provider,
+  webSocketProvider
+})
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -28,14 +37,16 @@ const MyApp = ({ Component, pageProps }: AppProps<{ session: Session }>) => {
     <I18nProvider lang='en'>
       <ApolloProvider client={apolloClient}>
         <QueryClientProvider client={queryClient}>
-          <TronWebProvider>
-            <SessionProvider session={pageProps.session} refetchInterval={0}>
-              <RouteGuard>
-                <Component {...pageProps} />
-                <ToastContainer />
-              </RouteGuard>
-            </SessionProvider>
-          </TronWebProvider>
+          <WagmiConfig client={client}>
+            <TronWebProvider>
+              <SessionProvider session={pageProps.session} refetchInterval={0}>
+                <RouteGuard>
+                  <Component {...pageProps} />
+                  <ToastContainer />
+                </RouteGuard>
+              </SessionProvider>
+            </TronWebProvider>
+          </WagmiConfig>
         </QueryClientProvider>
       </ApolloProvider>
     </I18nProvider>

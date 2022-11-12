@@ -15,7 +15,7 @@ export const QUERY_PROJECTS = gql`
 `
 
 export const QUERY_PROJECT = gql`
-  query Project($where: Where!) {
+  query Project($where: WhereProjectInput!) {
     project(where: $where) {
       id
       title
@@ -37,7 +37,7 @@ export const MUTATION_CREATE_PROJECT = gql`
     $slug: String!
     $image: String!
     $contractAddress: String!
-    $goal: Float!
+    $goal: String!
     $duration: Int!
     $projectTypes: [ProjectTypeInput!]!
   ) {
