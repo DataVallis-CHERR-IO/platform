@@ -11,15 +11,15 @@ interface IUseConnectRes {
 
 const useConnect = (): IUseConnectRes => {
   const { t } = useTranslation('common')
-  const [onLoad, setOnLoad] = useState<boolean>(false);
+  // const [onLoad, setOnLoad] = useState<boolean>(false);
   const tronWeb = (window as any).tronWeb
   const tronLink = (window as any).tronLink
-  const init = useMemo(() => onLoad, [onLoad])
+  // const init = useMemo(() => onLoad, [onLoad])
 
   const connect = useCallback(async (): Promise<boolean> => {
     console.log('connect useCallback')
-    if (init) return true
-    setOnLoad(true)
+    // if (init) return true
+    // setOnLoad(true)
     !tronLink || (await tronLink.request({ method: 'tron_requestAccounts' }))
 
     if (!tronWeb) {
@@ -52,7 +52,7 @@ const useConnect = (): IUseConnectRes => {
   }, [])
 
   const tronLinkEventListener = useCallback(() => {
-    window.addEventListener('load', connect)
+    // window.addEventListener('load', connect)
     window.addEventListener('message', async msg => {
       const { message } = msg.data
       console.log('tronLinkEventListener useCallback', message)
