@@ -15,6 +15,7 @@ const useConnect = (): IUseConnectRes => {
   const tronLink = (window as any).tronLink
 
   const connect = useCallback(async (): Promise<boolean> => {
+    console.log('connect useCallback')
     !tronLink || (await tronLink.request({ method: 'tron_requestAccounts' }))
 
     if (!tronWeb) {
@@ -33,10 +34,14 @@ const useConnect = (): IUseConnectRes => {
   }, [])
 
   const handleConnect = useCallback(async () => {
+    console.log('handleConnect useCallback')
+
     await signIn('credentials', { address: tronWeb.defaultAddress.base58 })
   }, [tronWeb.defaultAddress.base58])
 
   const disconnect = useCallback(async () => {
+    console.log('disconnect useCallback')
+
     await signOut()
   }, [])
 
@@ -44,6 +49,7 @@ const useConnect = (): IUseConnectRes => {
     window.addEventListener('load', connect)
     window.addEventListener('message', async msg => {
       const { message } = msg.data
+      console.log('tronLinkEventListener useCallback', message)
 
       if (!message) {
         return
