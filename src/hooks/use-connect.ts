@@ -38,7 +38,7 @@ const useConnect = (): IUseConnectRes => {
 
     await signIn('credentials', { address: tronWeb.defaultAddress.base58 })
 
-    tronLinkEventListener()
+    // tronLinkEventListener()
   }, [tronWeb.defaultAddress.base58])
 
   const disconnect = useCallback(async () => {
