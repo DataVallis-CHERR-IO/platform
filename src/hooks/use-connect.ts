@@ -1,5 +1,5 @@
 import useTranslation from 'next-translate/useTranslation'
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { signIn, signOut } from 'next-auth/react'
 import { notify } from '../utils/notify'
 import { tronNetworkOptions } from '../config'
@@ -11,11 +11,15 @@ interface IUseConnectRes {
 
 const useConnect = (): IUseConnectRes => {
   const { t } = useTranslation('common')
+  const [onLoad, setOnLoad] = useState<boolean>(false);
   const tronWeb = (window as any).tronWeb
   const tronLink = (window as any).tronLink
+  const init = useMemo(() => onLoad, [onLoad])
 
   const connect = useCallback(async (): Promise<boolean> => {
     console.log('connect useCallback')
+    if (init) return true
+    setOnLoad(true)
     !tronLink || (await tronLink.request({ method: 'tron_requestAccounts' }))
 
     if (!tronWeb) {
