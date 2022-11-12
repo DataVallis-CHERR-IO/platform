@@ -48,22 +48,22 @@ const useConnect = (): IUseConnectRes => {
   }, [])
 
   const tronLinkEventListener = useCallback(() => {
-    // window.addEventListener('load', connect)
+    window.addEventListener('load', connect)
     window.addEventListener('message', async msg => {
       const { message } = msg.data
       console.log('tronLinkEventListener useCallback', message)
 
-      if (!message) {
-        return
-      }
-
-      if (message.action === 'connect') {
-        await handleConnect()
-      } else if (message.action === 'accountsChanged') {
-        await connect()
-      } else if (message.action === 'disconnect' || message.action === 'setNode') {
-        await disconnect()
-      }
+      // if (!message) {
+      //   return
+      // }
+      //
+      // if (message.action === 'connect') {
+      //   await handleConnect()
+      // } else if (message.action === 'accountsChanged') {
+      //   await connect()
+      // } else if (message.action === 'disconnect' || message.action === 'setNode') {
+      //   await disconnect()
+      // }
     })
   }, [])
 
