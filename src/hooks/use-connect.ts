@@ -55,7 +55,7 @@ const useConnect = (): IUseConnectRes => {
     // window.addEventListener('load', connect)
     window.addEventListener('message', async msg => {
       const { message } = msg.data
-      console.log('tronLinkEventListener useCallback', message)
+      console.log('tronLinkEventListener useCallback !!!!!!', message)
 
       if (!message) {
         return
