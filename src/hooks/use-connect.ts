@@ -48,7 +48,7 @@ const useConnect = (): IUseConnectRes => {
   }, [])
 
   const tronLinkEventListener = useCallback(() => {
-    window.addEventListener('load', connect)
+    // window.addEventListener('load', connect)
     window.addEventListener('message', async msg => {
       const { message } = msg.data
       console.log('tronLinkEventListener useCallback', message)
@@ -68,7 +68,7 @@ const useConnect = (): IUseConnectRes => {
   }, [])
 
   useEffect(() => {
-    // tronLinkEventListener()
+    tronLinkEventListener()
   }, [])
 
   return {
