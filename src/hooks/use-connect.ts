@@ -11,15 +11,10 @@ interface IUseConnectRes {
 
 const useConnect = (): IUseConnectRes => {
   const { t } = useTranslation('common')
-  // const [onLoad, setOnLoad] = useState<boolean>(false);
   const tronWeb = (window as any).tronWeb
   const tronLink = (window as any).tronLink
-  // const init = useMemo(() => onLoad, [onLoad])
 
   const connect = useCallback(async (): Promise<boolean> => {
-    console.log('connect useCallback')
-    // if (init) return true
-    // setOnLoad(true)
     !tronLink || (await tronLink.request({ method: 'tron_requestAccounts' }))
 
     if (!tronWeb) {
@@ -38,43 +33,31 @@ const useConnect = (): IUseConnectRes => {
   }, [])
 
   const handleConnect = useCallback(async () => {
-    console.log('handleConnect useCallback')
-
     await signIn('credentials', { address: tronWeb.defaultAddress.base58 })
-
-    // tronLinkEventListener()
   }, [])
 
   const disconnect = useCallback(async () => {
-    console.log('disconnect useCallback')
-
     await signOut()
   }, [])
 
-  // const tronLinkEventListener = useCallback(() => {
-  //   // window.addEventListener('load', connect)
-  //   window.addEventListener('message', async msg => {
-  //     const { message } = msg.data
-  //     console.log('tronLinkEventListener useCallback !!!!!!', message)
-  //
-  //     if (!message) {
-  //       return
-  //     }
-  //
-  //     if (message.action === 'connect') {
-  //       await handleConnect()
-  //     } else if (message.action === 'accountsChanged') {
-  //       await connect()
-  //     } else if (message.action === 'disconnect' || message.action === 'setNode') {
-  //       await disconnect()
-  //     } else {
-  //       return
-  //     }
-  //   })
-  // }, [])
+  const tronLinkEventListener = useCallback(() => {
+    window.addEventListener('message', async msg => {
+      const { message } = msg.data
+
+      if (!message) return
+
+      if (message.action === 'connect') {
+        await handleConnect()
+      } else if (message.action === 'accountsChanged') {
+        await connect()
+      } else if (message.action === 'disconnect' || message.action === 'setNode') {
+        await disconnect()
+      }
+    })
+  }, [])
 
   useEffect(() => {
-    // tronLinkEventListener()
+    tronLinkEventListener()
   }, [])
 
   return {
