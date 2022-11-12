@@ -49,13 +49,6 @@ const Footer: React.FC = () => {
                     </a>
                   </Link>
                 </li>
-                <li>
-                  <Link href='https://t.me/CherrioPlatform'>
-                    <a target='_blank' rel='noreferrer noopener' className='telegram-icon'>
-                      <i className='icon-social-telegram' />
-                    </a>
-                  </Link>
-                </li>
               </ul>
             </div>
             <div className='logo-footer'>
@@ -70,21 +63,6 @@ const Footer: React.FC = () => {
               <ul>
                 <li className='text-uppercase'>
                   {t('domainName')} ({t('companyName')}) © {moment().format('YYYY')}
-                </li>
-                <li>
-                  <Link href='/'>
-                    <a className='text-uppercase'>{t('home.text')}</a>
-                  </Link>
-                </li>
-                <li>
-                  <Link href='#'>
-                    <a className='text-uppercase'>{t('terms')}</a>
-                  </Link>
-                </li>
-                <li>
-                  <Link href='#'>
-                    <a className='text-uppercase'>{t('privacyPolicy')}</a>
-                  </Link>
                 </li>
               </ul>
             </div>
