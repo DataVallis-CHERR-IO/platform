@@ -6,7 +6,6 @@
     "dev": "next dev",
     "build": "next build",
     "start": "rm -rf .next && yarn build && next start",
-    "start:prod": "next start",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix"
   },
   "dependencies": {
