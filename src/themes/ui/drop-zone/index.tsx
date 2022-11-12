@@ -6,7 +6,7 @@ import { faXmark } from '@fortawesome/free-solid-svg-icons'
 import { notify } from '../../../utils/notify'
 import { formatBytes } from '../../../utils'
 import * as _ from 'lodash'
-import { dropZoneConfig } from '../../../config'
+import { dropZoneOptions } from '../../../config'
 
 interface IDropzoneProps extends DropzoneInputProps {
   uploadedFiles?: any[]
@@ -26,7 +26,7 @@ const Dropzone: React.FC<IDropzoneProps> = ({ multiple, uploadedFiles, onDropFil
       fileRejections.forEach(file => {
         file.errors.forEach(err => {
           if (err.code === 'file-too-large') {
-            notify(t('fileTooLarge', { maxFileSize: formatBytes(dropZoneConfig.maxFileSize) }), 'warning')
+            notify(t('fileTooLarge', { maxFileSize: formatBytes(dropZoneOptions.maxFileSize) }), 'warning')
           }
 
           if (err.code === 'file-invalid-type') {
@@ -45,7 +45,7 @@ const Dropzone: React.FC<IDropzoneProps> = ({ multiple, uploadedFiles, onDropFil
       onDropFiles(acceptedFiles)
     },
     multiple: !!multiple,
-    maxSize: dropZoneConfig.maxFileSize
+    maxSize: dropZoneOptions.maxFileSize
   })
 
   const handleOnRemove = index => {

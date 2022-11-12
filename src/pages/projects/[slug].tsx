@@ -7,14 +7,15 @@ import { apolloClient } from '../../clients/graphql'
 import { QUERY_PROJECT } from '../../constants/queries/database/project'
 import { IProject } from '../../interfaces/api'
 import { fromSun } from '../../utils'
+import { contractProjectActivatorOptions, tronNetworkOptions } from '../../config'
 
 const HttpProvider = TronWeb.providers.HttpProvider
 const tronWeb = new TronWeb(
-  new HttpProvider(process.env.TRONLINK_NETWORK_PROVIDER),
-  new HttpProvider(process.env.TRONLINK_NETWORK_PROVIDER),
-  new HttpProvider(process.env.TRONLINK_NETWORK_PROVIDER)
+  new HttpProvider(tronNetworkOptions.provider),
+  new HttpProvider(tronNetworkOptions.provider),
+  new HttpProvider(tronNetworkOptions.provider)
 )
-tronWeb.setAddress(process.env.CONTRACT_OWNER)
+tronWeb.setAddress(contractProjectActivatorOptions.owner)
 
 export const getServerSideProps = async context => {
   const { data } = await apolloClient.query({
@@ -36,7 +37,7 @@ export const getServerSideProps = async context => {
   }
 
   const contractProject = await tronWeb.contract().at(data.project.contractAddress)
-  const contractProjectActivator = await tronWeb.contract().at(process.env.CONTRACT_CHERRIO_PROJECT_ACTIVATOR_ADDRESS)
+  const contractProjectActivator = await tronWeb.contract().at(contractProjectActivatorOptions.address)
   const contractProjectData = await contractProject.getData().call()
   const contractProjectRequests = await contractProject.getRequests().call()
   const contractProjectActivatorProject = await contractProjectActivator.projects(data.project.contractAddress).call()

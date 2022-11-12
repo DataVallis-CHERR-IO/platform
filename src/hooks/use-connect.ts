@@ -2,6 +2,7 @@ import useTranslation from 'next-translate/useTranslation'
 import { useCallback, useEffect } from 'react'
 import { signIn, signOut } from 'next-auth/react'
 import { notify } from '../utils/notify'
+import { tronNetworkOptions } from '../config'
 
 interface IUseConnectRes {
   connect?: any
@@ -21,8 +22,8 @@ const useConnect = (): IUseConnectRes => {
       return false
     }
 
-    if (tronWeb?.eventServer?.host !== process.env.TRONLINK_NETWORK_EVENT) {
-      notify(t('tronWebInvalidNetwork', { network: process.env.TRONLINK_NETWORK_NAME }), 'warning')
+    if (tronWeb?.eventServer?.host !== tronNetworkOptions.event) {
+      notify(t('tronWebInvalidNetwork', { network: tronNetworkOptions.name }), 'warning')
       return false
     }
 

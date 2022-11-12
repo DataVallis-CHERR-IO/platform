@@ -4,6 +4,7 @@ import { useQuery } from 'react-query'
 import { useTronWebContext } from '../contexts/tronweb/provider'
 import { useSession } from 'next-auth/react'
 import { fromSun } from '../utils'
+import { contractProjectActivatorOptions } from '../config'
 
 interface IData {
   project?: string[]
@@ -53,7 +54,7 @@ const useContractData = ({ contractAddress, data, initialData = {} }: IUseContra
   const { data: session } = useSession()
   const { data: blockNumber } = useBlockNumber({ watch: true })
   const instanceProject = useCallback(async () => await tronWeb.contract().at(contractAddress), [contractAddress])
-  const instanceActivator = useCallback(async () => await tronWeb.contract().at(process.env.CONTRACT_CHERRIO_PROJECT_ACTIVATOR_ADDRESS), [])
+  const instanceActivator = useCallback(async () => await tronWeb.contract().at(contractProjectActivatorOptions.address), [])
   const queryKey = useMemo(
     () => ({
       blockNumber,
