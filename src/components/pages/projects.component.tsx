@@ -1,67 +1,64 @@
-import React from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import Link from 'next/link'
 import Image from 'next/image'
+import useTranslation from 'next-translate/useTranslation'
+import StickyHeadTable from '../../themes/components/data/sticky-head.table'
+import { IProject } from '../../interfaces/api'
+import { fromSun } from '../../utils'
 
-const ProjectsComponent: React.FC = () => {
+interface IProjectsComponentProps {
+  projects?: IProject[]
+}
+
+const ProjectsComponent: React.FC<IProjectsComponentProps> = ({ projects }) => {
+  const { t } = useTranslation('common')
+  const [rows, setRows] = useState<any[]>([])
+  const columns = useMemo(
+    () => [
+      { id: 'image', label: t('image') },
+      { id: 'title', label: t('title') },
+      { id: 'excerpt', label: t('excerpt') },
+      { id: 'goal', label: t('goal') }
+    ],
+    []
+  )
+
+  const handleProjects = useCallback(() => {
+    const data = []
+    for (const project of projects) {
+      data.push({
+        image: <Image loader={() => project.image} src={project.image} alt={project.title} width={48} height={48} unoptimized={true} />,
+        title: (
+          <Link href={`/projects/${project.slug}`}>
+            <a target='_blank' rel='noreferrer noopener' className='link'>
+              {project.title}
+            </a>
+          </Link>
+        ),
+        excerpt: project.excerpt,
+        goal: (
+          <>
+            <Image src='/img/tron-black.png' width={14} height={14} /> {fromSun(project.goal)}
+          </>
+        )
+      })
+    }
+
+    setRows(data)
+  }, [projects])
+
+  useEffect(() => {
+    handleProjects()
+  }, [projects])
+
   return (
-    <header className='pagehead'>
-      <div className='header-content'>
-        <div className='container'>
-          <div className='row'>
-            <div className='col-lg-8 mx-auto text-center project-title-holder'>
-              <h1>Donate for wildfire relief, reforestation and helping suffering victims </h1>
-            </div>
-            <div className='col-lg-10 mx-auto header-holder'>
-              <div className='header-image'>
-                <Image src='/img/platform/header-2.jpg' alt='header' className='img-fluid' width={920} height={355} />
-              </div>
-              <div className='project-content clearfix'>
-                <div className='project-content-left'>
-                  <div className='project-title'>project is Live Now</div>
-                  <div className='project-subtitle'>project ends in</div>
-                  <div className='project-countdown'>
-                    <div className='project-cd-item project-day'>
-                      <div className='project-cd-item-inner'>
-                        <span className='num'>30</span> <span className='label'>D</span>
-                      </div>
-                    </div>
-                    <div className='project-cd-item project-day'>
-                      <div className='project-cd-item-inner'>
-                        <span className='num'>23</span> <span className='label'>H</span>
-                      </div>
-                    </div>
-                    <div className='project-cd-item project-day'>
-                      <div className='project-cd-item-inner'>
-                        <span className='num'>59</span> <span className='label'>M</span>
-                      </div>
-                    </div>
-                    <div className='project-cd-item project-day'>
-                      <div className='project-cd-item-inner'>
-                        <span className='num'>59</span> <span className='label'>S</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className='project-content-right'>
-                  <div className='project-title'>project details</div>
-                  <div className='project-progress'>
-                    <div className='progress'>
-                      <div className='progress-bar' role='progressbar' style={{ width: '25%' }} aria-valuenow={25} aria-valuemin={0} aria-valuemax={100}>
-                        25%
-                      </div>
-                    </div>
-                    <div className='project-info'>
-                      <div className='project-info-1'>Funded: 2.4633 ETH</div>
-                      <div className='project-info-2'>Goal: 88.43 ETH</div>
-                      <div className='project-info-3'>Donations: 51</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+    <section className='section-1'>
+      <div className='container'>
+        <div className='row'>
+          <StickyHeadTable columns={columns} rows={rows} />
         </div>
       </div>
-    </header>
+    </section>
   )
 }
 

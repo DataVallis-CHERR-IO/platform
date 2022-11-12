@@ -2292,3 +2292,10 @@ section.resume-section .section-inner {
 .table-p-remove-styles p {
     margin: unset;
 }
+
+.link {
+    font-weight: bold;
+}
+.link:hover {
+    text-decoration: underline;
+}

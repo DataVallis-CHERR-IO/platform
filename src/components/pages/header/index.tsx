@@ -25,7 +25,7 @@ const Header: React.FC = () => {
               </Link>
             </li>
             <li className='nav-item'>
-              <Link href='#'>
+              <Link href='/projects'>
                 <a className='nav-link js-scroll-trigger'>{t('projects')}</a>
               </Link>
             </li>

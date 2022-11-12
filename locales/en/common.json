@@ -58,6 +58,7 @@
     "address": "Address",
     "city": "City",
     "country": "Country",
+    "image": "Image",
     "holder": "Holder",
     "fileTooLarge": "File is too large. Maximum file size is {{maxFileSize}}",
     "fileInvalidType": "Invalid file type",
