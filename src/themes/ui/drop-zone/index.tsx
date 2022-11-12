@@ -1,8 +1,12 @@
 import React, { useEffect, useMemo, useState } from 'react'
+import useTranslation from 'next-translate/useTranslation'
 import { DropzoneInputProps, useDropzone } from 'react-dropzone'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faXmark } from '@fortawesome/free-solid-svg-icons'
+import { notify } from '../../../utils/notify'
+import { formatBytes } from '../../../utils'
 import * as _ from 'lodash'
+import { dropZoneConfig } from '../../../config'
 
 interface IDropzoneProps extends DropzoneInputProps {
   uploadedFiles?: any[]
@@ -12,12 +16,24 @@ interface IDropzoneProps extends DropzoneInputProps {
 }
 
 const Dropzone: React.FC<IDropzoneProps> = ({ multiple, uploadedFiles, onDropFiles, onChangeFiles, hideUpload = false }) => {
+  const { t } = useTranslation('common')
   const [files, setFiles] = useState([])
   const { getRootProps, getInputProps, isFocused, isDragAccept, isDragReject, isDragActive } = useDropzone({
     accept: {
       'image/*': []
     },
-    onDrop: acceptedFiles => {
+    onDrop: (acceptedFiles, fileRejections) => {
+      fileRejections.forEach(file => {
+        file.errors.forEach(err => {
+          if (err.code === 'file-too-large') {
+            notify(t('fileTooLarge', { maxFileSize: formatBytes(dropZoneConfig.maxFileSize) }), 'warning')
+          }
+
+          if (err.code === 'file-invalid-type') {
+            notify(t('fileInvalidType'), 'warning')
+          }
+        })
+      })
       setFiles(
         acceptedFiles.map((file, index: number) =>
           Object.assign(file, {
@@ -28,7 +44,8 @@ const Dropzone: React.FC<IDropzoneProps> = ({ multiple, uploadedFiles, onDropFil
       )
       onDropFiles(acceptedFiles)
     },
-    multiple: !!multiple
+    multiple: !!multiple,
+    maxSize: dropZoneConfig.maxFileSize
   })
 
   const handleOnRemove = index => {

@@ -18,29 +18,32 @@ const ProjectCreateSpendingRequest: React.FC<IProjectCreateSpendingRequestProps>
   const [open, setOpen] = React.useState<boolean>(false)
   const formRef = useRef<HTMLFormElement>(null)
 
-  const handleCreate = useCallback(async event => {
-    event.preventDefault()
+  const handleCreate = useCallback(
+    async event => {
+      event.preventDefault()
 
-    if (!formRef.current.checkValidity()) {
-      formRef.current.reportValidity()
-      return
-    }
+      if (!formRef.current.checkValidity()) {
+        formRef.current.reportValidity()
+        return
+      }
 
-    if (!isAddress(recipient)) {
-      notify(t('invalidAddress'), 'warning')
-      return
-    }
+      if (!isAddress(recipient)) {
+        notify(t('invalidAddress'), 'warning')
+        return
+      }
 
-    setOpen(!open)
+      setOpen(!open)
 
-    await method('createSpendingRequest', [description, recipient, toSun(value)], null, project.contractAddress)
+      await method('createSpendingRequest', [description, recipient, toSun(value)], null, project.contractAddress)
 
-    setRecipient('')
-    setValue('')
-    setDescription('')
+      setRecipient('')
+      setValue('')
+      setDescription('')
 
-    setOpen(false)
-  }, [])
+      setOpen(false)
+    },
+    [recipient, description, value]
+  )
 
   return (
     <>

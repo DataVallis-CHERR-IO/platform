@@ -33,7 +33,7 @@ const useConnect = (): IUseConnectRes => {
 
   const handleConnect = useCallback(async () => {
     await signIn('credentials', { address: tronWeb.defaultAddress.base58 })
-  }, [])
+  }, [tronWeb.defaultAddress.base58])
 
   const disconnect = useCallback(async () => {
     await signOut()

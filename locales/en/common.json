@@ -59,6 +59,8 @@
     "city": "City",
     "country": "Country",
     "holder": "Holder",
+    "fileTooLarge": "File is too large. Maximum file size is {{maxFileSize}}",
+    "fileInvalidType": "Invalid file type",
     "invalidEmailAddress": "Invalid email address",
     "uploadAtLeastOneImage": "Upload at least 1 image",
     "somethingWentWrong": "Something went wrong. Please try again later",
@@ -116,32 +118,32 @@
                 "subtitle": "Using the “money legos” phenomenon (token staking, lending, yield farming, liquidity providing, etc.) enable users to earn APY rewards, while indirectly donating to charity projects by performing DeFi activities"
             },
             "text2": {
-                "title": "SDK",
-                "subtitle": "SDK for easy integration as an added value service of Web3 projects"
-            },
-            "text3": {
-                "title": "Proof of Charity",
-                "subtitle": "A rewarding gamification system, where community members act as governors – Cherrions, and receive tokens as rewards for online volunteering – any activity with regard to governance, or promotion (sharing projects on social networks has a large community effect and it enables organic marketing)"
-            },
-            "text4": {
                 "title": "Charity Market Analytics",
                 "subtitle": "An analysis module, with a database of registered charities and their projects’ history and statistics (e.g. “CoinMarketCap”), and an algorithm sorting of organizations determining a trust score (based on transparency and performance), acting as a source of trusted information (e.g. “TripAdvisor”)."
+            },
+            "text3": {
+                "title": "SBD",
+                "subtitle": "A soul bound token (received by Cherrions who will show effort to spread the good word around that will enable them more voting power for activating projects and greater CHERR.IO benefits)"
+            },
+            "text4": {
+                "title": "Metaverse",
+                "subtitle": "For use case showing, fundraising events, promotion, dCommerce -D2A model"
             },
             "text5": {
                 "title": "NFTs launchpad",
                 "subtitle": "Selling NFTs and giving a share of profit to charity projects"
             },
             "text6": {
-                "title": "SBD",
-                "subtitle": "A soul bound token (received by Cherrions who will show effort to spread the good word around that will enable them more voting power for activating projects and greater CHERR.IO benefits)"
+                "title": "SDK",
+                "subtitle": "SDK for easy integration as an added value service of Web3 projects"
             },
             "text7": {
                 "title": "GameFi",
                 "subtitle": "play-to-(l)earn games"
             },
             "text8": {
-                "title": "Metaverse",
-                "subtitle": "For use case showing, fundraising events, promotion, dCommerce -D2A model"
+                "title": "Proof of Charity",
+                "subtitle": "A rewarding gamification system, where community members act as governors – Cherrions, and receive tokens as rewards for online volunteering – any activity with regard to governance, or promotion (sharing projects on social networks has a large community effect and it enables organic marketing)"
             }
         }
     },

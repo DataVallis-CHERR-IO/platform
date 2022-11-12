@@ -18,19 +18,22 @@ const Subscribe: React.FC = () => {
 
   const { mutateAsync: subscribeMutation } = useMutation(subscribe)
 
-  const handleSubscribe = useCallback(async event => {
-    event.preventDefault()
+  const handleSubscribe = useCallback(
+    async event => {
+      event.preventDefault()
 
-    if (!validator.isEmail(emailRef.current.value)) {
-      notify(t('invalidEmailAddress'), 'warning')
-      return
-    }
+      if (!validator.isEmail(emailRef.current.value)) {
+        notify(t('invalidEmailAddress'), 'warning')
+        return
+      }
 
-    const subscription = await subscribeMutation({ email: emailRef.current.value })
-    notify(t(`subscribe.${subscription.data.subscribe}`), subscription.data.subscribe === 'success' ? 'success' : 'warning')
+      const subscription = await subscribeMutation({ email: emailRef.current.value })
+      notify(t(`subscribe.${subscription.data.subscribe}`), subscription.data.subscribe === 'success' ? 'success' : 'warning')
 
-    emailRef.current.value = ''
-  }, [])
+      emailRef.current.value = ''
+    },
+    [emailRef.current?.value]
+  )
 
   return (
     <section className='section-updates' id='updates'>

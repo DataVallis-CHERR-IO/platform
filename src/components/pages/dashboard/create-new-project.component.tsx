@@ -62,89 +62,92 @@ const CreateNewProjectComponent: React.FC<ICreateNewProjectProps> = ({ projectTy
   const { mutateAsync: createProjectMutation } = useMutation(createProject)
   const { mutateAsync: createProjectMediaMutation } = useMutation(createProjectMedia)
 
-  const handleCreate = useCallback(async event => {
-    event.preventDefault()
+  const handleCreate = useCallback(
+    async event => {
+      event.preventDefault()
 
-    if (!formRef.current.checkValidity()) {
-      formRef.current.reportValidity()
-      return
-    }
+      if (!formRef.current.checkValidity()) {
+        formRef.current.reportValidity()
+        return
+      }
 
-    if (!files.length) {
-      notify(t('uploadAtLeastOneImage'), 'warning')
-      return
-    }
+      if (!files.length) {
+        notify(t('uploadAtLeastOneImage'), 'warning')
+        return
+      }
 
-    setOpen(true)
+      setOpen(true)
 
-    const { address } = await deploy([toSun(goal), duration])
+      const { address } = await deploy([toSun(goal), duration])
 
-    if (address) {
-      const uploadedFiles = _.cloneDeep(files)
-      const defaultFile = uploadedFiles.splice(
-        uploadedFiles.findIndex(file => file.isDefault),
-        1
-      )[0]
+      if (address) {
+        const uploadedFiles = _.cloneDeep(files)
+        const defaultFile = uploadedFiles.splice(
+          uploadedFiles.findIndex(file => file.isDefault),
+          1
+        )[0]
 
-      const image = (
-        await uploadMutation({
-          title: paramCase(defaultFile.name.split(path.extname(defaultFile.name)).shift()),
-          extension: path.extname(defaultFile.name),
-          content: await getBase64(defaultFile)
-        })
-      ).data.upload
-
-      const projectTypesSelected = projectTypes.filter((projectType: IProjectType) => types.includes(projectType.id))
-
-      const project = (
-        await createProjectMutation({
-          title,
-          excerpt,
-          description,
-          slug: paramCase(title),
-          image,
-          contractAddress: address,
-          goal: toSun(goal),
-          duration: Number(duration),
-          projectTypes: projectTypesSelected
-        })
-      ).data.createProject
-
-      for (const file of uploadedFiles) {
-        const media = (
+        const image = (
           await uploadMutation({
-            title: paramCase(file.name.split(path.extname(file.name)).shift()),
-            extension: path.extname(file.name),
-            content: await getBase64(file)
+            title: paramCase(defaultFile.name.split(path.extname(defaultFile.name)).shift()),
+            extension: path.extname(defaultFile.name),
+            content: await getBase64(defaultFile)
           })
         ).data.upload
 
-        await createProjectMediaMutation({
-          projectId: project.id,
-          mediaTypeId: MediaTypeEnum.IMAGE,
-          name: paramCase(file.name.split(path.extname(file.name)).shift()),
-          path: media
+        const projectTypesSelected = projectTypes.filter((projectType: IProjectType) => types.includes(projectType.id))
+
+        const project = (
+          await createProjectMutation({
+            title,
+            excerpt,
+            description,
+            slug: paramCase(title),
+            image,
+            contractAddress: address,
+            goal: toSun(goal),
+            duration: Number(duration),
+            projectTypes: projectTypesSelected
+          })
+        ).data.createProject
+
+        for (const file of uploadedFiles) {
+          const media = (
+            await uploadMutation({
+              title: paramCase(file.name.split(path.extname(file.name)).shift()),
+              extension: path.extname(file.name),
+              content: await getBase64(file)
+            })
+          ).data.upload
+
+          await createProjectMediaMutation({
+            projectId: project.id,
+            mediaTypeId: MediaTypeEnum.IMAGE,
+            name: paramCase(file.name.split(path.extname(file.name)).shift()),
+            path: media
+          })
+        }
+
+        await newProjectMutation({
+          contractAddress: address,
+          goal: Number(goal)
         })
+
+        notify(t('project.successfullyCreated'))
+
+        setTitle('')
+        setExcerpt('')
+        setDescription('')
+        setGoal('')
+        setDuration('')
+        setTypes([])
+        setFiles([])
       }
 
-      await newProjectMutation({
-        contractAddress: address,
-        goal: Number(goal)
-      })
-
-      notify(t('project.successfullyCreated'))
-
-      setTitle('')
-      setExcerpt('')
-      setDescription('')
-      setGoal('')
-      setDuration('')
-      setTypes([])
-      setFiles([])
-    }
-
-    setOpen(false)
-  }, [])
+      setOpen(false)
+    },
+    [title, excerpt, description, goal, duration, types, files]
+  )
 
   return (
     <>

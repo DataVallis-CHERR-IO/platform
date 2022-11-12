@@ -9,11 +9,10 @@ export default NextAuth({
       credentials: {
         address: {}
       },
-      async authorize(credentials) {
+      authorize: async (credentials): Promise<any> => {
         try {
           return { name: credentials.address }
         } catch (error) {
-          console.error(error)
           return null
         }
       }

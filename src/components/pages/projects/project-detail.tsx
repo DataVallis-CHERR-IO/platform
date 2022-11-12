@@ -31,27 +31,33 @@ const ProjectDetail: React.FC<IProjectDetailProps> = ({ project }) => {
   const { contractProject, contractProjectActivator } = useContractContext()
   const { data: session }: { data: any } = useSession()
 
-  const getBalance = useCallback(async (handleSetMax: boolean = false) => {
-    const currentBalance = fromSun(await tronWeb.trx.getBalance(session.user.name))
-    setBalance(currentBalance)
-    !handleSetMax || setMax(currentBalance)
-  }, [])
+  const getBalance = useCallback(
+    async (handleSetMax: boolean = false) => {
+      const currentBalance = fromSun(await tronWeb.trx.getBalance(session.user.name))
+      setBalance(currentBalance)
+      !handleSetMax || setMax(currentBalance)
+    },
+    [session?.user?.name]
+  )
 
   const handleClick = useCallback(async () => {
     setShowSendTransactionDialog(true)
   }, [])
 
-  const handleOnClose = useCallback(async value => {
-    setShowSendTransactionDialog(false)
+  const handleOnClose = useCallback(
+    async value => {
+      setShowSendTransactionDialog(false)
 
-    if (value) {
-      if (contractProject?.stage === StageEnum.PENDING) {
-        await method('activateProject', [project.contractAddress], toSun(value))
-      } else {
-        await method('donate', [], toSun(value), project.contractAddress)
+      if (value) {
+        if (contractProject?.stage === StageEnum.PENDING) {
+          await method('activateProject', [project.contractAddress], toSun(value))
+        } else {
+          await method('donate', [], toSun(value), project.contractAddress)
+        }
       }
-    }
-  }, [])
+    },
+    [project.contractAddress]
+  )
 
   useEffect(() => {
     if (session && contractProject?.stage !== StageEnum.ENDED) {
@@ -67,6 +73,8 @@ const ProjectDetail: React.FC<IProjectDetailProps> = ({ project }) => {
       }
       setDisplayButton(true)
       setButtonText(contractProject?.stage === StageEnum.PENDING ? 'activate' : 'donateNow')
+    } else {
+      setDisplayButton(false)
     }
   }, [contractProject?.stage, contractProjectActivator?.activatedAmount, session])
 

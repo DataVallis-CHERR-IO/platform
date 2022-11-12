@@ -73,6 +73,7 @@ export const SUBSCRIPTION_PROJECT_CREATED = gql`
       excerpt
       slug
       image
+      goal
       contractAddress
     }
   }

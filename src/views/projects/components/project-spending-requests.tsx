@@ -38,9 +38,12 @@ const ProjectSpendingRequests: React.FC<IProjectSpendingRequests> = ({ project }
   )
   const length = useMemo(() => contractProject?.requests?.descriptions?.length, [contractProject?.requests?.descriptions])
 
-  const handleVote = useCallback(async index => {
-    await method('voteForRequest', [index], null, project.contractAddress)
-  }, [])
+  const handleVote = useCallback(
+    async index => {
+      await method('voteForRequest', [index], null, project.contractAddress)
+    },
+    [project.contractAddress]
+  )
 
   const handleRequests = useCallback(() => {
     const data = []
@@ -68,7 +71,7 @@ const ProjectSpendingRequests: React.FC<IProjectSpendingRequests> = ({ project }
     }
 
     setRows(data)
-  }, [])
+  }, [contractProject])
 
   useEffect(() => {
     handleRequests()

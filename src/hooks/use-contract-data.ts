@@ -111,15 +111,15 @@ const useContractData = ({ contractAddress, data, initialData = {} }: IUseContra
         const contractProjectActivator = await instanceActivator()
         dataRes.projectActivator = {}
 
-        if (data.projectActivator.includes('getProject')) {
-          const contractProjectActivatorProject = await contractProjectActivator.getProject(contractAddress).call()
+        if (data.projectActivator.includes('projects')) {
+          const contractProjectActivatorProject = await contractProjectActivator.projects(contractAddress).call()
 
           dataRes.projectActivator.project || (dataRes.projectActivator.project = {})
-          dataRes.projectActivator.project.stage = contractProjectActivatorProject._stage
-          dataRes.projectActivator.project.rewarded = contractProjectActivatorProject._rewarded
-          dataRes.projectActivator.project.numActivators = Number(contractProjectActivatorProject._numActivators.toString())
-          dataRes.projectActivator.project.activateSize = fromSun(contractProjectActivatorProject._activateSize.toString())
-          dataRes.projectActivator.project.activatedAmount = fromSun(contractProjectActivatorProject._activatedAmount.toString())
+          dataRes.projectActivator.project.stage = contractProjectActivatorProject.stage
+          dataRes.projectActivator.project.rewarded = contractProjectActivatorProject.rewarded
+          dataRes.projectActivator.project.numActivators = Number(contractProjectActivatorProject.numActivators.toString())
+          dataRes.projectActivator.project.activateSize = fromSun(contractProjectActivatorProject.activateSize.toString())
+          dataRes.projectActivator.project.activatedAmount = fromSun(contractProjectActivatorProject.activatedAmount.toString())
         }
 
         if (data.projectActivator.includes('getActivators')) {
@@ -144,7 +144,7 @@ const useContractData = ({ contractAddress, data, initialData = {} }: IUseContra
     },
     {
       onError: error => {
-        console.log('❌ GraphQL error (query detail): ', error)
+        console.log('❌ useContractData hook error: ', error)
       },
       initialData,
       keepPreviousData: true,
