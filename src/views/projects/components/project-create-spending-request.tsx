@@ -35,6 +35,8 @@ const ProjectCreateSpendingRequest: React.FC<IProjectCreateSpendingRequestProps>
         return
       }
 
+      console.log(value)
+      return
       setOpen(!open)
 
       await method('createSpendingRequest', [description, recipient, toSun(value)], null, project.contractAddress)
@@ -84,6 +86,7 @@ const ProjectCreateSpendingRequest: React.FC<IProjectCreateSpendingRequestProps>
                       id='value'
                       variant='standard'
                       fullWidth={true}
+                      inputProps={{ min: 0.0, max, step: 'any' }}
                       value={value}
                       onChange={event => setValue(event.target.value)}
                       type='number'

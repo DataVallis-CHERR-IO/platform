@@ -51,6 +51,7 @@ const SendTransactionDialog = ({ title, contentText, open, onClose, balance, min
             type='number'
             fullWidth
             variant='standard'
+            inputProps={{ min, max, step: 'any' }}
             value={value}
             onChange={event => setValue(event.target.value)}
           />
