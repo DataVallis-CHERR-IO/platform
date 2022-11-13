@@ -47,9 +47,7 @@ const ProjectGallery: React.FC<IProjectMediaProps> = ({ projectId }) => {
               {!isLoading ? (
                 projectMedia.map((media: IProjectMedia) => (
                   <React.Fragment key={media.id}>
-                    <div>
-                      <Image loader={() => media.path} src={media.path} alt={media.name} width={341} height={341} unoptimized={true} />
-                    </div>
+                    <img alt={media.name} src={media.path} width={341} />
                   </React.Fragment>
                 ))
               ) : (
