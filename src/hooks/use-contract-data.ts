@@ -90,15 +90,9 @@ const useContractData = ({ contractAddress, data, initialData = {} }: IUseContra
         if (data.project.includes('getRequests')) {
           const contractProjectRequests = await contractProject.getRequests().call()
 
-          const values: number[] = []
-
-          if (contractProjectRequests._values.length > 0) {
-            contractProjectRequests._values.forEach(value => values.push(Number(value.toString())))
-          }
-
           dataRes.project.requests || (dataRes.project.requests = {})
           dataRes.project.requests.descriptions = contractProjectRequests._descriptions
-          dataRes.project.requests.values = values
+          dataRes.project.requests.values = contractProjectRequests._values.map(value => Number(value.toString()))
           dataRes.project.requests.recipients = contractProjectRequests._recipients
           dataRes.project.requests.completed = contractProjectRequests._completed
           dataRes.project.requests.numVoters = contractProjectRequests._numVoters
@@ -168,6 +162,7 @@ const useContractData = ({ contractAddress, data, initialData = {} }: IUseContra
       onError: error => {
         console.log('❌ useContractData hook error: ', error)
       },
+      initialData,
       keepPreviousData: true,
       enabled: !!blockNumber && !!contractAddress && !!initialData
     }

@@ -18,7 +18,7 @@ const ProjectCountdown: React.FC = () => {
   const { contractProject, contractProjectActivator } = useContractContext()
 
   useEffect(() => {
-    if (contractProject?.stage !== StageEnum.PENDING) {
+    if ([StageEnum.ACTIVE, StageEnum.ENDED].includes(contractProject?.stage)) {
       setTitle(t(contractProject?.stage === StageEnum.ACTIVE ? 'project.isLiveNow' : 'project.hasEnded'))
       setSubtitle(t(contractProject?.stage === StageEnum.ACTIVE ? 'project.endsIn' : 'project.endedBefore'))
 

@@ -8,12 +8,14 @@ export const useContractContext = () => useContext(ContractContext)
 interface IContractProviderProps {
   children: React.ReactNode
   project: IProject
+  initialData: any
 }
 
-const ContractProvider: React.FC<IContractProviderProps> = ({ children, project }) => {
+const ContractProvider: React.FC<IContractProviderProps> = ({ children, project, initialData }) => {
   const { data: contractData } = useContractData({
     contractAddress: project.contractAddress,
-    data: { project: ['getData', 'getRequests', 'getVoted', 'donations'], projectActivator: ['projects', 'getActivators', 'getActivatedAmount'] }
+    data: { project: ['getData', 'getRequests', 'getVoted', 'donations'], projectActivator: ['projects', 'getActivators', 'getActivatedAmount'] },
+    initialData: JSON.parse(initialData)
   })
 
   return (
