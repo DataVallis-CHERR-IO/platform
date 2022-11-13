@@ -1,4 +1,3 @@
-import Layout from '../components/pages/layout'
 import ProjectsComponent from '../components/pages/projects.component'
 import { apolloClient } from '../clients/graphql'
 import { QUERY_PROJECTS } from '../constants/queries/database/project'
@@ -22,11 +21,7 @@ interface IProjectsProps {
 }
 
 const Projects: NextPage<IProjectsProps> = ({ projects }) => {
-  return (
-    <Layout>
-      <ProjectsComponent projects={projects} />
-    </Layout>
-  )
+  return <ProjectsComponent projects={projects} />
 }
 
 export default Projects

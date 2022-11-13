@@ -6,7 +6,7 @@ import useConnect from '../../../hooks/use-connect'
 import { truncateAddress } from '../../../utils'
 import { useSession } from 'next-auth/react'
 
-const Header: React.FC = () => {
+const Navbar: React.FC = () => {
   const { t } = useTranslation('common')
   const { data: session } = useSession()
   const { connect, disconnect } = useConnect()
@@ -64,4 +64,4 @@ const Header: React.FC = () => {
   )
 }
 
-export default Header
+export default Navbar

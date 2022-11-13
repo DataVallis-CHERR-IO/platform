@@ -1,5 +1,4 @@
 import React from 'react'
-import Layout from '../../components/pages/layout'
 import CreateNewProjectComponent from '../../components/pages/dashboard/create-new-project.component'
 import { apolloClient } from '../../clients/graphql'
 import { QUERY_PROJECT_TYPES } from '../../constants/queries/database/project-type'
@@ -22,11 +21,7 @@ interface ICreateNewProjectProps {
 }
 
 const CreateNewProject: React.FC<ICreateNewProjectProps> = ({ projectTypes }) => {
-  return (
-    <Layout>
-      <CreateNewProjectComponent projectTypes={projectTypes} />
-    </Layout>
-  )
+  return <CreateNewProjectComponent projectTypes={projectTypes} />
 }
 
 export default CreateNewProject

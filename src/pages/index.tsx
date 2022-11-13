@@ -1,9 +1,7 @@
 import type { NextPage } from 'next'
 import React from 'react'
 import Head from 'next/head'
-import Header from '../components/pages/header'
 import Home from '../components/pages/home'
-import Footer from '../components/pages/footer'
 import ProjectsProvider, { IProject } from '../contexts/projects'
 import { apolloClient } from '../clients/graphql'
 import { QUERY_PROJECTS } from '../constants/queries/database/project'
@@ -37,11 +35,9 @@ const App: NextPage<IAppProps> = ({ projects }) => {
         <meta name='description' content='' />
         <meta name='author' content='' />
       </Head>
-      <Header />
       <ProjectsProvider projects={projects}>
         <Home />
       </ProjectsProvider>
-      <Footer />
     </div>
   )
 }

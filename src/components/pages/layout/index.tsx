@@ -1,5 +1,5 @@
 import React from 'react'
-import Header from '../header'
+import Navbar from '../navbar'
 import Footer from '../footer'
 
 interface ILayoutProps {
@@ -9,7 +9,7 @@ interface ILayoutProps {
 const Layout: React.FC<ILayoutProps> = ({ children }) => {
   return (
     <>
-      <Header />
+      <Navbar />
       {children}
       <Footer />
     </>

@@ -1,5 +1,4 @@
 import React from 'react'
-import Layout from '../../components/pages/layout'
 import ProjectDetail from '../../components/pages/projects/project-detail'
 import ContractProvider from '../../contexts/contract'
 import { apolloClient } from '../../clients/graphql'
@@ -42,11 +41,9 @@ interface IProjectProps {
 
 const Slug: React.FC<IProjectProps> = ({ project }) => {
   return (
-    <Layout>
-      <ContractProvider project={project}>
-        <ProjectDetail project={project} />
-      </ContractProvider>
-    </Layout>
+    <ContractProvider project={project}>
+      <ProjectDetail project={project} />
+    </ContractProvider>
   )
 }
 

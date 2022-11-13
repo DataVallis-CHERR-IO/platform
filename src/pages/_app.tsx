@@ -4,6 +4,7 @@ import React from 'react'
 import I18nProvider from 'next-translate/I18nProvider'
 import RouteGuard from '../guards/route.guard'
 import TronWebProvider from '../contexts/tronweb'
+import Layout from '../components/pages/layout'
 import { Session } from 'next-auth'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { ToastContainer } from 'react-toastify'
@@ -41,7 +42,9 @@ const MyApp = ({ Component, pageProps }: AppProps<{ session: Session }>) => {
             <TronWebProvider>
               <SessionProvider session={pageProps.session} refetchInterval={0}>
                 <RouteGuard>
-                  <Component {...pageProps} />
+                  <Layout>
+                    <Component {...pageProps} />
+                  </Layout>
                   <ToastContainer />
                 </RouteGuard>
               </SessionProvider>
