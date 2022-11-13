@@ -168,7 +168,6 @@ const useContractData = ({ contractAddress, data, initialData = {} }: IUseContra
       onError: error => {
         console.log('❌ useContractData hook error: ', error)
       },
-      initialData,
       keepPreviousData: true,
       enabled: !!blockNumber && !!contractAddress && !!initialData
     }

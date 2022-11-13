@@ -88,7 +88,16 @@ const ProjectDetail: React.FC<IProjectDetailProps> = ({ project }) => {
               </div>
               <div className='col-lg-10 mx-auto header-holder'>
                 <div className='header-image'>
-                  <img alt={project.image} src={project.image} width='100%' height='355' />
+                  <div
+                    style={{
+                      backgroundImage: `url(${project.image})`,
+                      backgroundSize: 'cover',
+                      backgroundRepeat: 'no-repeat',
+                      backgroundPosition: 'center top',
+                      width: '100%',
+                      height: 341
+                    }}
+                  ></div>
                 </div>
                 <div className='project-content clearfix'>
                   <ProjectCountdown />
