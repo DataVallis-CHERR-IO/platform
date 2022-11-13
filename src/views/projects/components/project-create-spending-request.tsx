@@ -35,8 +35,6 @@ const ProjectCreateSpendingRequest: React.FC<IProjectCreateSpendingRequestProps>
         return
       }
 
-      console.log(value)
-      return
       setOpen(!open)
 
       await method('createSpendingRequest', [description, recipient, toSun(value)], null, project.contractAddress)
@@ -51,7 +49,9 @@ const ProjectCreateSpendingRequest: React.FC<IProjectCreateSpendingRequestProps>
   )
 
   const handleMax = useCallback(() => {
-    contractProject?.requests?.values?.length === 0 || setMax(fromSun(contractProject?.requests?.values?.reduce((value1, value2) => value1 + value2, 0)))
+    console.log(contractProject?.requests?.values)
+    contractProject?.requests?.values?.length === 0 ||
+      setMax(fromSun(project.goal) - fromSun(contractProject?.requests?.values?.reduce((value1, value2) => value1 + value2, 0)))
   }, [contractProject?.requests?.values])
 
   useEffect(() => {
@@ -113,9 +113,11 @@ const ProjectCreateSpendingRequest: React.FC<IProjectCreateSpendingRequestProps>
                 </div>
                 <div className='row section-profile'>
                   <div className='col-md-12'>
-                    <Button onClick={handleCreate} variant='contained' color='success'>
-                      {t('create')}
-                    </Button>
+                    {!!max && (
+                      <Button onClick={handleCreate} variant='contained' color='success'>
+                        {t('create')}
+                      </Button>
+                    )}
                   </div>
                 </div>
               </form>
