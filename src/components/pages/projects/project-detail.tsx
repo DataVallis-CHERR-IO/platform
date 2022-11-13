@@ -89,7 +89,15 @@ const ProjectDetail: React.FC<IProjectDetailProps> = ({ project }) => {
               </div>
               <div className='col-lg-10 mx-auto header-holder'>
                 <div className='header-image'>
-                  <Image src='/img/platform/header-2.jpg' alt='header' className='img-fluid' width={920} height={355} />
+                  <Image
+                    loader={() => project.image}
+                    src={project.image}
+                    alt={project.title}
+                    width={920}
+                    height={355}
+                    unoptimized={true}
+                    className='img-fluid'
+                  />
                 </div>
                 <div className='project-content clearfix'>
                   <ProjectCountdown />
