@@ -3,14 +3,15 @@ import Link from 'next/link'
 import Image from 'next/image'
 import useTranslation from 'next-translate/useTranslation'
 import StickyHeadTable from '../../themes/components/data/sticky-head.table'
+import useContractsData from '../../hooks/use-contracts-data'
 import { IProject } from '../../interfaces/api'
 import { fromSun } from '../../utils'
-// import { useQuery } from 'react-query'
-// import { apolloClient } from '../../clients/graphql'
-// import { QUERY_PROJECT_MEDIA } from '../../constants/queries/database/project-media'
-// import { MediaTypeEnum } from '../../enums/media-type.enum'
-// import { useTronWebContext } from '../../contexts/tronweb/provider'
-// import useContractData from '../../hooks/use-contract-data'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { StageEnum } from '../../enums/stage.enum'
+import { faClock } from '@fortawesome/free-regular-svg-icons'
+import { faFlagCheckered, faListCheck } from '@fortawesome/free-solid-svg-icons'
+import { BeatLoader } from 'react-spinners'
+import { Tooltip } from '@mui/material'
 
 interface IProjectsComponentProps {
   projects?: IProject[]
@@ -24,46 +25,20 @@ const ProjectsComponent: React.FC<IProjectsComponentProps> = ({ projects }) => {
       { id: 'image', label: t('image') },
       { id: 'title', label: t('title') },
       { id: 'excerpt', label: t('excerpt') },
-      { id: 'stage', label: t('stage') },
-      { id: 'goal', label: t('goal') }
+      { id: 'donated', label: t('donated'), width: 100 },
+      { id: 'goal', label: t('goal'), width: 100 },
+      { id: 'status', label: t('status') }
     ],
     []
   )
-  const contractsData = []
-  //
-  // projects.forEach((project: IProject, index: number) => {
-  //   const { data: contractData } = useContractData({
-  //     contractAddress: project.contractAddress,
-  //     data: { project: ['getData'] }
-  //   })
-  //
-  //   contractsData[index] = contractData
-  // })
-
-  // const getContractData = (contractAddress: string) => {
-  //   return useQuery(
-  //     ['contractData'],
-  //     async () => {
-  //       const contract = await tronWeb.contract().at(contractAddress)
-  //       const data = await contract.getData().call()
-  //
-  //       console.log(data)
-  //
-  //       return {}
-  //     },
-  //     {
-  //       onError: error => {
-  //         console.log('❌ GraphQL error (query media): ', error)
-  //       }
-  //     }
-  //   )
-  // }
+  const { data: contractsData, isLoading } = useContractsData({
+    contractAddresses: projects.map((project: IProject) => project.contractAddress),
+    data: { project: ['getData'] }
+  })
 
   const handleProjects = useCallback(() => {
     const data = []
-    projects.forEach((project: IProject) => {
-      // const { data: contractData, isLoading } = getContractData(project.contractAddress)
-      // console.log(contractsData[index])
+    projects.forEach((project: IProject, index: number) => {
       data.push({
         image: <Image loader={() => project.image} src={project.image} alt={project.title} width={48} height={48} unoptimized={true} />,
         title: (
@@ -74,12 +49,48 @@ const ProjectsComponent: React.FC<IProjectsComponentProps> = ({ projects }) => {
           </Link>
         ),
         excerpt: project.excerpt,
-        stage: <>1</>,
-        // stage: <>{contractsData[index]?.project?.stage}</>,
+        donated: isLoading ? (
+          <BeatLoader color='#d21242' loading={isLoading} size={5} />
+        ) : (
+          <>
+            <Image src='/img/tron-black.png' width={14} height={14} /> {contractsData[index]?.project?.raisedAmount}
+          </>
+        ),
         goal: (
           <>
             <Image src='/img/tron-black.png' width={14} height={14} /> {fromSun(project.goal)}
           </>
+        ),
+        status: isLoading ? (
+          <BeatLoader color='#d21242' loading={isLoading} size={5} />
+        ) : (
+          <Tooltip
+            title={t(
+              contractsData[index]?.project?.stage === StageEnum.PENDING
+                ? 'project.activationIsNeeded'
+                : contractsData[index]?.project?.stage === StageEnum.ACTIVE
+                ? 'project.isLiveNow'
+                : 'project.hasEnded'
+            )}
+          >
+            <FontAwesomeIcon
+              icon={
+                contractsData[index]?.project?.stage === StageEnum.PENDING
+                  ? faClock
+                  : contractsData[index]?.project?.stage === StageEnum.ACTIVE
+                  ? faListCheck
+                  : faFlagCheckered
+              }
+              className={
+                contractsData[index]?.project?.stage === StageEnum.PENDING
+                  ? 'color-warning'
+                  : contractsData[index]?.project?.stage === StageEnum.ACTIVE
+                  ? 'color-success'
+                  : 'color-danger'
+              }
+              size={'xl'}
+            />
+          </Tooltip>
         )
       })
     })
@@ -89,6 +100,8 @@ const ProjectsComponent: React.FC<IProjectsComponentProps> = ({ projects }) => {
 
   useEffect(() => {
     handleProjects()
+
+    console.log(contractsData)
   }, [projects, contractsData])
 
   return (

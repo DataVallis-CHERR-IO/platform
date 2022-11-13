@@ -2285,6 +2285,10 @@ section.resume-section .section-inner {
     color: #d21242;
 }
 
+.color-warning {
+    color: #ffc107;
+}
+
 .color-info {
     color: #3374BD;
 }

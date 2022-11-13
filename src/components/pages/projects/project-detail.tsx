@@ -3,7 +3,6 @@ import ProjectCountdown from '../../../views/projects/components/project-countdo
 import useTranslation from 'next-translate/useTranslation'
 import Subscribe from '../../../views/subscribe'
 import ProjectGallery from '../../../views/projects/components/project-gallery'
-import Image from 'next/image'
 import ProjectDonation from '../../../views/projects/components/project-donation'
 import SendTransactionDialog from '../../../themes/components/feedback/dialog/send-transaction.dialog'
 import ProjectCreateSpendingRequest from '../../../views/projects/components/project-create-spending-request'
@@ -89,15 +88,7 @@ const ProjectDetail: React.FC<IProjectDetailProps> = ({ project }) => {
               </div>
               <div className='col-lg-10 mx-auto header-holder'>
                 <div className='header-image'>
-                  <Image
-                    loader={() => project.image}
-                    src={project.image}
-                    alt={project.title}
-                    width={920}
-                    height={355}
-                    unoptimized={true}
-                    className='img-fluid'
-                  />
+                  <img alt={project.image} src={project.image} width='100%' height='355' />
                 </div>
                 <div className='project-content clearfix'>
                   <ProjectCountdown />
