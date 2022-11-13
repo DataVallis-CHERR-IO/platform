@@ -16,6 +16,8 @@ const ProjectDonation: React.FC<IProjectDonation> = ({ project }) => {
   const { contractProject } = useContractContext()
 
   useEffect(() => {
+    if (contractProject.raisedAmount === undefined) return
+
     setProgress(Math.floor((contractProject.raisedAmount / fromSun(project?.goal)) * 100))
   }, [contractProject.raisedAmount])
 

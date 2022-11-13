@@ -19,6 +19,8 @@ const ProjectCountdown: React.FC = () => {
   const { contractProject, contractProjectActivator } = useContractContext()
 
   useEffect(() => {
+    if (contractProjectActivator.project?.activatedAmount === undefined) return
+
     if (contractProject.stage !== StageEnum.PENDING) {
       setTitle(t(contractProject.stage === StageEnum.ACTIVE ? 'project.isLiveNow' : 'project.hasEnded'))
       setSubtitle(t(contractProject.stage === StageEnum.ACTIVE ? 'project.endsIn' : 'project.endedBefore'))
@@ -44,7 +46,6 @@ const ProjectCountdown: React.FC = () => {
     }
 
     !contractProjectActivator ||
-      contractProjectActivator.project?.activatedAmount === undefined ||
       setProgress(Math.floor((contractProjectActivator.project?.activatedAmount / contractProjectActivator.project?.activateSize) * 100))
   }, [contractProject.stage, contractProjectActivator.project?.activatedAmount, contractProjectActivator.project?.activators])
 
