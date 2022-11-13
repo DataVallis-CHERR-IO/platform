@@ -33,14 +33,14 @@ const ProjectSpendingRequests: React.FC<IProjectSpendingRequests> = ({ project }
         width: 100,
         ignore:
           !session ||
-          session.user.name.toLowerCase() === contractProject?.owner?.toLowerCase() ||
-          contractProject?.donations === 0 ||
-          contractProject?.requests?.voted
+          session.user.name.toLowerCase() === contractProject.owner?.toLowerCase() ||
+          contractProject.donations === 0 ||
+          contractProject.requests?.voted
       }
     ],
-    [contractProject?.requests?.voted]
+    [contractProject.requests?.voted]
   )
-  const length = useMemo(() => contractProject?.requests?.descriptions?.length, [contractProject?.requests?.descriptions])
+  const length = useMemo(() => contractProject.requests?.descriptions?.length, [contractProject.requests?.descriptions])
 
   const handleVote = useCallback(
     async index => {
@@ -53,22 +53,22 @@ const ProjectSpendingRequests: React.FC<IProjectSpendingRequests> = ({ project }
     const data = []
     for (let i = 0; i < length; i++) {
       data.push({
-        recipient: truncateAddress(contractProject?.requests?.recipients[i]),
+        recipient: truncateAddress(contractProject.requests?.recipients[i]),
         amount: (
           <>
-            <Image src='/img/tron-black.png' width={14} height={14} /> {fromSun(contractProject?.requests?.values[i]?.toString())}
+            <Image src='/img/tron-black.png' width={14} height={14} /> {fromSun(contractProject.requests?.values[i]?.toString())}
           </>
         ),
-        description: contractProject?.requests?.descriptions[i],
+        description: contractProject.requests?.descriptions[i],
         completed: (
           <FontAwesomeIcon
-            icon={contractProject?.requests?.completed[i] ? faCheck : faXmark}
-            className={contractProject?.requests?.completed[i] ? 'color-success' : 'color-danger'}
+            icon={contractProject.requests?.completed[i] ? faCheck : faXmark}
+            className={contractProject.requests?.completed[i] ? 'color-success' : 'color-danger'}
             size='2x'
           />
         ),
-        numberOfVoters: contractProject?.requests?.numVoters[i]?.toString(),
-        vote: !contractProject?.requests?.completed[i] && (
+        numberOfVoters: contractProject.requests?.numVoters[i]?.toString(),
+        vote: !contractProject.requests?.completed[i] && (
           <FontAwesomeIcon icon={faThumbsUp} onClick={() => handleVote(i)} className='color-info cursor-pointer' size='2x' />
         )
       })
@@ -79,7 +79,7 @@ const ProjectSpendingRequests: React.FC<IProjectSpendingRequests> = ({ project }
 
   useEffect(() => {
     handleRequests()
-  }, [contractProject?.requests?.numVoters])
+  }, [contractProject.requests?.numVoters])
 
   return (
     <section className='section-3 pt-0'>

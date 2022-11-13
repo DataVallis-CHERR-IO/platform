@@ -49,13 +49,13 @@ const ProjectCreateSpendingRequest: React.FC<IProjectCreateSpendingRequestProps>
   )
 
   const handleMax = useCallback(() => {
-    contractProject?.requests?.values?.length === 0 ||
-      setMax(fromSun(project.goal) - fromSun(contractProject?.requests?.values?.reduce((value1, value2) => value1 + value2, 0)))
-  }, [contractProject?.requests?.values])
+    contractProject.requests?.values?.length === 0 ||
+      setMax(fromSun(project.goal) - fromSun(contractProject.requests?.values?.reduce((value1, value2) => value1 + value2, 0)))
+  }, [contractProject.requests?.values])
 
   useEffect(() => {
     handleMax()
-  }, [contractProject?.requests?.values])
+  }, [contractProject.requests?.values])
 
   return (
     <>

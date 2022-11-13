@@ -48,7 +48,7 @@ const ProjectDetail: React.FC<IProjectDetailProps> = ({ project }) => {
       setShowSendTransactionDialog(false)
 
       if (value) {
-        if (contractProject?.stage === StageEnum.PENDING) {
+        if (contractProject.stage === StageEnum.PENDING) {
           await method('activateProject', [project.contractAddress], toSun(value))
         } else {
           await method('donate', [], toSun(value), project.contractAddress)
@@ -59,11 +59,11 @@ const ProjectDetail: React.FC<IProjectDetailProps> = ({ project }) => {
   )
 
   useEffect(() => {
-    if (session && contractProject?.stage !== StageEnum.ENDED) {
-      if (contractProject?.stage === StageEnum.PENDING) {
-        const availableAmount = contractProjectActivator?.project?.activateSize - contractProjectActivator?.project?.activatedAmount
+    if (session && contractProject.stage !== StageEnum.ENDED) {
+      if (contractProject.stage === StageEnum.PENDING) {
+        const availableAmount = contractProjectActivator.project?.activateSize - contractProjectActivator.project?.activatedAmount
         const maxAmount =
-          contractProjectActivator?.project?.activateSize / contractProjectActivator?.project?.numActivators - contractProjectActivator?.activatedAmount
+          contractProjectActivator.project?.activateSize / contractProjectActivator.project?.numActivators - contractProjectActivator.activatedAmount
 
         setMax(maxAmount > availableAmount ? availableAmount : maxAmount)
         getBalance()
@@ -71,11 +71,11 @@ const ProjectDetail: React.FC<IProjectDetailProps> = ({ project }) => {
         getBalance(true)
       }
       setDisplayButton(true)
-      setButtonText(contractProject?.stage === StageEnum.PENDING ? 'activate' : 'donateNow')
+      setButtonText(contractProject.stage === StageEnum.PENDING ? 'activate' : 'donateNow')
     } else {
       setDisplayButton(false)
     }
-  }, [contractProject?.stage, contractProjectActivator?.activatedAmount, session])
+  }, [contractProject.stage, contractProjectActivator.activatedAmount, session])
 
   return (
     <>
@@ -135,18 +135,18 @@ const ProjectDetail: React.FC<IProjectDetailProps> = ({ project }) => {
         </div>
       </section>
       <ProjectGallery projectId={project.id} />
-      {session && session.user.name.toLowerCase() === contractProject?.owner?.toLowerCase() && (
+      {session && session.user.name.toLowerCase() === contractProject.owner?.toLowerCase() && (
         <ProjectCreateSpendingRequest project={project} contractProject={contractProject} />
       )}{' '}
-      {contractProject?.requests?.descriptions?.length > 0 && <ProjectSpendingRequests project={project} />}
+      {contractProject.requests?.descriptions?.length > 0 && <ProjectSpendingRequests project={project} />}
       <Subscribe />
       <SendTransactionDialog
         title={buttonText}
-        contentText={contractProject?.stage === StageEnum.PENDING ? 'project.activateContentText' : 'project.donateContentText'}
+        contentText={contractProject.stage === StageEnum.PENDING ? 'project.activateContentText' : 'project.donateContentText'}
         open={showSendTransactionDialog}
         onClose={handleOnClose}
         balance={balance}
-        min={contractProject?.minimumDonation}
+        min={contractProject.minimumDonation}
         max={max}
       />
     </>

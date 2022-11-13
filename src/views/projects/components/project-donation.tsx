@@ -16,20 +16,20 @@ const ProjectDonation: React.FC<IProjectDonation> = ({ project }) => {
   const { contractProject } = useContractContext()
 
   useEffect(() => {
-    setProgress(Math.floor((contractProject?.raisedAmount / fromSun(project?.goal)) * 100))
-  }, [contractProject?.raisedAmount])
+    setProgress(Math.floor((contractProject.raisedAmount / fromSun(project?.goal)) * 100))
+  }, [contractProject.raisedAmount])
 
   return (
     <div className='project-content-right'>
       <div className='project-title'>{t('project.details')}</div>
       <div className='project-progress'>
-        <ProjectProgress progress={progress} balance={contractProject?.raisedAmount} />
+        <ProjectProgress progress={progress} balance={contractProject.raisedAmount} />
         <div className='project-info'>
           <div className='project-info-1'>
             {t('funded')}:{' '}
             <>
               <Image src='/img/tron-white.png' width={14} height={14} />
-              <span className='ml-1'>{contractProject?.raisedAmount}</span>
+              <span className='ml-1'>{contractProject.raisedAmount}</span>
             </>
           </div>
           <div className='project-info-2'>
@@ -40,7 +40,7 @@ const ProjectDonation: React.FC<IProjectDonation> = ({ project }) => {
             </>
           </div>
           <div className='project-info-3'>
-            {t('donations')}: {contractProject?.numDonations}
+            {t('donations')}: {contractProject.numDonations}
           </div>
         </div>
       </div>

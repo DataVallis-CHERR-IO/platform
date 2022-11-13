@@ -99,7 +99,7 @@ const ProjectCard: React.FC<IProjectCardProps> = ({ project }) => {
                 </span>
               </li>
             </ul>
-            <Link href={`/projects/${project.slug}`}>
+            <Link href={'/projects/[slug]'} as={`/projects/${project.slug}`}>
               <div className='btn btn-black mt-2 btn-sm'>{t(`common:${btnText}`)}</div>
             </Link>
           </div>

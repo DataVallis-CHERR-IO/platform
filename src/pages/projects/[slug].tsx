@@ -9,14 +9,6 @@ import { IProject } from '../../interfaces/api'
 import { fromSun } from '../../utils'
 import { contractProjectActivatorOptions, tronNetworkOptions } from '../../config'
 
-const HttpProvider = TronWeb.providers.HttpProvider
-const tronWeb = new TronWeb(
-  new HttpProvider(tronNetworkOptions.provider),
-  new HttpProvider(tronNetworkOptions.provider),
-  new HttpProvider(tronNetworkOptions.provider)
-)
-tronWeb.setAddress(contractProjectActivatorOptions.owner)
-
 export const getServerSideProps = async context => {
   const { data } = await apolloClient.query({
     query: QUERY_PROJECT,
@@ -35,6 +27,14 @@ export const getServerSideProps = async context => {
       }
     }
   }
+
+  const HttpProvider = TronWeb.providers.HttpProvider
+  const tronWeb = new TronWeb(
+    new HttpProvider(tronNetworkOptions.provider),
+    new HttpProvider(tronNetworkOptions.provider),
+    new HttpProvider(tronNetworkOptions.provider)
+  )
+  tronWeb.setAddress(contractProjectActivatorOptions.owner)
 
   const contractProject = await tronWeb.contract().at(data.project.contractAddress)
   const contractProjectActivator = await tronWeb.contract().at(contractProjectActivatorOptions.address)
