@@ -127,7 +127,9 @@ const ProjectDetail: React.FC<IProjectDetailProps> = ({ project }) => {
         </div>
       </section>
       <ProjectGallery projectId={project.id} />
-      {session && session.user.name.toLowerCase() === contractProject?.owner?.toLowerCase() && <ProjectCreateSpendingRequest project={project} />}{' '}
+      {session && session.user.name.toLowerCase() === contractProject?.owner?.toLowerCase() && (
+        <ProjectCreateSpendingRequest project={project} contractProject={contractProject} />
+      )}{' '}
       {contractProject?.requests?.descriptions?.length > 0 && <ProjectSpendingRequests project={project} />}
       <Subscribe />
       <SendTransactionDialog

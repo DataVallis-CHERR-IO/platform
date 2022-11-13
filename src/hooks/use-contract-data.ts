@@ -28,6 +28,7 @@ interface IDataRes {
       recipients?: string[]
       completed?: boolean[]
       numVoters?: number[]
+      voted?: boolean[]
     }
   }
   projectActivator?: {
@@ -89,12 +90,32 @@ const useContractData = ({ contractAddress, data, initialData = {} }: IUseContra
         if (data.project.includes('getRequests')) {
           const contractProjectRequests = await contractProject.getRequests().call()
 
-          dataRes.project.requests = {}
+          const values: number[] = []
+
+          if (contractProjectRequests._values.length > 0) {
+            contractProjectRequests._values.forEach(value => values.push(Number(value.toString())))
+          }
+
+          dataRes.project.requests || (dataRes.project.requests = {})
           dataRes.project.requests.descriptions = contractProjectRequests._descriptions
-          dataRes.project.requests.values = contractProjectRequests._values
+          dataRes.project.requests.values = values
           dataRes.project.requests.recipients = contractProjectRequests._recipients
           dataRes.project.requests.completed = contractProjectRequests._completed
           dataRes.project.requests.numVoters = contractProjectRequests._numVoters
+        }
+
+        if (data.project.includes('getVoted') && session) {
+          const contractProjectNumRequests = Number((await contractProject.numRequests().call()).toString())
+
+          if (contractProjectNumRequests > 0) {
+            dataRes.project.requests || (dataRes.project.requests = {})
+
+            for (let i = 0; i < contractProjectNumRequests; i++) {
+              const contractProjectVoted = await contractProject.getVoted(i, session.user.name).call()
+
+              dataRes.project.requests.voted = contractProjectVoted._voted
+            }
+          }
         }
 
         if (data.project.includes('donations')) {

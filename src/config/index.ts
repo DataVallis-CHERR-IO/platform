@@ -11,7 +11,7 @@ export const dropZoneOptions: IDropZoneOptions = {
 
 export const contractProjectActivatorOptions: IContractProjectActivatorOptions = {
   owner: 'TDagn9CdgAdJJNbpqTSjCqt39wpvUsHLwN',
-  address: 'TH9DcRg2FqjshEQgbXWi5bSaTLRUpyeWmc'
+  address: 'TAoNHeBQMWU8pxqhbdNT59hAkjDnSoxVPV'
 }
 
 export const tronNetworkOptions: ITronNetworkOptions = {

@@ -42,6 +42,11 @@ export const getServerSideProps = async context => {
   const contractProjectRequests = await contractProject.getRequests().call()
   const contractProjectActivatorProject = await contractProjectActivator.projects(data.project.contractAddress).call()
   const contractProjectActivatorActivators = await contractProjectActivator.getActivators(data.project.contractAddress).call()
+  const values: number[] = []
+
+  if (contractProjectRequests._values.length > 0) {
+    contractProjectRequests._values.forEach(value => values.push(Number(value.toString())))
+  }
 
   return {
     props: {
@@ -58,7 +63,7 @@ export const getServerSideProps = async context => {
           numDonations: Number(contractProjectData._numDonations.toString()),
           requests: {
             descriptions: contractProjectRequests._descriptions,
-            values: contractProjectRequests._values,
+            values,
             recipients: contractProjectRequests._recipients,
             completed: contractProjectRequests._completed,
             numVoters: contractProjectRequests._numVoters

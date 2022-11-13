@@ -8,7 +8,7 @@ const Projects: React.FC = () => {
 
   // console.log(TronWeb.address.fromHex('41893186a6bde128cc0970c81196fdb19b49a6f0e1'))
   // console.log(TronWeb.address.toHex('TWrRd9bhran4gLYFeXLHFsbGtd8caFKhdE'), 'CHR TOKEN')
-  // console.log(TronWeb.address.toHex('TH9DcRg2FqjshEQgbXWi5bSaTLRUpyeWmc'), 'ACTIVATOR')
+  // console.log(TronWeb.address.toHex('TAoNHeBQMWU8pxqhbdNT59hAkjDnSoxVPV'), 'ACTIVATOR TAoNHeBQMWU8pxqhbdNT59hAkjDnSoxVPV')
   return (
     <section>
       <div className='container pb-80'>

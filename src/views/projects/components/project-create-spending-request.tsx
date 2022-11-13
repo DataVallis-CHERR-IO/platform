@@ -1,20 +1,23 @@
-import React, { useCallback, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import useTranslation from 'next-translate/useTranslation'
 import { Backdrop, Button, CircularProgress, TextField } from '@mui/material'
 import { method } from '../../../modules/method'
-import { toSun, isAddress } from '../../../utils'
+import { toSun, isAddress, fromSun } from '../../../utils'
 import { notify } from '../../../utils/notify'
 import { IProject } from '../../../interfaces/api'
+import { IContractProject } from '../../../contexts/contract/context'
 
 interface IProjectCreateSpendingRequestProps {
   project: IProject
+  contractProject: IContractProject
 }
 
-const ProjectCreateSpendingRequest: React.FC<IProjectCreateSpendingRequestProps> = ({ project }) => {
+const ProjectCreateSpendingRequest: React.FC<IProjectCreateSpendingRequestProps> = ({ project, contractProject }) => {
   const { t } = useTranslation('common')
   const [recipient, setRecipient] = useState<string>('')
   const [value, setValue] = useState<string>('')
   const [description, setDescription] = useState<string>('')
+  const [max, setMax] = useState<number>(fromSun(project.goal))
   const [open, setOpen] = React.useState<boolean>(false)
   const formRef = useRef<HTMLFormElement>(null)
 
@@ -45,6 +48,14 @@ const ProjectCreateSpendingRequest: React.FC<IProjectCreateSpendingRequestProps>
     [recipient, description, value]
   )
 
+  const handleMax = useCallback(() => {
+    contractProject?.requests?.values?.length === 0 || setMax(fromSun(contractProject?.requests?.values?.reduce((value1, value2) => value1 + value2, 0)))
+  }, [contractProject?.requests?.values])
+
+  useEffect(() => {
+    handleMax()
+  }, [contractProject?.requests?.values])
+
   return (
     <>
       <section className='section-3 pt-0'>
@@ -66,7 +77,7 @@ const ProjectCreateSpendingRequest: React.FC<IProjectCreateSpendingRequestProps>
                       onChange={event => setRecipient(event.target.value)}
                     />
                   </div>
-                  <div className='col-md-6 mb-5'>
+                  <div className='col-md-5 mb-5'>
                     <TextField
                       required
                       label={t('value')}
@@ -77,6 +88,11 @@ const ProjectCreateSpendingRequest: React.FC<IProjectCreateSpendingRequestProps>
                       onChange={event => setValue(event.target.value)}
                       type='number'
                     />
+                  </div>
+                  <div className='col-md-1 mb-5 align-self-end'>
+                    <div onClick={() => setValue(max.toString())} className='cursor-pointer'>
+                      {t('max')}
+                    </div>
                   </div>
                   <div className='col-md-12 mb-5'>
                     <TextField

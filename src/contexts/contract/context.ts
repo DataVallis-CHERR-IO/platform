@@ -6,9 +6,10 @@ interface IContractProjectRequests {
   recipients?: string[]
   completed?: boolean[]
   numVoters?: number[]
+  voted?: boolean[]
 }
 
-interface IContractProject {
+export interface IContractProject {
   owner?: string
   stage?: number
   minimumDonation?: number

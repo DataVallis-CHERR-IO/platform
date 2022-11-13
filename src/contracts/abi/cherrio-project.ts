@@ -360,7 +360,7 @@ export const getCherrioProjectAbi = (): any[] => [
     inputs: [
       {
         internalType: 'uint256',
-        name: 'index',
+        name: '_index',
         type: 'uint256'
       }
     ],
@@ -423,6 +423,30 @@ export const getCherrioProjectAbi = (): any[] => [
         internalType: 'uint256[]',
         name: '_numVoters',
         type: 'uint256[]'
+      }
+    ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: '_index',
+        type: 'uint256'
+      },
+      {
+        internalType: 'address',
+        name: '_address',
+        type: 'address'
+      }
+    ],
+    name: 'getVoted',
+    outputs: [
+      {
+        internalType: 'bool',
+        name: '_voted',
+        type: 'bool'
       }
     ],
     stateMutability: 'view',
@@ -588,7 +612,7 @@ export const getCherrioProjectAbi = (): any[] => [
     inputs: [
       {
         internalType: 'uint256',
-        name: 'index',
+        name: '_index',
         type: 'uint256'
       }
     ],

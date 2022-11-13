@@ -14,7 +14,7 @@ interface IContractProviderProps {
 const ContractProvider: React.FC<IContractProviderProps> = ({ children, project, initialData }) => {
   const { data: contractData } = useContractData({
     contractAddress: project.contractAddress,
-    data: { project: ['getData', 'getRequests', 'donations'], projectActivator: ['projects', 'getActivators', 'getActivatedAmount'] },
+    data: { project: ['getData', 'getRequests', 'getVoted', 'donations'], projectActivator: ['projects', 'getActivators', 'getActivatedAmount'] },
     initialData: JSON.parse(initialData)
   })
 
@@ -36,7 +36,8 @@ const ContractProvider: React.FC<IContractProviderProps> = ({ children, project,
             values: contractData?.project?.requests?.values,
             recipients: contractData?.project?.requests?.recipients,
             completed: contractData?.project?.requests?.completed,
-            numVoters: contractData?.project?.requests?.numVoters
+            numVoters: contractData?.project?.requests?.numVoters,
+            voted: contractData?.project?.requests?.voted
           }
         },
         contractProjectActivator: {

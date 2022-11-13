@@ -10,7 +10,6 @@ export const getServerSideProps = async () => {
     query: QUERY_PROJECTS
   })
 
-  console.log(data.projects, 'PROJECTS PRO')
   return {
     props: {
       projects: data.projects

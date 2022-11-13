@@ -31,10 +31,14 @@ const ProjectSpendingRequests: React.FC<IProjectSpendingRequests> = ({ project }
         label: t('vote'),
         align: 'right',
         width: 100,
-        ignore: !session || session.user.name.toLowerCase() === contractProject?.owner?.toLowerCase() || contractProject?.donations === 0
+        ignore:
+          !session ||
+          session.user.name.toLowerCase() === contractProject?.owner?.toLowerCase() ||
+          contractProject?.donations === 0 ||
+          contractProject?.requests?.voted
       }
     ],
-    []
+    [contractProject?.requests?.voted]
   )
   const length = useMemo(() => contractProject?.requests?.descriptions?.length, [contractProject?.requests?.descriptions])
 
@@ -63,7 +67,7 @@ const ProjectSpendingRequests: React.FC<IProjectSpendingRequests> = ({ project }
             size='2x'
           />
         ),
-        numberOfVoters: contractProject?.requests?.numVoters[i].toString(),
+        numberOfVoters: contractProject?.requests?.numVoters[i]?.toString(),
         vote: !contractProject?.requests?.completed[i] && (
           <FontAwesomeIcon icon={faThumbsUp} onClick={() => handleVote(i)} className='color-info cursor-pointer' size='2x' />
         )
