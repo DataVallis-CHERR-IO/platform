@@ -20,6 +20,10 @@ interface IProjectsComponentProps {
 const ProjectsComponent: React.FC<IProjectsComponentProps> = ({ projects }) => {
   const { t } = useTranslation('common')
   const [rows, setRows] = useState<any[]>([])
+  const { data: contractsData } = useContractsData({
+    contractAddresses: projects.map((project: IProject) => project.contractAddress),
+    data: { project: ['getData'] }
+  })
   const columns = useMemo(
     () => [
       { id: 'image', label: t('image') },
@@ -31,10 +35,6 @@ const ProjectsComponent: React.FC<IProjectsComponentProps> = ({ projects }) => {
     ],
     []
   )
-  const { data: contractsData, isLoading } = useContractsData({
-    contractAddresses: projects.map((project: IProject) => project.contractAddress),
-    data: { project: ['getData'] }
-  })
 
   const handleProjects = useCallback(() => {
     const data = []
@@ -49,49 +49,51 @@ const ProjectsComponent: React.FC<IProjectsComponentProps> = ({ projects }) => {
           </Link>
         ),
         excerpt: project.excerpt,
-        donated: isLoading ? (
-          <BeatLoader color='#d21242' loading={isLoading} size={5} />
-        ) : (
-          <>
-            <Image src='/img/tron-black.png' width={14} height={14} /> {contractsData[index]?.project?.raisedAmount}
-          </>
-        ),
+        donated:
+          contractsData[index]?.project?.raisedAmount === undefined ? (
+            <BeatLoader color='#d21242' loading={true} size={5} />
+          ) : (
+            <>
+              <Image src='/img/tron-black.png' width={14} height={14} /> {contractsData[index]?.project?.raisedAmount}
+            </>
+          ),
         goal: (
           <>
             <Image src='/img/tron-black.png' width={14} height={14} /> {fromSun(project.goal)}
           </>
         ),
-        status: isLoading ? (
-          <BeatLoader color='#d21242' loading={isLoading} size={5} />
-        ) : (
-          <Tooltip
-            title={t(
-              contractsData[index]?.project?.stage === StageEnum.PENDING
-                ? 'project.activationIsNeeded'
-                : contractsData[index]?.project?.stage === StageEnum.ACTIVE
-                ? 'project.isLiveNow'
-                : 'project.hasEnded'
-            )}
-          >
-            <FontAwesomeIcon
-              icon={
+        status:
+          contractsData[index]?.project?.stage === undefined ? (
+            <BeatLoader color='#d21242' loading={true} size={5} />
+          ) : (
+            <Tooltip
+              title={t(
                 contractsData[index]?.project?.stage === StageEnum.PENDING
-                  ? faClock
+                  ? 'project.activationIsNeeded'
                   : contractsData[index]?.project?.stage === StageEnum.ACTIVE
-                  ? faListCheck
-                  : faFlagCheckered
-              }
-              className={
-                contractsData[index]?.project?.stage === StageEnum.PENDING
-                  ? 'color-warning'
-                  : contractsData[index]?.project?.stage === StageEnum.ACTIVE
-                  ? 'color-success'
-                  : 'color-danger'
-              }
-              size={'xl'}
-            />
-          </Tooltip>
-        )
+                  ? 'project.isLiveNow'
+                  : 'project.hasEnded'
+              )}
+            >
+              <FontAwesomeIcon
+                icon={
+                  contractsData[index]?.project?.stage === StageEnum.PENDING
+                    ? faListCheck
+                    : contractsData[index]?.project?.stage === StageEnum.ACTIVE
+                    ? faClock
+                    : faFlagCheckered
+                }
+                className={
+                  contractsData[index]?.project?.stage === StageEnum.PENDING
+                    ? 'color-warning'
+                    : contractsData[index]?.project?.stage === StageEnum.ACTIVE
+                    ? 'color-success'
+                    : 'color-danger'
+                }
+                size={'xl'}
+              />
+            </Tooltip>
+          )
       })
     })
 
@@ -100,8 +102,6 @@ const ProjectsComponent: React.FC<IProjectsComponentProps> = ({ projects }) => {
 
   useEffect(() => {
     handleProjects()
-
-    console.log(contractsData)
   }, [projects, contractsData])
 
   return (
