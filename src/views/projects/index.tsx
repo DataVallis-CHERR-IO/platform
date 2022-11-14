@@ -5,7 +5,6 @@ import ProjectCards from './components/project-cards'
 
 const Projects: React.FC = () => {
   const { t } = useTranslation('common')
-  console.log('NEW VERSION')
   // console.log(TronWeb.address.fromHex('41893186a6bde128cc0970c81196fdb19b49a6f0e1'))
   // console.log(TronWeb.address.toHex('TWrRd9bhran4gLYFeXLHFsbGtd8caFKhdE'), 'CHR TOKEN')
   // console.log(TronWeb.address.toHex('TAoNHeBQMWU8pxqhbdNT59hAkjDnSoxVPV'), 'ACTIVATOR TAoNHeBQMWU8pxqhbdNT59hAkjDnSoxVPV')
