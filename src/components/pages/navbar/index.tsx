@@ -12,55 +12,60 @@ const Navbar: React.FC = () => {
   const { connect, disconnect } = useConnect()
 
   return (
-    <nav className='navbar navbar-expand-lg navbar-light fixed-top' id='mainNav'>
+    <>
       <div className='container'>
-        <div className='navbar-brand js-scroll-trigger'>
-          <Image src='/img/logo-cherrio-white.svg' alt='Cherrio Logo' className='img-responsive logo-white' width={150} height={44} />
-        </div>
-        <div className='collapse navbar-collapse' id='navbarResponsive'>
-          <ul className='navbar-nav mx-auto'>
-            <li className='nav-item'>
-              <Link href='/'>
-                <a className='nav-link js-scroll-trigger'>{t('home.text')}</a>
-              </Link>
-            </li>
-            <li className='nav-item'>
-              <Link href='/projects'>
-                <a className='nav-link js-scroll-trigger'>{t('projects')}</a>
-              </Link>
-            </li>
-            <li className='nav-item'>
-              <Link href='https://www.cherr.io/'>
-                <a className='nav-link js-scroll-trigger'>{t('about')}</a>
-              </Link>
-            </li>
-            {!session ? (
+        <div>CHERR.IO MVP2 is currently deployed on testnet for testing purposes, therefore technical disruptions may occur.</div>
+      </div>
+      <nav className='navbar navbar-expand-lg navbar-light fixed-top' id='mainNav' style={{ top: '22px' }}>
+        <div className='container'>
+          <div className='navbar-brand js-scroll-trigger'>
+            <Image src='/img/logo-cherrio-white.svg' alt='Cherrio Logo' className='img-responsive logo-white' width={150} height={44} />
+          </div>
+          <div className='collapse navbar-collapse' id='navbarResponsive'>
+            <ul className='navbar-nav mx-auto'>
               <li className='nav-item'>
-                <div className='nav-link js-scroll-trigger' onClick={connect}>
-                  {t('connect')}
-                </div>
+                <Link href='/'>
+                  <a className='nav-link js-scroll-trigger'>{t('home.text')}</a>
+                </Link>
               </li>
-            ) : (
-              <>
+              <li className='nav-item'>
+                <Link href='/projects'>
+                  <a className='nav-link js-scroll-trigger'>{t('projects')}</a>
+                </Link>
+              </li>
+              <li className='nav-item'>
+                <Link href='https://www.cherr.io/'>
+                  <a className='nav-link js-scroll-trigger'>{t('about')}</a>
+                </Link>
+              </li>
+              {!session ? (
                 <li className='nav-item'>
-                  <Link href='/dashboard'>
-                    <a className='nav-link js-scroll-trigger'>{t('dashboard')}</a>
-                  </Link>
-                </li>
-                <li className='nav-item'>
-                  <div className='nav-link js-scroll-trigger'>{truncateAddress(session?.user?.name)}</div>
-                </li>
-                <li className='nav-item'>
-                  <div className='nav-link js-scroll-trigger' onClick={disconnect}>
-                    {t('disconnect')}
+                  <div className='nav-link js-scroll-trigger' onClick={connect}>
+                    {t('connect')}
                   </div>
                 </li>
-              </>
-            )}
-          </ul>
+              ) : (
+                <>
+                  <li className='nav-item'>
+                    <Link href='/dashboard'>
+                      <a className='nav-link js-scroll-trigger'>{t('dashboard')}</a>
+                    </Link>
+                  </li>
+                  <li className='nav-item'>
+                    <div className='nav-link js-scroll-trigger'>{truncateAddress(session?.user?.name)}</div>
+                  </li>
+                  <li className='nav-item'>
+                    <div className='nav-link js-scroll-trigger' onClick={disconnect}>
+                      {t('disconnect')}
+                    </div>
+                  </li>
+                </>
+              )}
+            </ul>
+          </div>
         </div>
-      </div>
-    </nav>
+      </nav>
+    </>
   )
 }
 
