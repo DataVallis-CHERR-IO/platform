@@ -7,7 +7,7 @@ import { getMainDefinition } from '@apollo/client/utilities'
 import { graphqlOptions } from '../config'
 
 const httpLink = new HttpLink({
-  uri: graphqlOptions.httpUrl
+  uri: graphqlOptions.httpsUrl
 })
 
 const wsLink =

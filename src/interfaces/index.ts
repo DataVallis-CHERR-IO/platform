@@ -20,7 +20,7 @@ export interface IDropZoneOptions {
 }
 
 export interface IGraphqlOptions {
-  httpUrl: string
+  httpsUrl: string
   wssUrl: string
 }
 
@@ -46,7 +46,6 @@ export interface IAsset {
 export interface ITokenOptions {
   chainId: number
   chain: string
-  evmChain: string
   wagmiChain: string
   name: string
   decimals: number

@@ -22,26 +22,25 @@ export const dropZoneOptions: IDropZoneOptions = {
 }
 
 export const graphqlOptions: IGraphqlOptions = {
-  httpUrl: 'http://localhost:7778/graphql',
+  httpsUrl: 'http://localhost:7778/graphql',
   wssUrl: 'ws://localhost:7778/graphql'
 }
 
 export const tokenOptions: ITokenOptions = {
-  chainId: 80001,
-  chain: 'Mumbai',
-  evmChain: 'MUMBAI',
-  wagmiChain: 'polygonMumbai',
-  name: 'MATIC',
+  chainId: 5,
+  chain: 'Goerli',
+  wagmiChain: 'goerli',
+  name: 'GoerliETH',
   decimals: 18,
-  rpcUrls: ['https://matic-mumbai.chainstacklabs.com'],
-  blockExplorerUrls: ['https://mumbai.polygonscan.com/'],
-  httpsProvider: 'https://snowy-holy-reel.matic-testnet.discover.quiknode.pro/e29148ae456d63b706b51806d8a3c41f5a4609c6/',
-  wssProvider: 'wss://snowy-holy-reel.matic-testnet.discover.quiknode.pro/e29148ae456d63b706b51806d8a3c41f5a4609c6/',
+  rpcUrls: ['https://goerli.infura.io/v3/'],
+  blockExplorerUrls: ['https://goerli.etherscan.io/'],
+  httpsProvider: 'https://goerli.infura.io/v3/9e4165a8806947a08e67ec27c5039607',
+  wssProvider: 'wss://goerli.infura.io/ws/v3/9e4165a8806947a08e67ec27c5039607',
   contract: {
-    walletBalanceProvider: '0x78baC31Ed73c115EB7067d1AfE75eC7B4e16Df9e',
-    poolAddress: '0x6C9fB0D5bD9429eb9Cd96B85B81d872281771E6B',
-    poolDataProvider: '0x74E3445f239f9915D57715Efb810f67b2a7E5758',
+    walletBalanceProvider: '0x75CC0f0E3764be7594772D08EEBc322970CbB3a9',
+    poolAddress: '0x368EedF3f56ad10b9bC57eed4Dac65B26Bb667f6',
+    poolDataProvider: '0x9BE876c6DC42215B00d7efe892E2691C3bc35d10',
     poolAddressesProvider: '0x5343b5bA672Ae99d627A1C87866b8E53F47Db2E6',
-    wethGateway: '0x2a58E9bbb5434FdA7FF78051a4B82cb0EF669C17'
+    wethGateway: '0xd5B55D3Ed89FDa19124ceB5baB620328287b915d'
   }
 }
