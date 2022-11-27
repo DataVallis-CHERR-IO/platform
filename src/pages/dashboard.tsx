@@ -1,11 +1,13 @@
-import Layout from '../components/pages/layout'
-import DashboardComponent from '../components/pages/dashboard.component'
+import React, { Suspense } from 'react'
+import dynamic from 'next/dynamic'
+import PagePreloader from '../components/page-preloader'
 
+const DashboardComponent = dynamic(() => import('../components/pages/dashboard.component'), { suspense: true })
 const Dashboard = () => {
   return (
-    <Layout>
+    <Suspense fallback={<PagePreloader />}>
       <DashboardComponent />
-    </Layout>
+    </Suspense>
   )
 }
 

@@ -1,22 +1,39 @@
 import React, { useEffect, useMemo, useState } from 'react'
+import useTranslation from 'next-translate/useTranslation'
 import { DropzoneInputProps, useDropzone } from 'react-dropzone'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { notify } from '../../../utils/notify'
+import { formatBytes } from '../../../utils'
 import { faXmark } from '@fortawesome/free-solid-svg-icons'
+import { dropZoneOptions } from '../../../config'
 import * as _ from 'lodash'
 
 interface IDropzoneProps extends DropzoneInputProps {
   uploadedFiles?: any[]
   onDropFiles?: any
   onChangeFiles?: any
+  hideUpload?: boolean
 }
 
-const Dropzone: React.FC<IDropzoneProps> = ({ multiple, uploadedFiles, onDropFiles, onChangeFiles }) => {
+const Dropzone: React.FC<IDropzoneProps> = ({ multiple, uploadedFiles, onDropFiles, onChangeFiles, hideUpload = false }) => {
+  const { t } = useTranslation('common')
   const [files, setFiles] = useState([])
   const { getRootProps, getInputProps, isFocused, isDragAccept, isDragReject, isDragActive } = useDropzone({
     accept: {
       'image/*': []
     },
-    onDrop: acceptedFiles => {
+    onDrop: (acceptedFiles, fileRejections) => {
+      fileRejections.forEach(file => {
+        file.errors.forEach(err => {
+          if (err.code === 'file-too-large') {
+            notify(t('fileTooLarge', { maxFileSize: formatBytes(dropZoneOptions.maxFileSize) }), 'warning')
+          }
+
+          if (err.code === 'file-invalid-type') {
+            notify(t('fileInvalidType'), 'warning')
+          }
+        })
+      })
       setFiles(
         acceptedFiles.map((file, index: number) =>
           Object.assign(file, {
@@ -27,7 +44,8 @@ const Dropzone: React.FC<IDropzoneProps> = ({ multiple, uploadedFiles, onDropFil
       )
       onDropFiles(acceptedFiles)
     },
-    multiple: !!multiple
+    multiple: !!multiple,
+    maxSize: dropZoneOptions.maxFileSize
   })
 
   const handleOnRemove = index => {
@@ -85,11 +103,13 @@ const Dropzone: React.FC<IDropzoneProps> = ({ multiple, uploadedFiles, onDropFil
 
   return (
     <div className='row'>
-      <div className='col-md-12'>
-        <div {...getRootProps({ style })}>
-          <input {...getInputProps()} /> {isDragActive ? <p>Drop the files here ...</p> : <p>Drag 'n' drop some files here, or click to select files</p>}
+      {!hideUpload && (
+        <div className='col-md-12'>
+          <div {...getRootProps({ style })}>
+            <input {...getInputProps()} /> {isDragActive ? <p>{t('dropTheFilesHere')} ...</p> : <p>{t('dragAndDropHere')}</p>}
+          </div>
         </div>
-      </div>
+      )}
       <div className='col-md-12'>
         <aside style={thumbsContainer}>{thumbs}</aside>
       </div>

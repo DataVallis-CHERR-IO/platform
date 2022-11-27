@@ -1,11 +1,13 @@
 import React, { useContext, useMemo } from 'react'
-import ContractContext from './context'
-import { useAccount, useContractReads } from 'wagmi'
+import { useContractReads } from 'wagmi'
 import { getCherrioProjectAbi } from '../../contracts/abi/cherrio-project'
 import { getCherrioProjectActivatorAbi } from '../../contracts/abi/cherrio-project-activator'
-import { IProject } from '../../interfaces/api'
-import * as _ from 'lodash'
 import { getEther } from '../../utils'
+import { useSession } from 'next-auth/react'
+import { IProject } from '../../interfaces/api'
+import { contractOptions } from '../../config'
+import * as _ from 'lodash'
+import ContractContext from './context'
 
 export const useContractContext = () => useContext(ContractContext)
 
@@ -15,7 +17,7 @@ interface IContractProviderProps {
 }
 
 const ContractProvider: React.FC<IContractProviderProps> = ({ children, project }) => {
-  const { address } = useAccount()
+  const { data: session } = useSession()
 
   const cherrioProjectContract = useMemo(
     () => ({
@@ -27,27 +29,32 @@ const ContractProvider: React.FC<IContractProviderProps> = ({ children, project 
 
   const cherrioProjectActivatorContract = useMemo(
     () => ({
-      addressOrName: process.env.CONTRACT_CHERRIO_PROJECT_ACTIVATOR_ADDRESS,
+      addressOrName: contractOptions.projectActivator.address,
       contractInterface: getCherrioProjectActivatorAbi()
     }),
     []
   )
 
   const contracts = useMemo(() => {
-    if (!address) return []
+    if (!session?.user?.name) return []
     return [
       {
         ...cherrioProjectContract,
         functionName: 'donations',
-        args: [address]
+        args: [session?.user?.name]
+      },
+      {
+        ...cherrioProjectContract,
+        functionName: 'getVotes',
+        args: [session?.user?.name]
       },
       {
         ...cherrioProjectActivatorContract,
         functionName: 'getActivatedAmount',
-        args: [project?.contractAddress, address]
+        args: [project?.contractAddress, session?.user?.name]
       }
     ]
-  }, [address, cherrioProjectContract, cherrioProjectActivatorContract, project?.contractAddress])
+  }, [session?.user?.name, cherrioProjectContract, cherrioProjectActivatorContract, project?.contractAddress])
 
   const { data, isLoading, isError } = useContractReads({
     contracts: [
@@ -58,10 +65,6 @@ const ContractProvider: React.FC<IContractProviderProps> = ({ children, project 
       {
         ...cherrioProjectContract,
         functionName: 'stage'
-      },
-      {
-        ...cherrioProjectContract,
-        functionName: 'goal'
       },
       {
         ...cherrioProjectContract,
@@ -89,7 +92,7 @@ const ContractProvider: React.FC<IContractProviderProps> = ({ children, project 
       },
       {
         ...cherrioProjectContract,
-        functionName: 'totalDonations'
+        functionName: 'numDonations'
       },
       {
         ...cherrioProjectActivatorContract,
@@ -109,35 +112,33 @@ const ContractProvider: React.FC<IContractProviderProps> = ({ children, project 
   return (
     <ContractContext.Provider
       value={{
-        projectContract: {
+        contractProject: {
           owner: _.get(data, '[0]'),
           stage: _.get(data, '[1]'),
-          goal: getEther(_.get(data, '[2]')),
-          minimumDonation: _.get(data, '[3]', '').toString(),
-          startedAt: _.get(data, '[4]', '').toString(),
-          deadline: _.get(data, '[5]', '').toString(),
-          endedAt: _.get(data, '[6]', '').toString(),
-          raisedAmount: getEther(_.get(data, '[7]')),
-          donations: getEther(_.get(data, '[12]')),
-          totalDonations: Number(_.get(data, '[9]', '').toString()),
+          minimumDonation: _.get(data, '[2]', '').toString(),
+          startedAt: _.get(data, '[3]', '').toString(),
+          deadline: _.get(data, '[4]', '').toString(),
+          endedAt: _.get(data, '[5]', '').toString(),
+          raisedAmount: getEther(_.get(data, '[6]')),
+          donations: getEther(_.get(data, '[11]')),
+          numDonations: Number(_.get(data, '[8]', '').toString()),
           requests: {
-            descriptions: _.get(data, '[8].descriptions'),
-            amounts: _.get(data, '[8].amounts'),
-            recipients: _.get(data, '[8].recipients'),
-            completed: _.get(data, '[8].completed'),
-            numberOfVoters: _.get(data, '[8].numberOfVoters')
+            descriptions: _.get(data, '[7]._descriptions'),
+            values: _.get(data, '[7]._values'),
+            recipients: _.get(data, '[7]._recipients'),
+            completed: _.get(data, '[7]._completed'),
+            numVoters: _.get(data, '[7]._numVoters'),
+            votes: _.get(data, '[12]')
           }
         },
-        projectActivatorContract: {
+        contractProjectActivator: {
           project: {
-            stage: _.get(data, '[10].stage'),
-            flag: _.get(data, '[10].flag'),
-            rewarded: _.get(data, '[10].rewarded'),
-            numActivators: +_.get(data, '[10].numActivators', '').toString(),
-            activateSize: getEther(_.get(data, '[10].activateSize')),
-            activatedAmount: getEther(_.get(data, '[10].activatedAmount')),
-            reward: getEther(_.get(data, '[10].reward')),
-            activators: _.get(data, '[11]')
+            stage: _.get(data, '[9].stage'),
+            rewarded: _.get(data, '[9].rewarded'),
+            numActivators: +_.get(data, '[9].numActivators', '').toString(),
+            activateSize: getEther(_.get(data, '[9].activateSize')),
+            activatedAmount: getEther(_.get(data, '[9].activatedAmount')),
+            activators: _.get(data, '[10]')
           },
           activatedAmount: getEther(_.get(data, '[13]'))
         },

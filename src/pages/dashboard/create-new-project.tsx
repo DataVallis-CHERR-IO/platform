@@ -1,31 +1,32 @@
-import React from 'react'
-import Layout from '../../components/pages/layout'
-import CreateNewProjectComponent from '../../components/pages/dashboard/create-new-project.component'
+import React, { Suspense } from 'react'
+import dynamic from 'next/dynamic'
+import PagePreloader from '../../components/page-preloader'
+import { useQuery } from 'react-query'
 import { apolloClient } from '../../clients/graphql'
-import { IProjectType } from '../../interfaces/api'
-import { QUERY_PROJECT_TYPES } from '../../constants/queries/moralis/project-type'
+import { QUERY_PROJECT_TYPES } from '../../constants/queries/database/project-type'
 
-export const getServerSideProps = async () => {
-  const { data } = await apolloClient.query({
-    query: QUERY_PROJECT_TYPES
-  })
-
-  return {
-    props: {
-      projectTypes: data.projectTypes
+const CreateNewProjectComponent = dynamic(() => import('../../components/pages/dashboard/create-new-project.component'), { suspense: true })
+const CreateNewProject: React.FC = () => {
+  const { data: projectTypes } = useQuery(
+    ['projectDetail'],
+    async () => {
+      return (
+        await apolloClient.query({
+          query: QUERY_PROJECT_TYPES
+        })
+      ).data.projectTypes
+    },
+    {
+      onError: error => {
+        console.log('❌ GraphQL error (query detail): ', error)
+      }
     }
-  }
-}
+  )
 
-interface ICreateNewProjectProps {
-  projectTypes?: IProjectType[]
-}
-
-const CreateNewProject: React.FC<ICreateNewProjectProps> = ({ projectTypes }) => {
   return (
-    <Layout>
+    <Suspense fallback={<PagePreloader />}>
       <CreateNewProjectComponent projectTypes={projectTypes} />
-    </Layout>
+    </Suspense>
   )
 }
 

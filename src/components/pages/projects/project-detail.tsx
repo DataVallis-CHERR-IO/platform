@@ -1,23 +1,20 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import ProjectCountdown from '../../../views/projects/components/project-countdown'
 import useTranslation from 'next-translate/useTranslation'
 import Subscribe from '../../../views/subscribe'
 import ProjectGallery from '../../../views/projects/components/project-gallery'
-import Image from 'next/image'
 import ProjectDonation from '../../../views/projects/components/project-donation'
 import SendTransactionDialog from '../../../themes/components/feedback/dialog/send-transaction.dialog'
+import ProjectCreateSpendingRequest from '../../../views/projects/components/project-create-spending-request'
+import ImageLightbox from '../../../themes/components/lightbox/image.lightbox'
+import ProjectSpendingRequests from '../../../views/projects/components/project-spending-requests'
 import { IProject } from '../../../interfaces/api'
-import { useQuery } from 'react-query'
-import { apolloClient } from '../../../clients/graphql'
-import { QUERY_PROJECT_DETAIL } from '../../../constants/queries/moralis/project-detail'
 import { StageEnum } from '../../../enums/stage.enum'
-import { getWei } from '../../../utils'
+import { getEther, getWei } from '../../../utils'
 import { method } from '../../../modules/method'
 import { useContractContext } from '../../../contexts/contract/provider'
-import { FadeLoader } from 'react-spinners'
 import { useSession } from 'next-auth/react'
-import ProjectCreateSpendingRequest from '../../../views/projects/components/project-create-spending-request'
-import ProjectSpendingRequests from '../../../views/projects/components/project-spending-requests'
+import { getCherrioProjectAbi } from '../../../contracts/abi/cherrio-project'
 
 interface IProjectDetailProps {
   project: IProject
@@ -27,59 +24,61 @@ const ProjectDetail: React.FC<IProjectDetailProps> = ({ project }) => {
   const { t } = useTranslation('common')
   const [displayButton, setDisplayButton] = useState<boolean>(false)
   const [showSendTransactionDialog, setShowSendTransactionDialog] = useState<boolean>(false)
+  const [openImageLightbox, setOpenImageLightbox] = useState<boolean>(false)
+  const [images, setImages] = useState<string[]>([])
   const [buttonText, setButtonText] = useState<string>('activate')
   const [max, setMax] = useState<number>(null)
-  const { projectContract, projectActivatorContract } = useContractContext()
-  const { data: session }: { data: any } = useSession()
+  const { contractProject, contractProjectActivator } = useContractContext()
+  const { data: session } = useSession()
 
-  const { data: projectDetail, isLoading } = useQuery(
-    ['projectDetail'],
-    async () => {
-      return (
-        await apolloClient.query({
-          query: QUERY_PROJECT_DETAIL,
-          variables: {
-            projectId: project._id
-          }
-        })
-      ).data.projectDetail
-    },
-    {
-      onError: error => {
-        console.log('❌ GraphQL error (query detail): ', error)
-      }
-    }
-  )
-
-  useEffect(() => {
-    if (session && projectContract?.stage !== StageEnum.ENDED) {
-      if (projectContract?.stage === StageEnum.PENDING) {
-        const availableAmount = projectActivatorContract?.project?.activateSize - projectActivatorContract?.project?.activatedAmount
-        const maxAmount =
-          projectActivatorContract?.project?.activateSize / projectActivatorContract?.project?.numActivators - projectActivatorContract?.activatedAmount
-
-        setMax(maxAmount > availableAmount ? availableAmount : maxAmount)
-      }
-      setDisplayButton(true)
-      setButtonText(projectContract?.stage === StageEnum.PENDING ? 'activate' : 'donateNow')
-    }
-  }, [projectContract?.stage, projectActivatorContract?.activatedAmount, session])
-
-  const handleClick = async () => {
+  const handleOnClick = () => {
     setShowSendTransactionDialog(true)
   }
 
-  const handleOnClose = async value => {
-    setShowSendTransactionDialog(false)
+  const handleSendOnClose = useCallback(
+    async value => {
+      setShowSendTransactionDialog(false)
 
-    if (value) {
-      if (projectContract?.stage === StageEnum.PENDING) {
-        await method('activateProject', [project.contractAddress], getWei(value))
-      } else {
-        await method('donate', [], getWei(value), project.contractAddress)
+      if (value) {
+        if (contractProject.stage === StageEnum.PENDING) {
+          await method('activateProject', [project.contractAddress], getWei(value))
+        } else {
+          await method('donate', [], getWei(value), project.contractAddress, getCherrioProjectAbi())
+        }
       }
-    }
+    },
+    [project.contractAddress]
+  )
+
+  const handleLightboxImagesOnClick = () => {
+    setImages([project.image])
+    setOpenImageLightbox(true)
   }
+
+  useEffect(() => {
+    if (
+      session &&
+      contractProject.owner &&
+      session.user.name.toLowerCase() !== contractProject.owner.toLowerCase() &&
+      contractProject.stage !== StageEnum.ENDED
+    ) {
+      setDisplayButton(true)
+
+      if (contractProject.stage === StageEnum.PENDING) {
+        const availableAmount = contractProjectActivator.project?.activateSize - contractProjectActivator.project?.activatedAmount
+        const maxAmount =
+          contractProjectActivator.project?.activateSize / contractProjectActivator.project?.numActivators - contractProjectActivator.activatedAmount
+
+        setMax(maxAmount > availableAmount ? availableAmount : maxAmount)
+        setButtonText('activate')
+      } else {
+        setMax(null)
+        setButtonText('donateNow')
+      }
+    } else {
+      setDisplayButton(false)
+    }
+  }, [contractProject.stage, contractProjectActivator.activatedAmount, session])
 
   return (
     <>
@@ -92,11 +91,21 @@ const ProjectDetail: React.FC<IProjectDetailProps> = ({ project }) => {
               </div>
               <div className='col-lg-10 mx-auto header-holder'>
                 <div className='header-image'>
-                  <Image src='/img/platform/header-2.jpg' alt='header' className='img-fluid' width={920} height={355} />
+                  <div
+                    style={{
+                      backgroundImage: `url(${project.image})`,
+                      backgroundSize: 'cover',
+                      backgroundRepeat: 'no-repeat',
+                      backgroundPosition: 'center top',
+                      width: '100%',
+                      height: 341
+                    }}
+                    onClick={handleLightboxImagesOnClick}
+                  ></div>
                 </div>
                 <div className='project-content clearfix'>
                   <ProjectCountdown />
-                  <ProjectDonation />
+                  <ProjectDonation project={project} />
                 </div>
               </div>
             </div>
@@ -110,12 +119,12 @@ const ProjectDetail: React.FC<IProjectDetailProps> = ({ project }) => {
               <div className='donation-header'>
                 <h2 className='c-gray'>{t('description')}</h2>
                 {displayButton && (
-                  <div className='btn btn-primary js-scroll-trigger' onClick={handleClick}>
+                  <div className='btn btn-primary js-scroll-trigger' onClick={handleOnClick}>
                     {t(buttonText)}
                   </div>
                 )}
               </div>
-              {!isLoading ? <p>{projectDetail?.description || '/'}</p> : <FadeLoader color='#CA354C' loading={true} />}
+              <p>{project.description}</p>
             </div>
           </div>
           <div className='row'>
@@ -129,27 +138,22 @@ const ProjectDetail: React.FC<IProjectDetailProps> = ({ project }) => {
           </div>
         </div>
       </section>
-      <section className='section-3 pt-0'>
-        <div className='container'>
-          <div className='row'>
-            <div className='col-lg-12'>
-              <h2 className='c-gray'>{t('requirements')}</h2>
-              {!isLoading ? <p>{projectDetail?.requirements || '/'}</p> : <FadeLoader color='#CA354C' loading={true} />}
-            </div>
-          </div>
-        </div>
-      </section>
-      <ProjectGallery projectId={project._id} />
-      {session && session.user.address.toLowerCase() === projectContract?.owner?.toLowerCase() && <ProjectCreateSpendingRequest project={project} />}{' '}
-      {projectContract?.requests?.descriptions?.length > 0 && <ProjectSpendingRequests project={project} />}
+      <ProjectGallery projectId={project.id} />
+      {session?.user?.name.toLowerCase() === contractProject.owner?.toLowerCase() && <ProjectCreateSpendingRequest project={project} />}{' '}
+      {contractProject.requests?.descriptions?.length > 0 && <ProjectSpendingRequests project={project} />}
       <Subscribe />
-      <SendTransactionDialog
-        title={buttonText}
-        contentText={projectContract?.stage === StageEnum.PENDING ? 'project.activateContentText' : 'project.donateContentText'}
-        open={showSendTransactionDialog}
-        onClose={handleOnClose}
-        max={max}
-      />
+      {session && (
+        <SendTransactionDialog
+          title={contractProject.stage === StageEnum.PENDING ? 'activateProject' : 'donateForProject'}
+          contentText={contractProject.stage === StageEnum.PENDING ? 'activateProjectContentText' : 'donateForProjectContentText'}
+          open={showSendTransactionDialog}
+          onClose={handleSendOnClose}
+          sender={session.user.name}
+          min={getEther(contractProject.minimumDonation)}
+          max={max}
+        />
+      )}
+      <ImageLightbox images={images} open={openImageLightbox} onClose={() => setOpenImageLightbox(false)} />
     </>
   )
 }

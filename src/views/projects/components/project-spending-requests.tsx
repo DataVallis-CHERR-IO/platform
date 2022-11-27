@@ -1,22 +1,26 @@
-import React, { useEffect, useMemo, useState } from 'react'
-import StickyHeadTable from '../../../themes/components/data/sticky-head.table'
-import { useContractContext } from '../../../contexts/contract/provider'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import ProjectsTable from '../../../themes/components/data/data.table'
 import useTranslation from 'next-translate/useTranslation'
-import { getEther, truncateAddress } from '../../../utils'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Tooltip } from '@mui/material'
+import { useSession } from 'next-auth/react'
+import { useContractContext } from '../../../contexts/contract/provider'
+import { getEther, truncateAddress } from '../../../utils'
+import { notify } from '../../../utils/notify'
+import { method } from '../../../modules/method'
+import { getCherrioProjectAbi } from '../../../contracts/abi/cherrio-project'
 import { faCheck, faThumbsUp, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { faEthereum } from '@fortawesome/free-brands-svg-icons'
-import { method } from '../../../modules/method'
 import { IProject } from '../../../interfaces/api'
-import { useSession } from 'next-auth/react'
+import * as _ from 'lodash'
 
-interface IProjectSpendingRequests {
+interface IProjectSpendingRequestsProps {
   project: IProject
 }
 
-const ProjectSpendingRequests: React.FC<IProjectSpendingRequests> = ({ project }) => {
+const ProjectSpendingRequests: React.FC<IProjectSpendingRequestsProps> = ({ project }) => {
   const { t } = useTranslation('common')
-  const { projectContract } = useContractContext()
+  const { contractProject } = useContractContext()
   const { data: session } = useSession()
   const [rows, setRows] = useState<any[]>([])
   const columns = useMemo(
@@ -26,54 +30,80 @@ const ProjectSpendingRequests: React.FC<IProjectSpendingRequests> = ({ project }
       { id: 'description', label: t('description') },
       { id: 'completed', label: t('completed'), align: 'center', width: 50 },
       { id: 'numberOfVoters', label: t('numberOfVoters'), align: 'center', width: 120 },
-      { id: 'vote', label: t('vote'), align: 'right', width: 100, ignore: !session || projectContract?.donations === 0 }
+      {
+        id: 'vote',
+        label: t('vote'),
+        align: 'right',
+        width: 100,
+        ignore:
+          !session ||
+          session.user.name.toLowerCase() === contractProject.owner?.toLowerCase() ||
+          contractProject?.donations === 0 ||
+          contractProject?.requests?.votes?.length === 0
+      }
     ],
-    []
+    [contractProject?.requests?.votes]
   )
-  const length = useMemo(() => projectContract?.requests?.descriptions?.length, [projectContract?.requests?.descriptions])
+  const length = useMemo(() => contractProject?.requests?.descriptions?.length, [contractProject?.requests?.descriptions])
 
-  const handleVote = async index => {
-    await method('voteForRequest', [index], null, project.contractAddress)
-  }
+  const handleVoteOnCLick = useCallback(
+    async index => {
+      if (_.get(contractProject, `requests.votes[${index}]`, false)) {
+        notify(t('project.youHaveAlreadyVoted'), 'info')
+        return
+      }
 
-  const handleRequests = () => {
+      await method('voteForRequest', [index], null, project.contractAddress, getCherrioProjectAbi())
+    },
+    [project.contractAddress]
+  )
+
+  const handleRequests = useCallback(() => {
     const data = []
-    for (let i = 0; i < length; i++) {
+
+    for (let index = 0; index < length; index++) {
       data.push({
-        recipient: truncateAddress(projectContract?.requests?.recipients[i]),
+        recipient: truncateAddress(contractProject?.requests?.recipients[index]),
         amount: (
           <>
-            <FontAwesomeIcon icon={faEthereum} /> {getEther(projectContract?.requests?.amounts[i])}
+            <FontAwesomeIcon icon={faEthereum} /> {getEther(contractProject?.requests?.values[index]?.toString())}
           </>
         ),
-        description: projectContract?.requests?.descriptions[i],
+        description: contractProject?.requests?.descriptions[index],
         completed: (
           <FontAwesomeIcon
-            icon={projectContract?.requests?.completed[i] ? faCheck : faXmark}
-            className={projectContract?.requests?.completed[i] ? 'color-success' : 'color-danger'}
+            icon={contractProject?.requests?.completed[index] ? faCheck : faXmark}
+            className={contractProject?.requests?.completed[index] ? 'color-success' : 'color-danger'}
             size='2x'
           />
         ),
-        numberOfVoters: projectContract?.requests?.numberOfVoters[i].toString(),
-        vote: !projectContract?.requests?.completed[i] && (
-          <FontAwesomeIcon icon={faThumbsUp} onClick={() => handleVote(i)} className='color-info cursor-pointer' size='2x' />
+        numberOfVoters: contractProject?.requests?.numVoters[index]?.toString(),
+        vote: !contractProject?.requests?.completed[index] && (
+          <Tooltip title={_.get(contractProject, `requests.votes[${index}]`, false) ? t('project.alreadyVoted') : t('project.clickToVote')}>
+            <FontAwesomeIcon
+              icon={faThumbsUp}
+              onClick={() => handleVoteOnCLick(index)}
+              className={'cursor-pointer ' + (_.get(contractProject, `requests.votes[${index}]`, false) ? 'color-success' : 'color-info')}
+              size='2x'
+            />
+          </Tooltip>
         )
       })
     }
 
     setRows(data)
-  }
+  }, [contractProject])
 
   useEffect(() => {
     handleRequests()
-  }, [projectContract?.requests?.numberOfVoters])
+  }, [contractProject?.requests?.numVoters])
 
   return (
     <section className='section-3 pt-0'>
       <div className='container'>
         <div className='row'>
           <div className='col-lg-12'>
-            <StickyHeadTable columns={columns} rows={rows} />
+            <ProjectsTable columns={columns} rows={rows} />
           </div>
         </div>
       </div>

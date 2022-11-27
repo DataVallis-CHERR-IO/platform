@@ -9,7 +9,12 @@ import TopFeatures from '../../views/home/top-features'
 const Home: React.FC = () => {
   return (
     <>
-      <Header /> <Projects /> <CharityDAO /> <ProblemAndSolution /> <TopFeatures /> <Subscribe />
+      <Header />
+      <Projects />
+      <CharityDAO />
+      <ProblemAndSolution />
+      <TopFeatures />
+      <Subscribe />
     </>
   )
 }

@@ -10,6 +10,7 @@ body, html {
 body {
     font-family: Poppins;
     color: #21333f;
+    background: #F1F1F3;
     font-size: 15px
 }
 
@@ -1479,6 +1480,16 @@ a:hover {
     height: auto
 }
 
+.img-thumbnail-2 {
+    padding: 0;
+    background-color: #fff;
+    border: 0;
+    border-radius: .9rem;
+    width: 100%;
+    height: 55px;
+    background: #a2a2a2;
+}
+
 .progress-bar {
     background: #a92a3f;
     background: -moz-linear-gradient(left, #a92a3f 0, #d3384f 100%);
@@ -2281,6 +2292,10 @@ section.resume-section .section-inner {
     color: #1e7e34;
 }
 
+.color-warning {
+    color: #FF7C35;
+}
+
 .color-danger {
     color: #d21242;
 }
@@ -2289,6 +2304,99 @@ section.resume-section .section-inner {
     color: #3374BD;
 }
 
+.bg-color-success {
+    background: #1e7e34;
+}
+
+.bg-color-warning {
+    background: #FF7C35;
+}
+
+.bg-color-danger {
+    background: #d21242;
+}
+
+.bg-color-info {
+    background: #3374BD;
+}
+
 .table-p-remove-styles p {
     margin: unset;
+}
+
+.link {
+    font-weight: bold;
+}
+
+.link:hover {
+    text-decoration: underline;
+}
+
+.image-lightbox-wrapper {
+    z-index: 9999;
+}
+
+.dashboard-card-wrapper {
+    cursor: pointer;
+}
+
+.dashboard-card-wrapper:hover {
+    box-shadow: rgba(0, 0, 0, 50%) 0px 4px 8px 0px;;
+}
+
+.dashboard-card-container {
+    position: relative;
+}
+
+.dashboard-card-content {
+    position: absolute;
+    top: 16px;
+    left: 0px;
+    text-align: center;
+    width: 100%;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.dashboard-card-details {
+    background-color: #FFFFFF;
+    box-shadow: rgba(0, 0, 0, 0.08) 0px 4px 8px 0px;
+}
+
+.navbar-account {
+    color: rgb(255, 255, 255);
+    text-transform: uppercase;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 10px 15px;
+    cursor: pointer;
+}
+
+.dark-btn {
+    background: #2c3135;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: lowercase;
+}
+
+.dark-btn:hover {
+    background: #242323;
+}
+
+.mr-00 {
+    margin-right: 0 !important;
+}
+
+.fg-black {
+    color: #000 !important;
+}
+
+.bg-black {
+    background: #000;
+}
+
+.flex-container {
+    display: flex;
 }

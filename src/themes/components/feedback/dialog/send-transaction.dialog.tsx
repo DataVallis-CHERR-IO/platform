@@ -1,27 +1,37 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from '@mui/material'
-import { useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import useTranslation from 'next-translate/useTranslation'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { useBalance } from 'wagmi'
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from '@mui/material'
+import { faEthereum } from '@fortawesome/free-brands-svg-icons'
 
-interface ISendTransactionDialog {
+interface ISendTransactionDialogProps {
   open: boolean
   onClose: any
   title: string
   contentText: string
+  sender: string
   min?: number
   max?: number
 }
 
-const SendTransactionDialog = ({ title, contentText, open, onClose, min, max }: ISendTransactionDialog) => {
+const SendTransactionDialog = ({ title, contentText, open, onClose, sender, min, max }: ISendTransactionDialogProps) => {
   const { t } = useTranslation('common')
   const [value, setValue] = useState<string>('')
+  const [balance, setBalance] = useState<string>(null)
+  const [maxValue, setMaxValue] = useState<number>(null)
   const formRef = useRef<HTMLFormElement>(null)
+  const { data: userBalance } = useBalance({
+    addressOrName: sender,
+    watch: true
+  })
 
-  const handleCancel = () => {
+  const handleCloseOnClick = () => {
     onClose(null)
     setValue('')
   }
 
-  const handleSend = () => {
+  const handleSendOnClick = useCallback(() => {
     if (!formRef.current.checkValidity()) {
       formRef.current.reportValidity()
       return
@@ -29,47 +39,62 @@ const SendTransactionDialog = ({ title, contentText, open, onClose, min, max }: 
 
     onClose(value)
     setValue('')
-  }
+  }, [value])
+
+  useEffect(() => {
+    !userBalance || setBalance(Number(userBalance.formatted).toFixed(4))
+    setMaxValue(max === null ? Number(Number(userBalance?.formatted).toFixed(4)) : max)
+  }, [userBalance])
 
   return (
-    <Dialog open={open} onClose={handleSend}>
+    <Dialog open={open} onClose={handleSendOnClick}>
       <DialogTitle>{t(title)}</DialogTitle>
       <DialogContent>
         <DialogContentText>{t(contentText)}</DialogContentText>
-        <form ref={formRef}>
-          <TextField
-            required
-            autoFocus
-            margin='dense'
-            id='value'
-            label={t('value')}
-            type='number'
-            fullWidth
-            variant='standard'
-            value={value}
-            onChange={event => setValue(event.target.value)}
-          />
-        </form>
-        <div className='row'>
-          <div className='col-md-6'>
-            {min && (
-              <div onClick={() => setValue(min.toString())} className='cursor-pointer'>
-                {t('min')}
+        <p>
+          {t('balance')}: <FontAwesomeIcon icon={faEthereum} /> {balance}
+        </p>
+        {max !== 0 ? (
+          <>
+            <form ref={formRef}>
+              <TextField
+                required
+                autoFocus
+                margin='dense'
+                id='value'
+                label={t('value')}
+                type='number'
+                fullWidth
+                variant='standard'
+                inputProps={{ min, max, step: 'any' }}
+                value={value}
+                onChange={event => setValue(event.target.value)}
+              />
+            </form>
+            <div className='row'>
+              <div className='col-md-6'>
+                {!!min && (
+                  <div onClick={() => setValue(min.toString())} className='cursor-pointer'>
+                    {t('min')}
+                  </div>
+                )}
               </div>
-            )}
-          </div>
-          <div className='col-md-6 text-right'>
-            {max && (
-              <div onClick={() => setValue(max.toString())} className='cursor-pointer'>
-                {t('max')}
+              <div className='col-md-6 text-right'>
+                {!!maxValue && (
+                  <div onClick={() => setValue(maxValue.toString())} className='cursor-pointer'>
+                    {t('max')}
+                  </div>
+                )}
               </div>
-            )}
-          </div>
-        </div>
+            </div>
+          </>
+        ) : (
+          <p>{t('maxTransactionAmountReachedOrNoRights')}</p>
+        )}
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleCancel}>{t('cancel')}</Button>
-        <Button onClick={handleSend}>{t('send')}</Button>
+        <Button onClick={handleCloseOnClick}>{t('close')}</Button>
+        {maxValue !== 0 && <Button onClick={handleSendOnClick}>{t('send')}</Button>}
       </DialogActions>
     </Dialog>
   )

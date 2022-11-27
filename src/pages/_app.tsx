@@ -3,25 +3,28 @@ import App from 'next/app'
 import React from 'react'
 import I18nProvider from 'next-translate/I18nProvider'
 import RouteGuard from '../guards/route.guard'
+import Layout from '../components/pages/layout'
+import { getSession, SessionProvider } from 'next-auth/react'
+import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
 import { Session } from 'next-auth'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { ToastContainer } from 'react-toastify'
 import { chain, configureChains, createClient, WagmiConfig } from 'wagmi'
-import { getSession, SessionProvider } from 'next-auth/react'
-import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
 import { ApolloProvider } from '@apollo/client'
 import { apolloClient } from '../clients/graphql'
+import { tokenOptions } from '../config'
+import 'react-18-image-lightbox/style.css'
 import 'react-toastify/dist/ReactToastify.css'
 import '../../public/vendor/bootstrap/css/bootstrap.min.css'
 import '../../public/css/styles.min.css'
 
 const { provider, webSocketProvider } = configureChains(
-  [chain[process.env.WAGMI_CHAIN]],
+  [chain[tokenOptions.wagmiChain]],
   [
     jsonRpcProvider({
       rpc: () => ({
-        http: process.env.HTTPS_PROVIDER,
-        webSocket: process.env.WSSS_PROVIDER
+        http: tokenOptions.httpsProvider,
+        webSocket: tokenOptions.wssProvider
       })
     })
   ]
@@ -49,10 +52,12 @@ const MyApp = ({ Component, pageProps }: AppProps<{ session: Session }>) => {
         <QueryClientProvider client={queryClient}>
           <WagmiConfig client={client}>
             <SessionProvider session={pageProps.session} refetchInterval={0}>
-              <RouteGuard>
-                <Component {...pageProps} />
-                <ToastContainer />
-              </RouteGuard>
+              <Layout>
+                <RouteGuard>
+                  <Component {...pageProps} />
+                  <ToastContainer />
+                </RouteGuard>
+              </Layout>
             </SessionProvider>
           </WagmiConfig>
         </QueryClientProvider>

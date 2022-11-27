@@ -1,7 +1,7 @@
-import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { authGuard } from '../config'
+import { useRouter } from 'next/router'
 import { useAccount } from 'wagmi'
+import { authGuardOptions } from '../config'
 
 const RouteGuard = ({ children }) => {
   const router = useRouter()
@@ -24,7 +24,7 @@ const RouteGuard = ({ children }) => {
   const authCheck = url => {
     let path = url.split('?')[0]
 
-    for (const dynamicPath of authGuard.dynamicPaths) {
+    for (const dynamicPath of authGuardOptions.dynamicPaths) {
       if (path.includes(dynamicPath) && path.startsWith(dynamicPath)) {
         path = dynamicPath
 
@@ -32,7 +32,7 @@ const RouteGuard = ({ children }) => {
       }
     }
 
-    if (!isConnected && !authGuard.publicPaths.includes(path)) {
+    if (!isConnected && !authGuardOptions.publicPaths.includes(path)) {
       setAuthorized(false)
       router.push({
         pathname: '/'

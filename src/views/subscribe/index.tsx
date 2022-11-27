@@ -1,9 +1,10 @@
 import useTranslation from 'next-translate/useTranslation'
-import React, { useRef } from 'react'
-import { apolloClient } from '../../clients/graphql'
-import { MUTATION_SUBSCRIBE } from '../../constants/queries/moralis/subscriber'
+import React, { useCallback, useRef } from 'react'
+import validator from 'validator'
 import { useMutation } from 'react-query'
 import { notify } from '../../utils/notify'
+import { apolloClient } from '../../clients/graphql'
+import { MUTATION_SUBSCRIBE } from '../../constants/queries/database/subscriber'
 
 const Subscribe: React.FC = () => {
   const { t } = useTranslation('common')
@@ -17,14 +18,22 @@ const Subscribe: React.FC = () => {
 
   const { mutateAsync: subscribeMutation } = useMutation(subscribe)
 
-  const submit = async event => {
-    event.preventDefault()
+  const handleSubscribeOnClick = useCallback(
+    async event => {
+      event.preventDefault()
 
-    const subscription = await subscribeMutation({ email: emailRef.current.value })
-    notify(t(`subscribe.${subscription.data.subscribe}`), subscription.data.subscribe === 'success' ? 'success' : 'warning')
+      if (!validator.isEmail(emailRef.current.value)) {
+        notify(t('invalidEmailAddress'), 'warning')
+        return
+      }
 
-    emailRef.current.value = ''
-  }
+      const subscription = await subscribeMutation({ email: emailRef.current.value })
+      notify(t(`subscribe.${subscription.data.subscribe}`), subscription.data.subscribe === 'success' ? 'success' : 'warning')
+
+      emailRef.current.value = ''
+    },
+    [emailRef.current?.value]
+  )
 
   return (
     <section className='section-updates' id='updates'>
@@ -37,10 +46,10 @@ const Subscribe: React.FC = () => {
                 <p>{t('subscribe.subtitle')}</p>
               </div>
               <div className='subscribe-form-right'>
-                <form method='POST'>
+                <form>
                   <div className='subscribe-wrapper'>
                     <input ref={emailRef} type='text' id='email' name='email' placeholder={t('enterYourEmailAddress')} />
-                    <button type='submit' id='subscribe-submit' onClick={submit}>
+                    <button type='submit' id='subscribe-submit' onClick={handleSubscribeOnClick}>
                       {t('subscribe.text')}
                     </button>
                   </div>

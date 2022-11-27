@@ -1,28 +1,32 @@
-import React from 'react'
-import Image from 'next/image'
+import React, { useState } from 'react'
 import useTranslation from 'next-translate/useTranslation'
-import { IProjectMedia } from '../../../interfaces/api'
+import ImageLightbox from '../../../themes/components/lightbox/image.lightbox'
 import { useQuery } from 'react-query'
 import { apolloClient } from '../../../clients/graphql'
-import { QUERY_PROJECT_MEDIA } from '../../../constants/queries/moralis/project-media'
-import { FadeLoader } from 'react-spinners'
+import { QUERY_PROJECT_MEDIA } from '../../../constants/queries/database/project-media'
+import { IProjectMedia } from '../../../interfaces/api'
+import { MediaTypeEnum } from '../../../enums/media-type.enum'
 
 interface IProjectMediaProps {
-  projectId: string
+  projectId: number
 }
 
 const ProjectGallery: React.FC<IProjectMediaProps> = ({ projectId }) => {
   const { t } = useTranslation('common')
+  const [openImageLightbox, setOpenImageLightbox] = useState<boolean>(false)
+  const [images, setImages] = useState<string[]>([])
 
-  const { data: projectMedia, isLoading } = useQuery(
+  const { data: projectMedia } = useQuery(
     ['projectMedia'],
     async () => {
       return (
         await apolloClient.query({
           query: QUERY_PROJECT_MEDIA,
           variables: {
-            projectId,
-            type: 'image'
+            where: {
+              projectId,
+              mediaTypeId: MediaTypeEnum.IMAGE
+            }
           }
         })
       ).data.projectMedia
@@ -34,31 +38,34 @@ const ProjectGallery: React.FC<IProjectMediaProps> = ({ projectId }) => {
     }
   )
 
+  if (projectMedia?.length === 0) return
+
+  const handleLightboxImagesOnClick = () => {
+    setImages([projectMedia.map((media: IProjectMedia) => media.path)][0])
+    setOpenImageLightbox(true)
+  }
+
   return (
-    <section className='section-3 pt-0'>
-      <div className='container'>
-        <div className='row'>
-          <div className='col-lg-12'>
-            <h2 className='c-gray'>{t('gallery')}</h2>
-            <div className='popup-gallery' data-aos='fade-up' data-aos-delay={300}>
-              {!isLoading ? (
-                projectMedia.map((media: IProjectMedia) => (
-                  <React.Fragment key={media._id}>
-                    <div>
-                      <Image loader={() => media.path} src={media.path} alt={media.title} width={341} height={341} unoptimized={true} />
-                    </div>
-                  </React.Fragment>
-                ))
-              ) : (
-                <div>
-                  <FadeLoader color='#CA354C' loading={isLoading} />
-                </div>
-              )}
+    <>
+      <section className='section-3 pt-0'>
+        <div className='container'>
+          <div className='row'>
+            <div className='col-lg-12'>
+              <h2 className='c-gray'>{t('gallery')}</h2>
+              <div className='popup-gallery' data-aos='fade-up' data-aos-delay={300}>
+                {!!projectMedia?.length &&
+                  projectMedia.map((media: IProjectMedia) => (
+                    <React.Fragment key={media.id}>
+                      <img alt={media.name} src={media.path} width={341} style={{ marginRight: '24px' }} onClick={handleLightboxImagesOnClick} />
+                    </React.Fragment>
+                  ))}
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+      <ImageLightbox images={images} open={openImageLightbox} onClose={() => setOpenImageLightbox(false)} />
+    </>
   )
 }
 

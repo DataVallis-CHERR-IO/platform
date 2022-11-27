@@ -9,9 +9,11 @@ interface ILayoutProps {
 const Layout: React.FC<ILayoutProps> = ({ children }) => {
   return (
     <>
-      <Header />
-      {children}
-      <Footer />
+      <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+        <Header />
+        {children}
+        <Footer />
+      </div>
     </>
   )
 }

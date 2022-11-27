@@ -8,7 +8,7 @@ const Footer: React.FC = () => {
   const { t } = useTranslation('common')
 
   return (
-    <footer className='custom-footer'>
+    <footer className='custom-footer' style={{ marginTop: 'auto' }}>
       <div className='container'>
         <div className='row'>
           <div className='col-lg-12 text-center'>
