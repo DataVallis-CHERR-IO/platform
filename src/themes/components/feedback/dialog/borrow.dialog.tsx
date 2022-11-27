@@ -1,10 +1,8 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import useTranslation from 'next-translate/useTranslation'
 import { useBalance } from 'wagmi'
-import { useSession } from 'next-auth/react'
 import { method } from '../../../../modules/method'
 import { getWei } from '../../../../utils'
-import { getAavePoolAbi } from '../../../../contracts/abi/aave/pool'
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material'
 import { tokenOptions } from '../../../../config'
 import { IAsset } from '../../../../interfaces'
@@ -19,7 +17,6 @@ interface IBorrowDialogProps {
 
 const BorrowDialog = ({ account, asset, open, onClose }: IBorrowDialogProps) => {
   const { t } = useTranslation('common')
-  const { data: session } = useSession()
   const [value, setValue] = useState<string>('')
   const formRef = useRef<HTMLFormElement>(null)
 
