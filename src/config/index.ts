@@ -22,7 +22,7 @@ export const dropZoneOptions: IDropZoneOptions = {
 }
 
 export const graphqlOptions: IGraphqlOptions = {
-  httpUrl: 'http://localhost:7778/graphql',
+  httpsUrl: 'http://localhost:7778/graphql',
   wssUrl: 'ws://localhost:7778/graphql'
 }
 

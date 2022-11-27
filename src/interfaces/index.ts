@@ -20,7 +20,7 @@ export interface IDropZoneOptions {
 }
 
 export interface IGraphqlOptions {
-  httpUrl: string
+  httpsUrl: string
   wssUrl: string
 }
 
