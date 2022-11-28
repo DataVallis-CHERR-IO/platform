@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
+import TextField from '../../inputs/text-field.input'
 import useTranslation from 'next-translate/useTranslation'
 import LoadingButton from '@mui/lab/LoadingButton'
 import AddTaskIcon from '@mui/icons-material/AddTask'
@@ -7,7 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { method } from '../../../../modules/method'
 import { getEther, getWei } from '../../../../utils'
 import { useSessionContext } from '../../../../contexts/session/provider'
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Icon, TextField } from '@mui/material'
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Icon, InputAdornment } from '@mui/material'
 import { faEthereum } from '@fortawesome/free-brands-svg-icons'
 import { tokenOptions } from '../../../../config'
 import { IAsset } from '../../../../interfaces'
@@ -47,8 +48,8 @@ const RepayDialog = ({ asset, debt, open, onClose }: IRepayDialogProps) => {
 
   const handleAllowanceOnChange = useCallback(
     async event => {
-      const amount = Number(event.target.value)
-      setValue(event.target.value)
+      const amount = Number(event?.target?.value || value)
+      setValue(event?.target?.value || value)
 
       if (!formRef.current.checkValidity()) {
         formRef.current.reportValidity()
@@ -173,26 +174,23 @@ const RepayDialog = ({ asset, debt, open, onClose }: IRepayDialogProps) => {
           </div>
           <form ref={formRef}>
             <TextField
-              required
-              autoFocus
-              margin='dense'
               id='amount'
               label={t('amount')}
               type='number'
-              fullWidth
-              variant='standard'
-              inputProps={{ min: 0, max: balance || 0, step: 'any' }}
               value={value}
               onChange={handleAllowanceOnChange}
+              autoFocus
+              margin='dense'
+              inputProps={{ min: 0, max: balance || 0, step: 'any' }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position='end' onClick={() => setValue(balance.toString())} className='text-lowercase cursor-pointer'>
+                    {t('max')}
+                  </InputAdornment>
+                )
+              }}
             />
           </form>
-          <div className='row'>
-            <div className='col-md-12 text-right'>
-              <div onClick={() => setValue(balance.toString())} className='cursor-pointer'>
-                {t('max')}
-              </div>
-            </div>
-          </div>
         </>
       </DialogContent>
       <DialogActions className='justify-content-between'>

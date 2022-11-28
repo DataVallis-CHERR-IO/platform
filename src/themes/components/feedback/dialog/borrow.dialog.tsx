@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
+import TextField from '../../inputs/text-field.input'
 import useTranslation from 'next-translate/useTranslation'
 import LoadingButton from '@mui/lab/LoadingButton'
 import AddTaskIcon from '@mui/icons-material/AddTask'
@@ -7,7 +8,7 @@ import { useBalance } from 'wagmi'
 import { method } from '../../../../modules/method'
 import { getEther, getWei } from '../../../../utils'
 import { useSessionContext } from '../../../../contexts/session/provider'
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, FormLabel, Icon, Radio, RadioGroup, TextField } from '@mui/material'
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, FormLabel, Icon, Radio, RadioGroup } from '@mui/material'
 import { tokenOptions } from '../../../../config'
 import { IAsset } from '../../../../interfaces'
 import { InterestRateModeEnum } from '../../../../enums/interest-rate-mode.enum'
@@ -178,25 +179,15 @@ const BorrowDialog = ({ asset, open, onClose }: IBorrowDialogProps) => {
         <>
           <form ref={formRef}>
             <TextField
-              required
-              autoFocus
-              margin='dense'
               id='amount'
               label={t('amount')}
               type='number'
-              fullWidth
-              variant='standard'
-              inputProps={{ min: 0, max: balance || 0, step: 'any' }}
               value={value}
               onChange={handleAllowanceOnChange}
+              inputProps={{ min: 0, max: balance || 0, step: 'any' }}
+              autoFocus
+              margin='dense'
             />
-            {/*<div className='row'>*/}
-            {/*  <div className='col-md-12 text-right'>*/}
-            {/*    <div onClick={() => setValue(Number(balance?.toString()))} className='cursor-pointer'>*/}
-            {/*      {t('max')}*/}
-            {/*    </div>*/}
-            {/*  </div>*/}
-            {/*</div>*/}
             {asset?.stableBorrowRateEnabled && (
               <div className='mt-4'>
                 <FormLabel id='interest-rate-mode'>{t('asset.rateMode')}</FormLabel>

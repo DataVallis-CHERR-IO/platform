@@ -1,12 +1,14 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
+import TextField from '../../../themes/components/inputs/text-field.input'
 import useTranslation from 'next-translate/useTranslation'
 import { method } from '../../../modules/method'
 import { getEther, getWei, isAddress } from '../../../utils'
 import { notify } from '../../../utils/notify'
 import { useContractContext } from '../../../contexts/contract/provider'
-import { Backdrop, Button, CircularProgress, TextField } from '@mui/material'
-import { IProject } from '../../../interfaces/api'
 import { getCherrioProjectAbi } from '../../../contracts/abi/cherrio-project'
+import { useSessionContext } from '../../../contexts/session/provider'
+import { Backdrop, Button, CircularProgress, InputAdornment } from '@mui/material'
+import { IProject } from '../../../interfaces/api'
 
 interface IProjectCreateSpendingRequestProps {
   project: IProject
@@ -14,12 +16,13 @@ interface IProjectCreateSpendingRequestProps {
 
 const ProjectCreateSpendingRequest: React.FC<IProjectCreateSpendingRequestProps> = ({ project }) => {
   const { t } = useTranslation('common')
+  const { contractProject } = useContractContext()
+  const { account } = useSessionContext()
   const [recipient, setRecipient] = useState<string>('')
   const [value, setValue] = useState<string>('')
   const [description, setDescription] = useState<string>('')
   const [max, setMax] = useState<number>(0)
   const [open, setOpen] = React.useState<boolean>(false)
-  const { contractProject } = useContractContext()
   const formRef = useRef<HTMLFormElement>(null)
 
   const handleCreateOnClick = useCallback(
@@ -66,7 +69,7 @@ const ProjectCreateSpendingRequest: React.FC<IProjectCreateSpendingRequestProps>
 
   useEffect(() => {
     handleMax(false)
-  }, [])
+  }, [contractProject.raisedAmount])
 
   return (
     <>
@@ -80,44 +83,46 @@ const ProjectCreateSpendingRequest: React.FC<IProjectCreateSpendingRequestProps>
                 <div className='row'>
                   <div className='col-md-6 mb-5'>
                     <TextField
-                      required
-                      label={t('recipient')}
                       id='recipient'
-                      variant='standard'
-                      fullWidth={true}
+                      label={t('recipient')}
                       value={recipient}
-                      onChange={event => setRecipient(event.target.value)}
+                      onChange={data => setRecipient(data)}
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position='end' onClick={() => setRecipient(account)} className='text-lowercase cursor-pointer'>
+                            {t('account')}
+                          </InputAdornment>
+                        )
+                      }}
+                      minLength={42}
+                      maxLength={42}
                     />
                   </div>
-                  <div className='col-md-5 mb-5'>
+                  <div className='col-md-6 mb-5'>
                     <TextField
-                      required
-                      label={t('value')}
-                      id='value'
-                      variant='standard'
-                      fullWidth={true}
-                      inputProps={{ min: 0.0, max, step: 'any' }}
-                      value={value}
-                      onChange={event => setValue(event.target.value)}
+                      id='amount'
+                      label={t('amount')}
                       type='number'
+                      value={value}
+                      onChange={data => setValue(data)}
+                      inputProps={{ min: 0.0, max, step: 'any' }}
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position='end' onClick={() => handleMax()} className='text-lowercase cursor-pointer'>
+                            {t('max')}
+                          </InputAdornment>
+                        )
+                      }}
                     />
-                  </div>
-                  <div className='col-md-1 mb-5 align-self-end'>
-                    <div onClick={() => handleMax()} className='cursor-pointer'>
-                      {t('max')}
-                    </div>
                   </div>
                   <div className='col-md-12 mb-5'>
                     <TextField
-                      required
+                      id='description'
                       label={t('description')}
                       multiline={true}
                       rows={4}
-                      id='description'
-                      variant='standard'
-                      fullWidth={true}
                       value={description}
-                      onChange={event => setDescription(event.target.value)}
+                      onChange={data => setDescription(data)}
                     />
                   </div>
                 </div>

@@ -1,7 +1,8 @@
 import React, { useCallback, useRef, useState } from 'react'
 import path from 'path'
-import useTranslation from 'next-translate/useTranslation'
 import Dropzone from '../../../themes/ui/drop-zone'
+import TextField from '../../../themes/components/inputs/text-field.input'
+import useTranslation from 'next-translate/useTranslation'
 import { deploy } from '../../../modules/deploy'
 import { useMutation } from 'react-query'
 import { paramCase } from 'param-case'
@@ -12,7 +13,7 @@ import { MUTATION_UPLOAD } from '../../../constants/queries/upload'
 import { MUTATION_NEW_PROJECT } from '../../../constants/queries/contract/cherrio-project-activator'
 import { MUTATION_CREATE_PROJECT } from '../../../constants/queries/database/project'
 import { MUTATION_CREATE_PROJECT_MEDIA } from '../../../constants/queries/database/project-media'
-import { Backdrop, Button, CircularProgress, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material'
+import { Backdrop, Button, CircularProgress, FormControl, InputLabel, MenuItem, Select } from '@mui/material'
 import { IProjectType } from '../../../interfaces/api'
 import { MediaTypeEnum } from '../../../enums/media-type.enum'
 import * as _ from 'lodash'
@@ -158,63 +159,34 @@ const CreateNewProjectComponent: React.FC<ICreateNewProjectProps> = ({ projectTy
               <h2>{t('project.createNew')}</h2>
               <div className='row'>
                 <div className='col-md-6 mb-5'>
-                  <TextField
-                    required
-                    label={t('title')}
-                    id='title'
-                    variant='standard'
-                    fullWidth={true}
-                    value={title}
-                    onChange={event => setTitle(event.target.value)}
-                  />
+                  <TextField id='title' label={t('title')} value={title} onChange={event => setTitle(event.target.value)} minLength={4} maxLength={32} />
                 </div>
                 <div className='col-md-6 mb-5'>
                   <TextField
-                    required
-                    label={t('excerpt')}
                     id='excerpt'
-                    variant='standard'
-                    fullWidth={true}
+                    label={t('excerpt')}
                     value={excerpt}
                     onChange={event => setExcerpt(event.target.value)}
+                    minLength={4}
+                    maxLength={64}
                   />
                 </div>
                 <div className='col-md-12 mb-5'>
                   <TextField
-                    required
-                    label={t('description')}
-                    multiline={true}
-                    rows={4}
                     id='description'
-                    variant='standard'
-                    fullWidth={true}
+                    label={t('description')}
                     value={description}
                     onChange={event => setDescription(event.target.value)}
+                    multiline={true}
+                    rows={4}
+                    minLength={4}
                   />
                 </div>
                 <div className='col-md-4 mb-5'>
-                  <TextField
-                    required
-                    label={t('goal')}
-                    id='goal'
-                    variant='standard'
-                    fullWidth={true}
-                    value={goal}
-                    onChange={event => setGoal(event.target.value)}
-                    type='number'
-                  />
+                  <TextField id='goal' label={t('goal')} type='number' value={goal} onChange={event => setGoal(event.target.value)} />
                 </div>
                 <div className='col-md-4 mb-5'>
-                  <TextField
-                    required
-                    label={t('durationInDays')}
-                    id='duration'
-                    variant='standard'
-                    fullWidth={true}
-                    value={duration}
-                    onChange={event => setDuration(event.target.value)}
-                    type='number'
-                  />
+                  <TextField id='duration' label={t('durationInDays')} type='number' value={duration} onChange={event => setDuration(event.target.value)} />
                 </div>
                 <div className='col-md-4 mb-5'>
                   <FormControl variant='standard' fullWidth={true}>

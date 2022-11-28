@@ -113,8 +113,8 @@ const AssetsToBorrowAccordion = () => {
         variable: <FontAwesomeIcon icon={faCheck} className='color-success' />,
         stable: (
           <FontAwesomeIcon
-            icon={reservesData.stableBorrowRateEnabled ? faCheck : faXmark}
-            className={reservesData.stableBorrowRateEnabled ? 'color-success' : 'color-danger'}
+            icon={reservesData?.stableBorrowRateEnabled ? faCheck : faXmark}
+            className={reservesData?.stableBorrowRateEnabled ? 'color-success' : 'color-danger'}
           />
         ),
         action: (

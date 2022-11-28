@@ -1,8 +1,9 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
+import TextField from '../../inputs/text-field.input'
 import useTranslation from 'next-translate/useTranslation'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useBalance } from 'wagmi'
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from '@mui/material'
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material'
 import { faEthereum } from '@fortawesome/free-brands-svg-icons'
 
 interface ISendTransactionDialogProps {
@@ -58,17 +59,14 @@ const SendTransactionDialog = ({ title, contentText, open, onClose, sender, min,
           <>
             <form ref={formRef}>
               <TextField
-                required
-                autoFocus
-                margin='dense'
-                id='value'
-                label={t('value')}
+                id='amount'
+                label={t('amount')}
                 type='number'
-                fullWidth
-                variant='standard'
-                inputProps={{ min, max, step: 'any' }}
                 value={value}
                 onChange={event => setValue(event.target.value)}
+                autoFocus
+                margin='dense'
+                inputProps={{ min, max, step: 'any' }}
               />
             </form>
             <div className='row'>
