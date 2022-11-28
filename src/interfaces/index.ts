@@ -25,11 +25,16 @@ export interface IGraphqlOptions {
 }
 
 export interface ITokenContract {
-  walletBalanceProvider: string
-  poolAddress: string
-  poolDataProvider: string
+  pool: string
+  poolAbi: string[]
   poolAddressesProvider: string
+  poolAddressesProviderAbi: string[]
+  uiPoolDataProvider: string
+  uiPoolDataProviderAbi: string[]
+  walletBalanceProvider: string
+  walletBalanceProviderAbi: string[]
   wethGateway: string
+  wethGatewayAbi: string[]
 }
 
 export interface IAsset {
@@ -38,9 +43,15 @@ export interface IAsset {
   aToken: string
   variableDebtToken: string
   stableDebtToken: string
+  underlyingAsset: string
   decimals: number
   abi: string[]
+  aTokenAbi: string[]
+  variableDebtTokenAbi?: string[]
+  stableDebtTokenAbi?: string[]
   icon: string
+  stableBorrowRateEnabled?: boolean
+  isNative?: boolean
 }
 
 export interface ITokenOptions {
@@ -53,5 +64,6 @@ export interface ITokenOptions {
   blockExplorerUrls: string[]
   httpsProvider: string
   wssProvider: string
+  gasLimit: number
   contract: ITokenContract
 }

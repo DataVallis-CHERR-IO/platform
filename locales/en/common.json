@@ -41,6 +41,7 @@
     "durationInDays": "Duration (days)",
     "donations": "Donations",
     "balance": "Balance",
+    "walletBalance": "Wallet balance",
     "title": "Title",
     "excerpt": "Excerpt",
     "description": "Description",
@@ -52,6 +53,7 @@
     "readMore": "Read more",
     "donated": "Donated",
     "debt": "Debt",
+    "amount": "Amount",
     "note": "Note",
     "status": "Status",
     "create": "Create",
@@ -193,7 +195,12 @@
         "approve": "Approve",
         "nothingSuppliedYet": "Nothing supplied yet",
         "nothingBorrowedYet": "Nothing borrowed yet",
-        "borrowNotice": "To borrow you need to supply any asset to be used as collateral"
+        "borrowNotice": "To borrow you need to supply any asset to be used as collateral",
+        "stable": "Stable",
+        "stableRate": "Stable rate",
+        "variable": "Variable",
+        "variableRate": "Variable rate",
+        "rateMode": "Rate mode"
     },
     "input": {
         "required": "This field is required",

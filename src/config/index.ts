@@ -1,4 +1,9 @@
 import { IAuthGuardOptions, IContractOptions, IDataTableOptions, IDropZoneOptions, IGraphqlOptions, ITokenOptions } from '../interfaces'
+import { getPoolAbi } from '../contracts/abi/aave/pool'
+import { getPoolAddressesProviderAbi } from '../contracts/abi/aave/pool-addresses-provider'
+import { getUIPoolDataProviderAbi } from '../contracts/abi/aave/ui-pool-data-provider'
+import { getWalletBalanceProviderAbi } from '../contracts/abi/aave/wallet-balance-provider'
+import { getWETHGatewayAbi } from '../contracts/abi/aave/weth-gateway'
 
 export const authGuardOptions: IAuthGuardOptions = {
   publicPaths: ['/', '/projects'],
@@ -36,11 +41,17 @@ export const tokenOptions: ITokenOptions = {
   blockExplorerUrls: ['https://goerli.etherscan.io/'],
   httpsProvider: 'https://goerli.infura.io/v3/9e4165a8806947a08e67ec27c5039607',
   wssProvider: 'wss://goerli.infura.io/ws/v3/9e4165a8806947a08e67ec27c5039607',
+  gasLimit: 1000000,
   contract: {
+    pool: '0x368EedF3f56ad10b9bC57eed4Dac65B26Bb667f6',
+    poolAbi: getPoolAbi(),
+    poolAddressesProvider: '0xc4dCB5126a3AfEd129BC3668Ea19285A9f56D15D',
+    poolAddressesProviderAbi: getPoolAddressesProviderAbi(),
+    uiPoolDataProvider: '0xC576539371a2f425545B7BF4eb2a14Eee1944a1C',
+    uiPoolDataProviderAbi: getUIPoolDataProviderAbi(),
     walletBalanceProvider: '0x75CC0f0E3764be7594772D08EEBc322970CbB3a9',
-    poolAddress: '0x368EedF3f56ad10b9bC57eed4Dac65B26Bb667f6',
-    poolDataProvider: '0x9BE876c6DC42215B00d7efe892E2691C3bc35d10',
-    poolAddressesProvider: '0x5343b5bA672Ae99d627A1C87866b8E53F47Db2E6',
-    wethGateway: '0xd5B55D3Ed89FDa19124ceB5baB620328287b915d'
+    walletBalanceProviderAbi: getWalletBalanceProviderAbi(),
+    wethGateway: '0xd5B55D3Ed89FDa19124ceB5baB620328287b915d',
+    wethGatewayAbi: getWETHGatewayAbi()
   }
 }

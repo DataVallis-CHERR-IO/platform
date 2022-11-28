@@ -10,30 +10,28 @@ import Typography from '@mui/material/Typography'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { useContractReads } from 'wagmi'
-import { getAavePoolAbi } from '../../../contracts/abi/aave/pool'
+import { useContractRead } from 'wagmi'
 import { BeatLoader } from 'react-spinners'
-import { getAaveWalletBalanceProviderAbi } from '../../../contracts/abi/aave/wallet-balance-provider'
 import { getEther } from '../../../utils'
 import { tokenOptions } from '../../../config'
 import { assets } from '../../../config/assets'
-import { Button } from '@mui/material'
+import { Button, Chip } from '@mui/material'
 import { faEthereum } from '@fortawesome/free-brands-svg-icons'
 import { IAsset } from '../../../interfaces'
+import { IUserReservesData } from '../../../interfaces/contracts'
 import * as _ from 'lodash'
+import { useSessionContext } from '../../../contexts/session/provider'
 
 interface IAssetList {
   asset: any
-  balance: any
+  debt: any
+  rateMode: any
   action: any
 }
 
-interface IYourBorrowsAccordionProps {
-  account?: string
-}
-
-const YourBorrowsAccordion = ({ account }: IYourBorrowsAccordionProps) => {
+const YourBorrowsAccordion = () => {
   const { t } = useTranslation('common')
+  const { account } = useSessionContext()
   const [asset, setAsset] = useState<IAsset>(null)
   const [assetsList, setAssetsList] = useState<IAssetList[]>(null)
   const [balance, setBalance] = useState<number>(0)
@@ -41,93 +39,95 @@ const YourBorrowsAccordion = ({ account }: IYourBorrowsAccordionProps) => {
   const columns = useMemo(
     () => [
       { id: 'asset', label: t('asset.text') },
-      { id: 'balance', label: t('balance') },
+      { id: 'debt', label: t('debt') },
+      { id: 'rateMode', label: t('asset.rateMode') },
       { id: 'action', label: '', align: 'right' }
     ],
     []
   )
 
-  const walletBalanceProvider = useMemo(
+  const uiPoolDataProvider = useMemo(
     () => ({
-      addressOrName: tokenOptions.contract.walletBalanceProvider,
-      contractInterface: getAaveWalletBalanceProviderAbi()
+      addressOrName: tokenOptions.contract.uiPoolDataProvider,
+      contractInterface: tokenOptions.contract.uiPoolDataProviderAbi
     }),
-    [tokenOptions.contract.walletBalanceProvider]
+    [tokenOptions.contract.uiPoolDataProvider]
   )
 
-  const poolAddress = useMemo(
-    () => ({
-      addressOrName: tokenOptions.contract.poolAddress,
-      contractInterface: getAavePoolAbi()
-    }),
-    [tokenOptions.contract.walletBalanceProvider]
-  )
-
-  const { data: contractsData } = useContractReads({
-    contracts: [
-      {
-        ...walletBalanceProvider,
-        functionName: 'batchBalanceOf',
-        args: [[account], assets.map(value => value.address)]
-      },
-      {
-        ...poolAddress,
-        functionName: 'getUserAccountData',
-        args: [account]
-      }
-    ],
+  const { data: contractData } = useContractRead({
+    ...uiPoolDataProvider,
+    functionName: 'getUserReservesData',
+    args: [tokenOptions.contract.poolAddressesProvider, account],
     watch: true
   })
 
-  const handleWithdrawOnClick = async (assetToWithdraw: IAsset, supplyBalance: number) => {
-    setAsset(assetToWithdraw)
-    setBalance(supplyBalance)
+  const handleRepayOnClick = async (assetToRepay: IAsset, debt: number) => {
+    setAsset(assetToRepay)
+    setBalance(debt)
     setOpen(true)
   }
 
-  const getBorrowed = useCallback(async () => {
+  const getAsset = (assetData: IAsset, debt: number) => ({
+    asset: (
+      <div className='flex-container'>
+        <div style={{ width: '32px' }}>
+          <Image
+            loader={() => assetData.icon}
+            src={assetData.icon}
+            alt={assetData.name}
+            width='100%'
+            height='100%'
+            layout='responsive'
+            objectFit='contain'
+            unoptimized={true}
+          />
+        </div>
+        <div className='align-self-center pl-2'>{assetData.name}</div>
+      </div>
+    ),
+    debt: (
+      <>
+        <FontAwesomeIcon icon={faEthereum} /> {debt}
+      </>
+    ),
+    rateMode: <Chip label={t(assetData.stableBorrowRateEnabled ? 'asset.stable' : 'asset.variable')} />,
+    action: (
+      <Button variant='contained' className='dark-btn text-capitalize' onClick={() => handleRepayOnClick(assetData, debt)}>
+        {t('asset.repay')}
+      </Button>
+    )
+  })
+
+  const handleBorrowedAssets = useCallback(async () => {
     const assetLists: IAssetList[] = []
 
-    for (const [index, assetData] of assets.entries()) {
-      const walletBalance = Number(getEther(_.get(contractsData, `[0][${index}]`, '').toString()).toFixed(7))
+    for (const assetData of _.cloneDeep(assets)) {
+      const userReservesData: IUserReservesData = _.get(contractData, '[0]', []).find(
+        (obj: IUserReservesData) => obj?.underlyingAsset?.toLowerCase() === assetData?.underlyingAsset?.toLowerCase()
+      )
 
-      assetLists.push({
-        asset: (
-          <div className='flex-container'>
-            <div style={{ width: '32px' }}>
-              <Image
-                loader={() => assetData.icon}
-                src={assetData.icon}
-                alt={assetData.name}
-                width='100%'
-                height='100%'
-                layout='responsive'
-                objectFit='contain'
-                unoptimized={true}
-              />
-            </div>
-            <div className='align-self-center pl-2'>{assetData.name}</div>
-          </div>
-        ),
-        balance: (
-          <>
-            <FontAwesomeIcon icon={faEthereum} /> {walletBalance}
-          </>
-        ),
-        action: (
-          <Button variant='contained' className='dark-btn text-capitalize' onClick={() => handleWithdrawOnClick(asset, walletBalance)}>
-            {t('asset.repay')}
-          </Button>
-        )
-      })
+      if (userReservesData) {
+        if (getEther(userReservesData.scaledVariableDebt.toString(), assetData.decimals) > 0) {
+          const debt = +(((getEther(userReservesData.scaledVariableDebt.toString(), assetData.decimals) + Number.EPSILON) * 100) / 100).toFixed(7)
+
+          assetLists.push(getAsset(assetData, debt))
+        }
+
+        if (getEther(userReservesData.principalStableDebt.toString(), assetData.decimals) > 0) {
+          const debt = +(((getEther(userReservesData.principalStableDebt.toString(), assetData.decimals) + Number.EPSILON) * 100) / 100).toFixed(7)
+
+          assetData.stableBorrowRateEnabled = true
+          assetLists.push(getAsset(assetData, debt))
+        }
+      }
     }
 
     JSON.stringify(assetsList) === JSON.stringify(assetLists) || setAssetsList(assetLists)
-  }, [contractsData])
+  }, [contractData])
 
   useEffect(() => {
-    !contractsData?.length || getBorrowed()
-  }, [contractsData])
+    !contractData || handleBorrowedAssets()
+  }, [contractData])
 
   return (
     <>
@@ -136,16 +136,16 @@ const YourBorrowsAccordion = ({ account }: IYourBorrowsAccordionProps) => {
           <Typography className='font-weight-bold'>{t('asset.yourBorrows')}</Typography>
         </AccordionSummary>
         <AccordionDetails className='p-0'>
-          {contractsData === undefined ? (
+          {contractData === undefined ? (
             <BeatLoader color='#d21242' loading={true} size={5} className='p-3' />
-          ) : !!getEther(_.get(contractsData, '[1].totalCollateralBase', '').toString()) ? (
-            <DataTable columns={columns} rows={[]} />
+          ) : assetsList?.length ? (
+            <DataTable columns={columns} rows={assetsList} />
           ) : (
             <div className='p-3'>{t('asset.nothingBorrowedYet')}</div>
           )}
         </AccordionDetails>
       </Accordion>
-      <RepayDialog account={account} asset={asset} balance={balance} open={open} onClose={setOpen} />
+      <RepayDialog asset={asset} debt={balance} open={open} onClose={setOpen} />
     </>
   )
 }

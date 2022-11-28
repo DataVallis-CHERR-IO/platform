@@ -11,8 +11,8 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useContractRead } from 'wagmi'
-import { getAaveWalletBalanceProviderAbi } from '../../../contracts/abi/aave/wallet-balance-provider'
 import { getEther } from '../../../utils'
+import { useSessionContext } from '../../../contexts/session/provider'
 import { tokenOptions } from '../../../config'
 import { faEthereum } from '@fortawesome/free-brands-svg-icons'
 import { Button } from '@mui/material'
@@ -26,12 +26,9 @@ interface IAssetList {
   action: any
 }
 
-interface IAssetsToSupplyAccordionProps {
-  account?: string
-}
-
-const AssetsToSupplyAccordion = ({ account }: IAssetsToSupplyAccordionProps) => {
+const AssetsToSupplyAccordion = () => {
   const { t } = useTranslation('common')
+  const { account } = useSessionContext()
   const [asset, setAsset] = useState<IAsset>(null)
   const [balance, setBalance] = useState<number>(0)
   const [balances, setBalances] = useState<IAssetList[]>(null)
@@ -39,7 +36,7 @@ const AssetsToSupplyAccordion = ({ account }: IAssetsToSupplyAccordionProps) => 
   const columns = useMemo(
     () => [
       { id: 'asset', label: t('asset.text') },
-      { id: 'balance', label: t('balance') },
+      { id: 'balance', label: t('walletBalance') },
       { id: 'action', label: '', align: 'right' }
     ],
     []
@@ -48,7 +45,7 @@ const AssetsToSupplyAccordion = ({ account }: IAssetsToSupplyAccordionProps) => 
   const walletBalanceProvider = useMemo(
     () => ({
       addressOrName: tokenOptions.contract.walletBalanceProvider,
-      contractInterface: getAaveWalletBalanceProviderAbi()
+      contractInterface: tokenOptions.contract.walletBalanceProviderAbi
     }),
     [tokenOptions.contract.walletBalanceProvider]
   )
@@ -69,8 +66,8 @@ const AssetsToSupplyAccordion = ({ account }: IAssetsToSupplyAccordionProps) => 
   const getAssets = useCallback(async () => {
     const assetsArray: IAssetList[] = []
 
-    for (const [index, assetData] of assets.entries()) {
-      const walletBalance = Number(getEther(_.get(contractData, `[${index}]`, '').toString()).toFixed(7))
+    for (const [index, assetData] of _.cloneDeep(assets).entries()) {
+      const walletBalance = +(((getEther(_.get(contractData, `[${index}]`, '').toString(), assetData.decimals) + Number.EPSILON) * 100) / 100).toFixed(7)
 
       assetsArray.push({
         asset: (
@@ -112,8 +109,7 @@ const AssetsToSupplyAccordion = ({ account }: IAssetsToSupplyAccordionProps) => 
   }, [contractData])
 
   useEffect(() => {
-    console.log(contractData)
-    !contractData || getAssets()
+    !contractData?.length || getAssets()
   }, [contractData])
 
   return (
@@ -126,7 +122,7 @@ const AssetsToSupplyAccordion = ({ account }: IAssetsToSupplyAccordionProps) => 
           <DataTable columns={columns} rows={balances || []} />
         </AccordionDetails>
       </Accordion>
-      <SupplyDialog account={account} asset={asset} balance={balance} open={open} onClose={setOpen} />
+      <SupplyDialog asset={asset} supply={balance} open={open} onClose={setOpen} />
     </>
   )
 }

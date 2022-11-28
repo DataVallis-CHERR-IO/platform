@@ -13,8 +13,8 @@ import { StageEnum } from '../../../enums/stage.enum'
 import { getEther, getWei } from '../../../utils'
 import { method } from '../../../modules/method'
 import { useContractContext } from '../../../contexts/contract/provider'
-import { useSession } from 'next-auth/react'
 import { getCherrioProjectAbi } from '../../../contracts/abi/cherrio-project'
+import { useSessionContext } from '../../../contexts/session/provider'
 
 interface IProjectDetailProps {
   project: IProject
@@ -22,14 +22,14 @@ interface IProjectDetailProps {
 
 const ProjectDetail: React.FC<IProjectDetailProps> = ({ project }) => {
   const { t } = useTranslation('common')
+  const { account } = useSessionContext()
+  const { contractProject, contractProjectActivator } = useContractContext()
   const [displayButton, setDisplayButton] = useState<boolean>(false)
   const [showSendTransactionDialog, setShowSendTransactionDialog] = useState<boolean>(false)
   const [openImageLightbox, setOpenImageLightbox] = useState<boolean>(false)
   const [images, setImages] = useState<string[]>([])
   const [buttonText, setButtonText] = useState<string>('activate')
   const [max, setMax] = useState<number>(null)
-  const { contractProject, contractProjectActivator } = useContractContext()
-  const { data: session } = useSession()
 
   const handleOnClick = () => {
     setShowSendTransactionDialog(true)
@@ -41,9 +41,9 @@ const ProjectDetail: React.FC<IProjectDetailProps> = ({ project }) => {
 
       if (value) {
         if (contractProject.stage === StageEnum.PENDING) {
-          await method('activateProject', [project.contractAddress], getWei(value))
+          await method('activateProject', [project.contractAddress], { value: getWei(value) })
         } else {
-          await method('donate', [], getWei(value), project.contractAddress, getCherrioProjectAbi())
+          await method('donate', [], { value: getWei(value) }, project.contractAddress, getCherrioProjectAbi())
         }
       }
     },
@@ -56,12 +56,7 @@ const ProjectDetail: React.FC<IProjectDetailProps> = ({ project }) => {
   }
 
   useEffect(() => {
-    if (
-      session &&
-      contractProject.owner &&
-      session.user.name.toLowerCase() !== contractProject.owner.toLowerCase() &&
-      contractProject.stage !== StageEnum.ENDED
-    ) {
+    if (contractProject.owner && account?.toLowerCase() !== contractProject.owner.toLowerCase() && contractProject.stage !== StageEnum.ENDED) {
       setDisplayButton(true)
 
       if (contractProject.stage === StageEnum.PENDING) {
@@ -78,7 +73,7 @@ const ProjectDetail: React.FC<IProjectDetailProps> = ({ project }) => {
     } else {
       setDisplayButton(false)
     }
-  }, [contractProject.stage, contractProjectActivator.activatedAmount, session])
+  }, [contractProject.stage, contractProjectActivator.activatedAmount, account])
 
   return (
     <>
@@ -139,16 +134,16 @@ const ProjectDetail: React.FC<IProjectDetailProps> = ({ project }) => {
         </div>
       </section>
       <ProjectGallery projectId={project.id} />
-      {session?.user?.name.toLowerCase() === contractProject.owner?.toLowerCase() && <ProjectCreateSpendingRequest project={project} />}{' '}
+      {account?.toLowerCase() === contractProject.owner?.toLowerCase() && <ProjectCreateSpendingRequest project={project} />}{' '}
       {contractProject.requests?.descriptions?.length > 0 && <ProjectSpendingRequests project={project} />}
       <Subscribe />
-      {session && (
+      {account && (
         <SendTransactionDialog
           title={contractProject.stage === StageEnum.PENDING ? 'activateProject' : 'donateForProject'}
           contentText={contractProject.stage === StageEnum.PENDING ? 'activateProjectContentText' : 'donateForProjectContentText'}
           open={showSendTransactionDialog}
           onClose={handleSendOnClose}
-          sender={session.user.name}
+          sender={account}
           min={getEther(contractProject.minimumDonation)}
           max={max}
         />

@@ -1,13 +1,13 @@
 import React, { useContext, useMemo } from 'react'
+import ContractContext from './context'
 import { useContractReads } from 'wagmi'
 import { getCherrioProjectAbi } from '../../contracts/abi/cherrio-project'
 import { getCherrioProjectActivatorAbi } from '../../contracts/abi/cherrio-project-activator'
 import { getEther } from '../../utils'
-import { useSession } from 'next-auth/react'
+import { useSessionContext } from '../session/provider'
 import { IProject } from '../../interfaces/api'
 import { contractOptions } from '../../config'
 import * as _ from 'lodash'
-import ContractContext from './context'
 
 export const useContractContext = () => useContext(ContractContext)
 
@@ -17,7 +17,7 @@ interface IContractProviderProps {
 }
 
 const ContractProvider: React.FC<IContractProviderProps> = ({ children, project }) => {
-  const { data: session } = useSession()
+  const { account } = useSessionContext()
 
   const cherrioProjectContract = useMemo(
     () => ({
@@ -36,25 +36,25 @@ const ContractProvider: React.FC<IContractProviderProps> = ({ children, project 
   )
 
   const contracts = useMemo(() => {
-    if (!session?.user?.name) return []
+    if (!account) return []
     return [
       {
         ...cherrioProjectContract,
         functionName: 'donations',
-        args: [session?.user?.name]
+        args: [account]
       },
       {
         ...cherrioProjectContract,
         functionName: 'getVotes',
-        args: [session?.user?.name]
+        args: [account]
       },
       {
         ...cherrioProjectActivatorContract,
         functionName: 'getActivatedAmount',
-        args: [project?.contractAddress, session?.user?.name]
+        args: [project?.contractAddress, account]
       }
     ]
-  }, [session?.user?.name, cherrioProjectContract, cherrioProjectActivatorContract, project?.contractAddress])
+  }, [account, cherrioProjectContract, cherrioProjectActivatorContract, project?.contractAddress])
 
   const { data, isLoading, isError } = useContractReads({
     contracts: [

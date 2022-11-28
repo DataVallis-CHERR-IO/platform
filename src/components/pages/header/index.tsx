@@ -5,13 +5,13 @@ import Head from 'next/head'
 import useTranslation from 'next-translate/useTranslation'
 import useAuth from '../../../hooks/use-auth'
 import { truncateAddress } from '../../../utils'
-import { useSession } from 'next-auth/react'
 import { alpha, Button, ListItemIcon, Menu, MenuItem, MenuProps, styled } from '@mui/material'
 import { Dashboard, Logout } from '@mui/icons-material'
+import { useSessionContext } from '../../../contexts/session/provider'
 
 const Header: React.FC = () => {
   const { t } = useTranslation('common')
-  const { data: session } = useSession()
+  const { account } = useSessionContext()
   const { connect, disconnect } = useAuth()
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
@@ -60,7 +60,7 @@ const Header: React.FC = () => {
                   <a className='nav-link js-scroll-trigger'>{t('about')}</a>
                 </Link>
               </li>
-              {!session ? (
+              {!account ? (
                 <Button id='navbar-account-disconnected-button' variant='contained' disableElevation onClick={connect} className='dark-btn text-uppercase'>
                   {t('connectWallet')}
                 </Button>
@@ -76,7 +76,7 @@ const Header: React.FC = () => {
                     onClick={event => handleOnClick(event)}
                     className='dark-btn'
                   >
-                    {truncateAddress(session?.user?.name)}
+                    {truncateAddress(account)}
                   </Button>
                   <StyledMenu
                     id='navbar-account-menu'

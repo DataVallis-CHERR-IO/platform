@@ -8,51 +8,72 @@ import BorrowDialog from '../feedback/dialog/borrow.dialog'
 import AccordionSummary from '@mui/material/AccordionSummary'
 import Typography from '@mui/material/Typography'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import { useEffect, useMemo, useState } from 'react'
-import { useContractRead } from 'wagmi'
-import { getAavePoolAbi } from '../../../contracts/abi/aave/pool'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useContractReads } from 'wagmi'
+import { useSessionContext } from '../../../contexts/session/provider'
 import { Button } from '@mui/material'
 import { assets } from '../../../config/assets'
-import { IAsset } from '../../../interfaces'
 import { tokenOptions } from '../../../config'
+import { faCheck, faXmark } from '@fortawesome/free-solid-svg-icons'
+import { IAsset } from '../../../interfaces'
+import { IReservesData } from '../../../interfaces/contracts'
 import * as _ from 'lodash'
 
 interface IAssetList {
   asset: any
+  variable: any
+  stable: any
   action: any
 }
 
-interface IAssetsToBorrowAccordionProps {
-  account: string
-}
-
-const AssetsToBorrowAccordion = ({ account }: IAssetsToBorrowAccordionProps) => {
+const AssetsToBorrowAccordion = () => {
   const { t } = useTranslation('common')
+  const { account } = useSessionContext()
   const [asset, setAsset] = useState<IAsset>(null)
   const [assetsList, setAssetsList] = useState<IAssetList[]>([])
-  const [enableBorrow, setEnableBorrow] = useState<boolean>(false)
+  const [disableBorrowBtn, setDisableBorrowBtn] = useState<boolean>(true)
   const [displayBorrowNotice, setDisplayBorrowNotice] = useState<boolean>(false)
   const [open, setOpen] = useState<boolean>(false)
   const columns = useMemo(
     () => [
       { id: 'asset', label: t('asset.text') },
+      { id: 'variable', label: t('asset.variableRate') },
+      { id: 'stable', label: t('asset.stableRate') },
       { id: 'action', label: '', align: 'right' }
     ],
     []
   )
 
-  const poolAddress = useMemo(
+  const pool = useMemo(
     () => ({
-      addressOrName: tokenOptions.contract.poolAddress,
-      contractInterface: getAavePoolAbi()
+      addressOrName: tokenOptions.contract.pool,
+      contractInterface: tokenOptions.contract.poolAbi
     }),
-    [tokenOptions.contract.walletBalanceProvider]
+    [tokenOptions.contract.pool]
   )
 
-  const { data: contractData } = useContractRead({
-    ...poolAddress,
-    functionName: 'getUserAccountData',
-    args: [account],
+  const uiPoolDataProvider = useMemo(
+    () => ({
+      addressOrName: tokenOptions.contract.uiPoolDataProvider,
+      contractInterface: tokenOptions.contract.uiPoolDataProviderAbi
+    }),
+    [tokenOptions.contract.uiPoolDataProvider]
+  )
+
+  const { data: contractsData } = useContractReads({
+    contracts: [
+      {
+        ...pool,
+        functionName: 'getUserAccountData',
+        args: [account]
+      },
+      {
+        ...uiPoolDataProvider,
+        functionName: 'getReservesData',
+        args: [tokenOptions.contract.poolAddressesProvider]
+      }
+    ],
     watch: true
   })
 
@@ -61,10 +82,16 @@ const AssetsToBorrowAccordion = ({ account }: IAssetsToBorrowAccordionProps) => 
     setOpen(true)
   }
 
-  const handleAssetsList = () => {
+  const handleAssetsList = useCallback(() => {
     const assetLists: IAssetList[] = []
 
-    for (const assetData of assets) {
+    for (const assetData of _.cloneDeep(assets)) {
+      const reservesData: IReservesData = _.get(contractsData, '[1][0]', []).find(
+        (obj: IReservesData) => obj?.underlyingAsset?.toLowerCase() === assetData?.underlyingAsset?.toLowerCase()
+      )
+
+      assetData.stableBorrowRateEnabled = reservesData?.stableBorrowRateEnabled || false
+
       assetLists.push({
         asset: (
           <div className='flex-container'>
@@ -83,8 +110,15 @@ const AssetsToBorrowAccordion = ({ account }: IAssetsToBorrowAccordionProps) => 
             <div className='align-self-center pl-2'>{assetData.name}</div>
           </div>
         ),
+        variable: <FontAwesomeIcon icon={faCheck} className='color-success' />,
+        stable: (
+          <FontAwesomeIcon
+            icon={reservesData.stableBorrowRateEnabled ? faCheck : faXmark}
+            className={reservesData.stableBorrowRateEnabled ? 'color-success' : 'color-danger'}
+          />
+        ),
         action: (
-          <Button variant='contained' className='dark-btn text-capitalize' disabled={!enableBorrow} onClick={() => handleBorrowOnClick(assetData)}>
+          <Button variant='contained' className='dark-btn text-capitalize' disabled={disableBorrowBtn} onClick={() => handleBorrowOnClick(assetData)}>
             {t('asset.borrow')}
           </Button>
         )
@@ -92,19 +126,18 @@ const AssetsToBorrowAccordion = ({ account }: IAssetsToBorrowAccordionProps) => 
     }
 
     setAssetsList(assetLists)
-  }
+  }, [assets, disableBorrowBtn, setDisableBorrowBtn])
 
   useEffect(() => {
-    console.log(contractData)
-    handleAssetsList()
-
-    if (Number(_.get(contractData, 'totalCollateralBase', '').toString()) === 0) {
+    if (Number(_.get(contractsData, '[0].totalCollateralBase', '').toString()) === 0) {
       setDisplayBorrowNotice(true)
     } else {
-      setEnableBorrow(true)
+      setDisableBorrowBtn(false)
       setDisplayBorrowNotice(false)
     }
-  }, [contractData?.totalCollateralBase])
+
+    !contractsData?.length || handleAssetsList()
+  }, [_.get(contractsData, '[0].totalCollateralBase'), disableBorrowBtn])
 
   return (
     <>
@@ -117,7 +150,7 @@ const AssetsToBorrowAccordion = ({ account }: IAssetsToBorrowAccordionProps) => 
           <DataTable columns={columns} rows={assetsList} />
         </AccordionDetails>
       </Accordion>
-      <BorrowDialog account={account} asset={asset} open={open} onClose={setOpen} />
+      <BorrowDialog asset={asset} open={open} onClose={setOpen} />
     </>
   )
 }

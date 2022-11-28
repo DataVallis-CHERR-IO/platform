@@ -1,4 +1,4 @@
-export const getWethAbi = (): any[] => [
+export const getEursAbi = (): any[] => [
   {
     inputs: [
       { internalType: 'string', name: 'name', type: 'string' },

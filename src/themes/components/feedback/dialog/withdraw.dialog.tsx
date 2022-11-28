@@ -1,32 +1,76 @@
-import React, { useCallback, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
+import Image from 'next/image'
 import useTranslation from 'next-translate/useTranslation'
+import LoadingButton from '@mui/lab/LoadingButton'
+import AddTaskIcon from '@mui/icons-material/AddTask'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { method } from '../../../../modules/method'
-import { getWei } from '../../../../utils'
-import { getAavePolygonWMATICAbi } from '../../../../contracts/abi/aave/polygon-wmatic'
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material'
+import { getEther, getWei } from '../../../../utils'
+import { useSessionContext } from '../../../../contexts/session/provider'
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Icon, TextField } from '@mui/material'
 import { faEthereum } from '@fortawesome/free-brands-svg-icons'
 import { tokenOptions } from '../../../../config'
 import { IAsset } from '../../../../interfaces'
-import { getAaveWETHGatewayAbi } from '../../../../contracts/abi/aave/weth-gateway'
 
 interface IWithdrawDialogProps {
-  account: string
   asset: IAsset
-  balance: number
+  suppliedBalance: number
   open: boolean
   onClose: any
 }
 
-const WithdrawDialog = ({ account, asset, balance, open, onClose }: IWithdrawDialogProps) => {
+const WithdrawDialog = ({ asset, suppliedBalance, open, onClose }: IWithdrawDialogProps) => {
   const { t } = useTranslation('common')
+  const { account } = useSessionContext()
   const [value, setValue] = useState<string>('')
+  const [balance, setBalance] = useState<number>(0)
+  const [displayApproveBtn, setDisplayApproveBtn] = useState<boolean>(false)
+  const [displayWithdrawBtn, setDisplayWithdrawBtn] = useState<boolean>(false)
+  const [loadingApprove, setLoadingApprove] = useState<boolean>(false)
+  const [loadingWithdraw, setLoadingWithdraw] = useState<boolean>(false)
+  const [withdrawIcon, setWithdrawIcon] = useState<any>(null)
   const formRef = useRef<HTMLFormElement>(null)
 
-  const handleCloseOnClick = () => {
-    onClose(false)
-    setValue('')
+  const handleDefaultStates = (resetValue: boolean = true) => {
+    !resetValue || setValue('')
+    setDisplayApproveBtn(false)
+    setDisplayWithdrawBtn(false)
+    setLoadingApprove(false)
+    setLoadingWithdraw(false)
   }
+
+  const handleCloseOnClick = () => {
+    handleDefaultStates()
+    onClose(false)
+  }
+
+  const handleAllowanceOnChange = useCallback(
+    async event => {
+      const amount = Number(event.target.value)
+      setValue(event.target.value)
+
+      if (!formRef.current.checkValidity()) {
+        formRef.current.reportValidity()
+        handleDefaultStates()
+        return
+      }
+
+      if (amount > 0) {
+        if (asset?.isNative) {
+          const allowance = getEther(
+            (await method('allowance', [account, tokenOptions.contract.wethGateway], null, asset.aToken, asset.aTokenAbi)).toString(),
+            asset.decimals
+          )
+
+          setDisplayApproveBtn(!allowance || allowance < amount)
+          setDisplayWithdrawBtn(allowance >= amount)
+        } else {
+          setDisplayWithdrawBtn(true)
+        }
+      }
+    },
+    [asset, value]
+  )
 
   const handleApproveOnClick = useCallback(async () => {
     if (!formRef.current.checkValidity()) {
@@ -34,26 +78,19 @@ const WithdrawDialog = ({ account, asset, balance, open, onClose }: IWithdrawDia
       return
     }
 
-    console.log('APPROVE')
-    console.log(value, asset)
-    console.log(tokenOptions.contract.wethGateway, 'tokenOptions.contract.wethGateway')
-    console.log(value, getWei(value))
-    console.log(asset.address, 'asset.address')
-    console.log(getAavePolygonWMATICAbi(), 'getAavePolygonWMATICAbi')
-    // const allowance = await method('allowance', [session.user.name, tokenOptions.contract.wethGateway], null, asset.address, getAavePolygonWMATICAbi())
-    // console.log(getEther(allowance.toString()))
-    // await method('approve', [tokenOptions.contract.poolAddress, getWei(value)], null, asset.address, asset.abi)
-    const approve = await method('approve', [tokenOptions.contract.wethGateway, getWei(value)], null, asset.aToken, getAavePolygonWMATICAbi())
-    console.log(approve, 'approve withdraw')
-    // const withdraw = await method(
-    //   'withdrawETH',
-    //   [tokenOptions.contract.poolAddress, getWei(value), account],
-    //   null,
-    //   tokenOptions.contract.wethGateway,
-    //   getAaveWETHGatewayAbi()
-    // )
-    // console.log(approve, 'withdraw withdraw')
-  }, [value])
+    setLoadingApprove(true)
+
+    const approve = await method('approve', [tokenOptions.contract.wethGateway, getWei(value, asset.decimals)], null, asset.aToken, asset.aTokenAbi)
+
+    if (approve) {
+      await approve.wait()
+
+      setDisplayApproveBtn(false)
+      setDisplayWithdrawBtn(true)
+    }
+
+    setLoadingApprove(false)
+  }, [asset, value])
 
   const handleWithdrawOnClick = useCallback(async () => {
     if (!formRef.current.checkValidity()) {
@@ -61,28 +98,71 @@ const WithdrawDialog = ({ account, asset, balance, open, onClose }: IWithdrawDia
       return
     }
 
-    console.log('WITHDRAW')
-    console.log(asset.address, 'asset.address')
-    console.log(getWei(value), value)
-    console.log(account, 'account')
-    console.log(tokenOptions.contract.poolAddress, 'tokenOptions.contract.poolAddress')
-    // await method('withdraw', [asset.address, getWei(value), account], null, tokenOptions.contract.poolAddress, getAavePoolAbi())
-    const withdraw = await method(
-      'withdrawETH',
-      [tokenOptions.contract.poolAddress, getWei(value), account],
-      null,
-      tokenOptions.contract.wethGateway,
-      getAaveWETHGatewayAbi()
-    )
-    console.log(withdraw, 'withdraw withdraw')
-    onClose(false)
-    setValue('')
-  }, [value])
+    setLoadingWithdraw(true)
+    let withdraw
+
+    if (asset?.isNative) {
+      withdraw = await method(
+        'withdrawETH',
+        [tokenOptions.contract.pool, getWei(value, asset.decimals), account],
+        { gasLimit: tokenOptions.gasLimit },
+        tokenOptions.contract.wethGateway,
+        tokenOptions.contract.wethGatewayAbi
+      )
+    } else {
+      withdraw = await method(
+        'withdraw',
+        [asset.underlyingAsset, getWei(value, asset.decimals), account],
+        null,
+        tokenOptions.contract.pool,
+        tokenOptions.contract.poolAbi
+      )
+    }
+
+    if (withdraw) {
+      await withdraw.wait()
+
+      setBalance(Number(+(balance - Number(value)).toFixed(7)))
+      handleDefaultStates()
+    }
+
+    setLoadingWithdraw(false)
+  }, [asset, value])
+
+  useEffect(() => {
+    !suppliedBalance || setBalance(suppliedBalance)
+    withdrawIcon ||
+      !asset ||
+      setWithdrawIcon(
+        <Icon>
+          <img alt={asset.name} src={asset.icon} className='w-18 mb-18' />
+        </Icon>
+      )
+  }, [asset, suppliedBalance])
 
   return (
-    <Dialog open={open} onClose={handleCloseOnClick}>
-      <DialogTitle>
-        {t('asset.withdraw')} {asset?.name}
+    <Dialog open={open} onClose={handleCloseOnClick} className='market-dialog-wrapper'>
+      <DialogTitle className='justify-content-between'>
+        <div className='row'>
+          <div className='col-md-6 font-weight-bold'>{t('asset.withdraw')}</div>
+          <div className='col-md-6'>
+            <div className='flex-container'>
+              <div style={{ width: '24px' }} className='align-self-center'>
+                <Image
+                  loader={() => asset?.icon}
+                  src={asset?.icon}
+                  alt={asset?.name}
+                  width='100%'
+                  height='100%'
+                  layout='responsive'
+                  objectFit='contain'
+                  unoptimized={true}
+                />
+              </div>
+              <div className='align-self-center pl-2'>{asset?.name}</div>
+            </div>
+          </div>
+        </div>
       </DialogTitle>
       <DialogContent>
         <>
@@ -94,14 +174,14 @@ const WithdrawDialog = ({ account, asset, balance, open, onClose }: IWithdrawDia
               required
               autoFocus
               margin='dense'
-              id='value'
-              label={t('value')}
+              id='amount'
+              label={t('amount')}
               type='number'
               fullWidth
               variant='standard'
               inputProps={{ min: 0, max: balance || 0, step: 'any' }}
               value={value}
-              onChange={event => setValue(event.target.value)}
+              onChange={handleAllowanceOnChange}
             />
           </form>
           <div className='row'>
@@ -113,16 +193,34 @@ const WithdrawDialog = ({ account, asset, balance, open, onClose }: IWithdrawDia
           </div>
         </>
       </DialogContent>
-      <DialogActions>
+      <DialogActions className='justify-content-between'>
         <Button onClick={handleCloseOnClick} className='color-danger'>
           {t('close')}
         </Button>
-        <Button variant='contained' onClick={handleWithdrawOnClick} className='bg-color-danger'>
-          {t('asset.withdraw')}
-        </Button>
-        <Button variant='contained' onClick={handleApproveOnClick} className='bg-color-info'>
-          {t('asset.approve')}
-        </Button>
+        {displayWithdrawBtn && (
+          <LoadingButton
+            loading={loadingWithdraw}
+            loadingPosition='end'
+            endIcon={withdrawIcon}
+            variant='contained'
+            onClick={handleWithdrawOnClick}
+            className='bg-color-danger'
+          >
+            {t('asset.withdraw')}
+          </LoadingButton>
+        )}
+        {displayApproveBtn && (
+          <LoadingButton
+            loading={loadingApprove}
+            loadingPosition='end'
+            endIcon={<AddTaskIcon />}
+            variant='contained'
+            onClick={handleApproveOnClick}
+            className='bg-color-info'
+          >
+            {t('asset.approve')}
+          </LoadingButton>
+        )}
       </DialogActions>
     </Dialog>
   )

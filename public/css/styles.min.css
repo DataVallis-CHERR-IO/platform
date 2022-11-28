@@ -2400,3 +2400,15 @@ section.resume-section .section-inner {
 .flex-container {
     display: flex;
 }
+
+.mb-18 {
+    margin-bottom: 1.125rem
+}
+
+.w-18 {
+    width: 1.125rem
+}
+
+.market-dialog-wrapper .MuiPaper-root {
+    min-width: 240px;
+}

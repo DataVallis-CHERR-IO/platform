@@ -3,12 +3,12 @@ import ProjectsTable from '../../../themes/components/data/data.table'
 import useTranslation from 'next-translate/useTranslation'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Tooltip } from '@mui/material'
-import { useSession } from 'next-auth/react'
 import { useContractContext } from '../../../contexts/contract/provider'
 import { getEther, truncateAddress } from '../../../utils'
 import { notify } from '../../../utils/notify'
 import { method } from '../../../modules/method'
 import { getCherrioProjectAbi } from '../../../contracts/abi/cherrio-project'
+import { useSessionContext } from '../../../contexts/session/provider'
 import { faCheck, faThumbsUp, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { faEthereum } from '@fortawesome/free-brands-svg-icons'
 import { IProject } from '../../../interfaces/api'
@@ -20,8 +20,8 @@ interface IProjectSpendingRequestsProps {
 
 const ProjectSpendingRequests: React.FC<IProjectSpendingRequestsProps> = ({ project }) => {
   const { t } = useTranslation('common')
+  const { account } = useSessionContext()
   const { contractProject } = useContractContext()
-  const { data: session } = useSession()
   const [rows, setRows] = useState<any[]>([])
   const columns = useMemo(
     () => [
@@ -36,10 +36,7 @@ const ProjectSpendingRequests: React.FC<IProjectSpendingRequestsProps> = ({ proj
         align: 'right',
         width: 100,
         ignore:
-          !session ||
-          session.user.name.toLowerCase() === contractProject.owner?.toLowerCase() ||
-          contractProject?.donations === 0 ||
-          contractProject?.requests?.votes?.length === 0
+          account?.toLowerCase() === contractProject.owner?.toLowerCase() || contractProject?.donations === 0 || contractProject?.requests?.votes?.length === 0
       }
     ],
     [contractProject?.requests?.votes]

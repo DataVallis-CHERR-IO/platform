@@ -8,19 +8,18 @@ import useTranslation from 'next-translate/useTranslation'
 import AccordionSummary from '@mui/material/AccordionSummary'
 import Typography from '@mui/material/Typography'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import { getAavePoolAbi } from '../../../contracts/abi/aave/pool'
-import { useContractReads } from 'wagmi'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { BeatLoader } from 'react-spinners'
+import { useContractReads } from 'wagmi'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { getAaveWalletBalanceProviderAbi } from '../../../contracts/abi/aave/wallet-balance-provider'
 import { getEther } from '../../../utils'
+import { useSessionContext } from '../../../contexts/session/provider'
+import { Button } from '@mui/material'
 import { tokenOptions } from '../../../config'
 import { assets } from '../../../config/assets'
-import { Button } from '@mui/material'
+import { faEthereum } from '@fortawesome/free-brands-svg-icons'
 import { IAsset } from '../../../interfaces'
 import * as _ from 'lodash'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEthereum } from '@fortawesome/free-brands-svg-icons'
 
 interface IAssetList {
   asset: any
@@ -28,12 +27,9 @@ interface IAssetList {
   action: any
 }
 
-interface IYourSuppliesAccordionProps {
-  account?: string
-}
-
-const YourSuppliesAccordion = ({ account }: IYourSuppliesAccordionProps) => {
+const YourSuppliesAccordion = () => {
   const { t } = useTranslation('common')
+  const { account } = useSessionContext()
   const [asset, setAsset] = useState<IAsset>(null)
   const [assetsList, setAssetsList] = useState<IAssetList[]>(null)
   const [balance, setBalance] = useState<number>(0)
@@ -50,17 +46,17 @@ const YourSuppliesAccordion = ({ account }: IYourSuppliesAccordionProps) => {
   const walletBalanceProvider = useMemo(
     () => ({
       addressOrName: tokenOptions.contract.walletBalanceProvider,
-      contractInterface: getAaveWalletBalanceProviderAbi()
+      contractInterface: tokenOptions.contract.walletBalanceProviderAbi
     }),
     [tokenOptions.contract.walletBalanceProvider]
   )
 
-  const poolAddress = useMemo(
+  const pool = useMemo(
     () => ({
-      addressOrName: tokenOptions.contract.poolAddress,
-      contractInterface: getAavePoolAbi()
+      addressOrName: tokenOptions.contract.pool,
+      contractInterface: tokenOptions.contract.poolAbi
     }),
-    [tokenOptions.contract.walletBalanceProvider]
+    [tokenOptions.contract.pool]
   )
 
   const { data: contractsData } = useContractReads({
@@ -71,7 +67,7 @@ const YourSuppliesAccordion = ({ account }: IYourSuppliesAccordionProps) => {
         args: [[account], assets.map(value => value.aToken)]
       },
       {
-        ...poolAddress,
+        ...pool,
         functionName: 'getUserAccountData',
         args: [account]
       }
@@ -79,17 +75,19 @@ const YourSuppliesAccordion = ({ account }: IYourSuppliesAccordionProps) => {
     watch: true
   })
 
-  const handleWithdrawOnClick = async (assetToWithdraw: IAsset, walletBalance: number) => {
+  const handleWithdrawOnClick = async (assetToWithdraw: IAsset, suppliedBalance: number) => {
     setAsset(assetToWithdraw)
-    setBalance(walletBalance)
+    setBalance(suppliedBalance)
     setOpen(true)
   }
 
   const getSupplied = useCallback(async () => {
     const assetLists: IAssetList[] = []
 
-    for (const [index, assetData] of assets.entries()) {
-      const walletBalance = Number(getEther(_.get(contractsData, `[0][${index}]`, '').toString()).toFixed(7))
+    for (const [index, assetData] of _.cloneDeep(assets).entries()) {
+      const suppliedBalance = +(((getEther(_.get(contractsData, `[0][${index}]`, '').toString(), assetData.decimals) + Number.EPSILON) * 100) / 100).toFixed(7)
+
+      if (suppliedBalance === 0) continue
 
       assetLists.push({
         asset: (
@@ -111,15 +109,15 @@ const YourSuppliesAccordion = ({ account }: IYourSuppliesAccordionProps) => {
         ),
         balance: (
           <>
-            <FontAwesomeIcon icon={faEthereum} /> {walletBalance}
+            <FontAwesomeIcon icon={faEthereum} /> {suppliedBalance}
           </>
         ),
         action: (
           <Button
             variant='contained'
             className='dark-btn text-capitalize'
-            disabled={walletBalance === 0}
-            onClick={() => handleWithdrawOnClick(assetData, walletBalance)}
+            disabled={suppliedBalance === 0}
+            onClick={() => handleWithdrawOnClick(assetData, suppliedBalance)}
           >
             {t('asset.withdraw')}
           </Button>
@@ -150,7 +148,7 @@ const YourSuppliesAccordion = ({ account }: IYourSuppliesAccordionProps) => {
           )}
         </AccordionDetails>
       </Accordion>
-      <WithdrawDialog account={account} asset={asset} balance={balance} open={open} onClose={setOpen} />
+      <WithdrawDialog asset={asset} suppliedBalance={balance} open={open} onClose={setOpen} />
     </>
   )
 }
