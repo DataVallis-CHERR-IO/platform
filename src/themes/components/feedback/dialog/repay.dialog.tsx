@@ -47,9 +47,9 @@ const RepayDialog = ({ asset, debt, open, onClose }: IRepayDialogProps) => {
   }
 
   const handleAllowanceOnChange = useCallback(
-    async event => {
-      const amount = Number(event?.target?.value || value)
-      setValue(event?.target?.value || value)
+    async data => {
+      const amount = Number(data)
+      setValue(data)
 
       if (!formRef.current.checkValidity()) {
         formRef.current.reportValidity()

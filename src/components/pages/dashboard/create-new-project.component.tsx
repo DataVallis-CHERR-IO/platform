@@ -159,14 +159,14 @@ const CreateNewProjectComponent: React.FC<ICreateNewProjectProps> = ({ projectTy
               <h2>{t('project.createNew')}</h2>
               <div className='row'>
                 <div className='col-md-6 mb-5'>
-                  <TextField id='title' label={t('title')} value={title} onChange={event => setTitle(event.target.value)} minLength={4} maxLength={32} />
+                  <TextField id='title' label={t('title')} value={title} onChange={data => setTitle(data)} minLength={4} maxLength={32} />
                 </div>
                 <div className='col-md-6 mb-5'>
                   <TextField
                     id='excerpt'
                     label={t('excerpt')}
                     value={excerpt}
-                    onChange={event => setExcerpt(event.target.value)}
+                    onChange={data => setExcerpt(data)}
                     minLength={4}
                     maxLength={64}
                   />
@@ -176,17 +176,17 @@ const CreateNewProjectComponent: React.FC<ICreateNewProjectProps> = ({ projectTy
                     id='description'
                     label={t('description')}
                     value={description}
-                    onChange={event => setDescription(event.target.value)}
+                    onChange={data => setDescription(data)}
                     multiline={true}
                     rows={4}
                     minLength={4}
                   />
                 </div>
                 <div className='col-md-4 mb-5'>
-                  <TextField id='goal' label={t('goal')} type='number' value={goal} onChange={event => setGoal(event.target.value)} />
+                  <TextField id='goal' label={t('goal')} type='number' value={goal} onChange={data => setGoal(data)} />
                 </div>
                 <div className='col-md-4 mb-5'>
-                  <TextField id='duration' label={t('durationInDays')} type='number' value={duration} onChange={event => setDuration(event.target.value)} />
+                  <TextField id='duration' label={t('durationInDays')} type='number' value={duration} onChange={data => setDuration(data)} />
                 </div>
                 <div className='col-md-4 mb-5'>
                   <FormControl variant='standard' fullWidth={true}>

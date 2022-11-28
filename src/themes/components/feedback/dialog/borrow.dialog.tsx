@@ -50,9 +50,9 @@ const BorrowDialog = ({ asset, open, onClose }: IBorrowDialogProps) => {
   }
 
   const handleAllowanceOnChange = useCallback(
-    async event => {
-      const amount = Number(event.target.value)
-      setValue(event.target.value)
+    async data => {
+      const amount = Number(data)
+      setValue(data)
 
       if (!formRef.current.checkValidity()) {
         formRef.current.reportValidity()
