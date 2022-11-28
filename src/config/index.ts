@@ -13,7 +13,7 @@ export const authGuardOptions: IAuthGuardOptions = {
 export const contractOptions: IContractOptions = {
   projectActivator: {
     owner: '0xaae3b0b628e1b8918a0f0c648f5fac3cdfe61c9e',
-    address: '0x2A8A0532aAe8D55FC07AF723d5b0693ffB06Ea15'
+    address: '0x8D41ccf877b06BC9EE4C861286C9913176BA7F18'
   }
 }
 
