@@ -17,6 +17,7 @@ import { SUBSCRIPTION_PROJECT_CREATED } from '../../constants/queries/database/p
 import { IProject } from '../../interfaces/api'
 import { StageEnum } from '../../enums/stage.enum'
 import * as _ from 'lodash'
+import moment from 'moment'
 
 interface IProjectsComponentProps {
   projects?: IProject[]
@@ -45,6 +46,8 @@ const ProjectsComponent: React.FC<IProjectsComponentProps> = ({ projects }) => {
       { id: 'excerpt', label: t('excerpt') },
       { id: 'donated', label: t('donated'), width: 100 },
       { id: 'goal', label: t('goal'), width: 100 },
+      { id: 'startedAt', label: t('startedAt'), width: 100 },
+      { id: 'endedAt', label: t('endedAt'), width: 100 },
       { id: 'status', label: t('status'), align: 'center' }
     ],
     []
@@ -53,6 +56,7 @@ const ProjectsComponent: React.FC<IProjectsComponentProps> = ({ projects }) => {
   const handleProjects = useCallback(() => {
     const data = []
 
+    console.log(contractsData)
     allProjects.forEach((project: IProject, index: number) => {
       data.push({
         image: (
@@ -89,6 +93,28 @@ const ProjectsComponent: React.FC<IProjectsComponentProps> = ({ projects }) => {
         goal: (
           <>
             <FontAwesomeIcon icon={faEthereum} /> {getEther(project.goal)}
+          </>
+        ),
+        startedAt: (
+          <>
+            {_.get(contractsData, `[${index}].getData._stage`) === undefined ? (
+              <BeatLoader color='#d21242' loading={true} size={5} />
+            ) : _.get(contractsData, `[${index}].getData._stage`) === StageEnum.PENDING ? (
+              '/'
+            ) : (
+              <div>{moment(_.get(contractsData, `[${index}].getData._startedAt`)).format('DD/MM/YYYY')}</div>
+            )}
+          </>
+        ),
+        endedAt: (
+          <>
+            {_.get(contractsData, `[${index}].getData._stage`) === undefined ? (
+              <BeatLoader color='#d21242' loading={true} size={5} />
+            ) : _.get(contractsData, `[${index}].getData._stage`) === StageEnum.PENDING ? (
+              '/'
+            ) : (
+              <div>{moment(_.get(contractsData, `[${index}].getData._endedAt`)).format('DD/MM/YYYY')}</div>
+            )}
           </>
         ),
         status:

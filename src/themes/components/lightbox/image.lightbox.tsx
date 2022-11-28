@@ -9,14 +9,15 @@ interface IImageLightboxProps {
 }
 
 const ImageLightbox = ({ images, open, onClose }: IImageLightboxProps) => {
-  const [photoIndex, setPhotoIndex] = useState(0)
+  const [photoIndex, setPhotoIndex] = useState<number>(0)
 
   const handleOnClose = () => {
     onClose(false)
   }
 
   return (
-    open && (
+    open &&
+    images.length && (
       <Lightbox
         mainSrc={images[photoIndex]}
         nextSrc={images[(photoIndex + 1) % images.length]}
