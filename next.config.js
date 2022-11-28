@@ -1,7 +1,7 @@
 const nextTranslate = require('next-translate');
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    reactStrictMode: true,
+    reactStrictMode: false,
     swcMinify: true,
     ...nextTranslate()
 };
