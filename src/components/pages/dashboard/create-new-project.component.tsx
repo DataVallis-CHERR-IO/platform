@@ -162,14 +162,7 @@ const CreateNewProjectComponent: React.FC<ICreateNewProjectProps> = ({ projectTy
                   <TextField id='title' label={t('title')} value={title} onChange={data => setTitle(data)} minLength={4} maxLength={32} />
                 </div>
                 <div className='col-md-6 mb-5'>
-                  <TextField
-                    id='excerpt'
-                    label={t('excerpt')}
-                    value={excerpt}
-                    onChange={data => setExcerpt(data)}
-                    minLength={4}
-                    maxLength={64}
-                  />
+                  <TextField id='excerpt' label={t('excerpt')} value={excerpt} onChange={data => setExcerpt(data)} minLength={4} maxLength={64} />
                 </div>
                 <div className='col-md-12 mb-5'>
                   <TextField
