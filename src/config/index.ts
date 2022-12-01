@@ -1,4 +1,4 @@
-import { IAuthGuardOptions, IContractOptions, IDataTableOptions, IDropZoneOptions, IGraphqlOptions, ITokenOptions } from '../interfaces'
+import { IAuthGuardOptions, IContractOptions, IDataTableOptions, IDropZoneOptions, ITokenOptions } from '../interfaces'
 import { getPoolAbi } from '../contracts/abi/aave/pool'
 import { getPoolAddressesProviderAbi } from '../contracts/abi/aave/pool-addresses-provider'
 import { getUIPoolDataProviderAbi } from '../contracts/abi/aave/ui-pool-data-provider'
@@ -24,11 +24,6 @@ export const dataTableOptions: IDataTableOptions = {
 
 export const dropZoneOptions: IDropZoneOptions = {
   maxFileSize: 5242880
-}
-
-export const graphqlOptions: IGraphqlOptions = {
-  httpsUrl: 'http://localhost:7778/graphql',
-  wssUrl: 'ws://localhost:7778/graphql'
 }
 
 export const tokenOptions: ITokenOptions = {

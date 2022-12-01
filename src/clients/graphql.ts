@@ -4,17 +4,16 @@ import { ApolloClient, DefaultOptions, HttpLink, InMemoryCache, split } from '@a
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
 import { createClient } from 'graphql-ws'
 import { getMainDefinition } from '@apollo/client/utilities'
-import { graphqlOptions } from '../config'
 
 const httpLink = new HttpLink({
-  uri: graphqlOptions.httpsUrl
+  uri: process.env.HTTPS_PROVIDER
 })
 
 const wsLink =
   typeof window !== 'undefined'
     ? new GraphQLWsLink(
         createClient({
-          url: graphqlOptions.wssUrl
+          url: process.env.WSS_PROVIDER
         })
       )
     : null

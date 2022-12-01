@@ -19,11 +19,6 @@ export interface IDropZoneOptions {
   maxFileSize: number
 }
 
-export interface IGraphqlOptions {
-  httpsUrl: string
-  wssUrl: string
-}
-
 export interface ITokenContract {
   pool: string
   poolAbi: string[]

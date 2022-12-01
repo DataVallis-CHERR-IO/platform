@@ -3,6 +3,10 @@ const nextTranslate = require('next-translate');
 const nextConfig = {
     reactStrictMode: false,
     swcMinify: true,
+    env: {
+        HTTPS_PROVIDER: process.env.HTTPS_PROVIDER,
+        WSS_PROVIDER: process.env.WSS_PROVIDER
+    },
     ...nextTranslate()
 };
 
