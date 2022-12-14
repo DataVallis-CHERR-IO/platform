@@ -1,7 +1,7 @@
 import React from 'react'
 import useTranslation from 'next-translate/useTranslation'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChartLine, faMedal, faUsers, faVrCardboard } from '@fortawesome/free-solid-svg-icons'
+import { faCertificate, faFingerprint, faGamepad, faGears, faMedal, faUsers, faVrCardboard } from '@fortawesome/free-solid-svg-icons'
 import { faConnectdevelop } from '@fortawesome/free-brands-svg-icons'
 
 const TopFeatures: React.FC = () => {
