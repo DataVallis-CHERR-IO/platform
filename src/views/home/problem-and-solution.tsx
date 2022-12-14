@@ -40,9 +40,6 @@ const ProblemAndSolution: React.FC = () => {
                 <li>{t('home.problemAndSolution.solution.text2')}</li>
                 <li>{t('home.problemAndSolution.solution.text3')}</li>
                 <li>{t('home.problemAndSolution.solution.text4')}</li>
-                <li>{t('home.problemAndSolution.solution.text5')}</li>
-                <li>{t('home.problemAndSolution.solution.text6')}</li>
-                <li>{t('home.problemAndSolution.solution.text7')}</li>
               </ul>
             </div>
           </div>
