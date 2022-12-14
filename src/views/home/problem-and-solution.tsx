@@ -17,7 +17,7 @@ const ProblemAndSolution: React.FC = () => {
           <div className='col-lg-7'>
             <div className='box-left'>
               <h2 className='text-uppercase'>{t('home.problemAndSolution.problem.title')}</h2>
-              <h3 className='c-red'>{t('home.problemAndSolution.problem.subtitle')}k</h3>
+              <h3 className='c-red'>{t('home.problemAndSolution.problem.subtitle')}</h3>
               <ul>
                 <li>{t('home.problemAndSolution.problem.text1')}</li>
                 <li>{t('home.problemAndSolution.problem.text3')}</li>
