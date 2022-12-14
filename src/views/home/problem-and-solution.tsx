@@ -20,13 +20,14 @@ const ProblemAndSolution: React.FC = () => {
               <h3 className='c-red'>{t('home.problemAndSolution.problem.subtitle')}k</h3>
               <ul>
                 <li>{t('home.problemAndSolution.problem.text1')}</li>
-                <li>{t('home.problemAndSolution.problem.text2')}</li>
                 <li>{t('home.problemAndSolution.problem.text3')}</li>
                 <li>{t('home.problemAndSolution.problem.text4')}</li>
                 <li>{t('home.problemAndSolution.problem.text5')}</li>
-                <li>{t('home.problemAndSolution.problem.text6')}</li>
                 <li>{t('home.problemAndSolution.problem.text7')}</li>
                 <li>{t('home.problemAndSolution.problem.text8')}</li>
+                <li>{t('home.problemAndSolution.problem.text9')}</li>
+                <li>{t('home.problemAndSolution.problem.text10')}</li>
+                <li>{t('home.problemAndSolution.problem.text11')}</li>
               </ul>
             </div>
           </div>
