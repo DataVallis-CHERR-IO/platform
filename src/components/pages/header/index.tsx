@@ -36,7 +36,7 @@ const Header: React.FC = () => {
         className='container'
         style={{ position: 'fixed', zIndex: '1030', right: '0', left: '0', backgroundColor: '#FFFFFF', maxWidth: 'unset', textAlign: 'center' }}
       >
-        <div>CHERR.IO MVP2 is currently deployed on testnet for testing purposes, therefore technical disruptions may occur.</div>
+        <div>CHERR.IO MVP2 is currently deployed on ETH Goerli TestNet for testing purposes, therefore technical disruptions may occur.</div>
       </div>
       <nav className='navbar navbar-expand-lg navbar-light fixed-top' id='mainNav' style={{ top: '22px' }}>
         <div className='container'>
