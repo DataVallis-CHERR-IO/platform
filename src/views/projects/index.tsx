@@ -11,7 +11,7 @@ const Projects: React.FC = () => {
         <div className='row'>
           <div className='col-lg-6 mx-auto text-center'>
             <h2 className='c-red'>{t('home.lastProjects.title')}</h2>
-            <p className='lead'>{t('home.lastProjects.subtitle')}</p>
+            <p className='lead whiteFont'>{t('home.lastProjects.subtitle')}</p>
           </div>
         </div>
         <ProjectCards />

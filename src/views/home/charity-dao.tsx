@@ -12,7 +12,7 @@ const CharityDAO: React.FC = () => {
           <div className='col-lg-5'>
             <h2 className='c-red'>{t('home.lastProjects.description.title')}</h2>
             <p className='lead'>{t('home.lastProjects.description.text1')}</p>
-            <p>{t('home.lastProjects.description.text2')}</p>
+            <p className='whiteFont'>{t('home.lastProjects.description.text2')}</p>
           </div>
           <div className='col-lg-7'>
             <div className='section-img text-center'>
