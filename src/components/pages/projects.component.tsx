@@ -31,8 +31,8 @@ const ProjectsComponent: React.FC<IProjectsComponentProps> = ({ projects }) => {
   const [allProjects, setAllProjects] = useState<IProject[]>(projects)
   const { data: newProject } = useSubscription(SUBSCRIPTION_PROJECT_CREATED)
   const { data: contractsData } = useContractsData({
-    contracts: allProjects.map((project: IProject) => ({
-      key: 'project',
+    contracts: allProjects.map((project: IProject, index: number) => ({
+      key: `project-${index}`,
       address: project.contractAddress,
       abi: getCherrioProjectAbi(),
       funcName: 'getData'
@@ -56,7 +56,6 @@ const ProjectsComponent: React.FC<IProjectsComponentProps> = ({ projects }) => {
   const handleProjects = useCallback(() => {
     const data = []
 
-    console.log(contractsData)
     allProjects.forEach((project: IProject, index: number) => {
       data.push({
         image: (
