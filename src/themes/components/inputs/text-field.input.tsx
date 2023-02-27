@@ -29,11 +29,11 @@ const TextField = ({
     if (enableColors && required) {
       const errors: string[] = []
 
-      if (minLength && data.length < minLength) errors.push(`${t('minLength')}: ${minLength}`)
-      if (maxLength && data.length > maxLength) errors.push(`${t('maxLength')}: ${maxLength}`)
+      if (minLength && data?.length < minLength) errors.push(`${t('minLength')}: ${minLength}`)
+      if (maxLength && data?.length > maxLength) errors.push(`${t('maxLength')}: ${maxLength}`)
 
-      setColor(!errors.length && data.length > 0 ? 'success' : 'primary')
-      setFocused(!errors.length && data.length > 0)
+      setColor(!errors.length && data?.length > 0 ? 'success' : 'primary')
+      setFocused(!errors.length && data?.length > 0)
       setError(!!errors.length)
       setErrorText(errors.length ? errors.join(', ') : '')
     }

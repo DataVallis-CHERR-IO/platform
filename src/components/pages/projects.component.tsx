@@ -47,6 +47,7 @@ const ProjectsComponent: React.FC<IProjectsComponentProps> = ({ projects }) => {
       { id: 'donated', label: t('donated'), width: 100 },
       { id: 'goal', label: t('goal'), width: 100 },
       { id: 'startedAt', label: t('startedAt'), width: 100 },
+      { id: 'deadline', label: t('deadline'), width: 100 },
       { id: 'endedAt', label: t('endedAt'), width: 100 },
       { id: 'status', label: t('status'), align: 'center' }
     ],
@@ -101,7 +102,18 @@ const ProjectsComponent: React.FC<IProjectsComponentProps> = ({ projects }) => {
             ) : _.get(contractsData, `[${index}].getData._stage`) === StageEnum.PENDING ? (
               '/'
             ) : (
-              <div>{moment(_.get(contractsData, `[${index}].getData._startedAt`)).format('DD/MM/YYYY')}</div>
+              <div>{moment(_.get(contractsData, `[${index}].getData._startedAt`).toString(), 'X').format('DD/MM/YYYY')}</div>
+            )}
+          </>
+        ),
+        deadline: (
+          <>
+            {_.get(contractsData, `[${index}].getData._stage`) === undefined ? (
+              <BeatLoader color='#d21242' loading={true} size={5} />
+            ) : _.get(contractsData, `[${index}].getData._stage`) === StageEnum.PENDING ? (
+              '/'
+            ) : (
+              <div>{moment(_.get(contractsData, `[${index}].getData._deadline`).toString(), 'X').format('DD/MM/YYYY')}</div>
             )}
           </>
         ),
@@ -109,10 +121,11 @@ const ProjectsComponent: React.FC<IProjectsComponentProps> = ({ projects }) => {
           <>
             {_.get(contractsData, `[${index}].getData._stage`) === undefined ? (
               <BeatLoader color='#d21242' loading={true} size={5} />
-            ) : _.get(contractsData, `[${index}].getData._stage`) === StageEnum.PENDING ? (
+            ) : _.get(contractsData, `[${index}].getData._stage`) === StageEnum.PENDING ||
+              _.get(contractsData, `[${index}].getData._stage`) === StageEnum.ACTIVE ? (
               '/'
             ) : (
-              <div>{moment(_.get(contractsData, `[${index}].getData._endedAt`)).format('DD/MM/YYYY')}</div>
+              <div>{moment(_.get(contractsData, `[${index}].getData._endedAt`).toString(), 'X').format('DD/MM/YYYY')}</div>
             )}
           </>
         ),

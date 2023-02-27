@@ -52,9 +52,12 @@ const SendTransactionDialog = ({ title, contentText, open, onClose, sender, min,
       <DialogTitle>{t(title)}</DialogTitle>
       <DialogContent>
         <DialogContentText>{t(contentText)}</DialogContentText>
-        <p>
+        <div>
           {t('balance')}: <FontAwesomeIcon icon={faEthereum} /> {balance}
-        </p>
+        </div>
+        <div>
+          {t('maxContribution')}: <FontAwesomeIcon icon={faEthereum} /> {maxValue}
+        </div>
         {max !== 0 ? (
           <>
             <form ref={formRef}>
@@ -63,7 +66,7 @@ const SendTransactionDialog = ({ title, contentText, open, onClose, sender, min,
                 label={t('amount')}
                 type='number'
                 value={value}
-                onChange={event => setValue(event.target.value)}
+                onChange={data => setValue(data)}
                 autoFocus
                 margin='dense'
                 inputProps={{ min, max, step: 'any' }}

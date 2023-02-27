@@ -56,7 +56,7 @@ const ProjectDetail: React.FC<IProjectDetailProps> = ({ project }) => {
   }
 
   useEffect(() => {
-    if (contractProject.owner && account?.toLowerCase() !== contractProject.owner.toLowerCase() && contractProject.stage !== StageEnum.ENDED) {
+    if (contractProject.owner && account && account?.toLowerCase() !== contractProject.owner.toLowerCase() && contractProject.stage !== StageEnum.ENDED) {
       setDisplayButton(true)
 
       if (contractProject.stage === StageEnum.PENDING) {
