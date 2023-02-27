@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "rm -rf .next && yarn build && next start",
+    "start": "rm -rf .next node_modules && yarn && yarn build && next start",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix"
   },
   "dependencies": {
