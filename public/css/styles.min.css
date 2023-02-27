@@ -2389,7 +2389,10 @@ section.resume-section .section-inner {
 .dashboard-cards footer {
     padding: unset;
 }
-
+.custom-footer .container{
+    z-index: 1;
+    position: relative;
+}
 .cursor-pointer {
     cursor: pointer;
 }
