@@ -46,7 +46,7 @@ const Subscribe: React.FC = () => {
                 <p>{t('subscribe.subtitle')}</p>
               </div>
               <div className='subscribe-form-right'>
-                <form>
+                <form clas='subscribeForm'>
                   <div className='subscribe-wrapper'>
                     <input ref={emailRef} type='text' id='email' name='email' placeholder={t('enterYourEmailAddress')} />
                     <button type='submit' id='subscribe-submit' onClick={handleSubscribeOnClick}>

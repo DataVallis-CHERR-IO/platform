@@ -2140,7 +2140,7 @@ label div {
 .popup-gallery {
     margin: 0;
 }
-form{
+form:not(.subscribeForm){
     background: white;
     border-radius: 0.9rem;
     padding: 15px;
