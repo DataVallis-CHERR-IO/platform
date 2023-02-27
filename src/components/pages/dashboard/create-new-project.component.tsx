@@ -156,7 +156,7 @@ const CreateNewProjectComponent: React.FC<ICreateNewProjectProps> = ({ projectTy
         <div className='container'>
           <div className='row ml-0 mr-0'>
             <form ref={formRef}>
-              <h2>{t('project.createNew')}</h2>
+              <h2 className='c-red'>{t('project.createNew')}</h2>
               <div className='row'>
                 <div className='col-md-6 mb-5'>
                   <TextField id='title' label={t('title')} value={title} onChange={data => setTitle(data)} minLength={4} maxLength={32} />

@@ -51,7 +51,7 @@ const ProjectGallery: React.FC<IProjectMediaProps> = ({ projectId }) => {
         <div className='container'>
           <div className='row'>
             <div className='col-lg-12'>
-              <h2 className='c-gray'>{t('gallery')}</h2>
+              <h2 className='c-red'>{t('gallery')}</h2>
               <div className='popup-gallery' data-aos='fade-up' data-aos-delay={300}>
                 {!!projectMedia?.length &&
                   projectMedia.map((media: IProjectMedia) => (

@@ -80,7 +80,7 @@ const ProjectDetail: React.FC<IProjectDetailProps> = ({ project }) => {
       <header className='pagehead'>
         <div className='header-content'>
           <div className='container'>
-            <div className='row'>
+            <div className='row projectDetailMain'>
               <div className='col-lg-8 mx-auto text-center project-title-holder'>
                 <h1>{project.title}</h1>
               </div>
@@ -112,14 +112,14 @@ const ProjectDetail: React.FC<IProjectDetailProps> = ({ project }) => {
           <div className='row'>
             <div className='col-lg-12'>
               <div className='donation-header'>
-                <h2 className='c-gray'>{t('description')}</h2>
+                <h2 className='c-red'>{t('description')}</h2>
                 {displayButton && (
                   <div className='btn btn-primary js-scroll-trigger' onClick={handleOnClick}>
                     {t(buttonText)}
                   </div>
                 )}
               </div>
-              <p>{project.description}</p>
+              <p className='whiteFont'>{project.description}</p>
             </div>
           </div>
           <div className='row'>

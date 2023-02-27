@@ -10,7 +10,8 @@ body, html {
 body {
     font-family: Poppins;
     color: #21333f;
-    font-size: 15px
+    font-size: 15px;
+    background-color: #162732;
 }
 
 @media (max-width: 480px) {
@@ -2137,9 +2138,19 @@ label div {
 }
 
 .popup-gallery {
-    margin: 0 -15px
+    margin: 0;
 }
-
+form{
+    background: white;
+    border-radius: 0.9rem;
+    padding: 15px;
+}
+.projectDetailMain .header-image{
+    margin-top: 30px;
+}
+.projectDetailMain .header-holder{
+    margin-bottom: 50px;
+}
 .popup-gallery div {
     width: 32.5%;
     display: inline-block;
@@ -2225,6 +2236,9 @@ label div {
     margin-top: 30px
 }
 
+.donation-header {
+    margin-bottom: 30px;
+}
 .donation-header h2 {
     display: inline-block
 }
