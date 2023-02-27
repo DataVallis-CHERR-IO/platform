@@ -2433,7 +2433,13 @@ section.resume-section .section-inner {
     border-bottom-left-radius: 0.9rem !important;
     border-bottom-right-radius: 0.9rem !important;
 }
-
+.MuiButton-root{
+    background: #21333f !important;
+    color: white !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    outline:none !important;
+}
 .dashboard-card-wrapper:hover {
     box-shadow: rgba(0, 0, 0, 50%) 0px 4px 8px 0px;;
 }
