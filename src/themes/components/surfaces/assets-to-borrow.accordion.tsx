@@ -146,7 +146,7 @@ const AssetsToBorrowAccordion = () => {
           <Typography className='font-weight-bold'>{t('asset.assetsToBorrow')}</Typography>
         </AccordionSummary>
         <AccordionDetails className='p-0'>
-          {displayBorrowNotice && <div className='p-3 color-info'>*{t('asset.borrowNotice')}</div>}
+          {displayBorrowNotice && <div className='p-3 color-danger'>*{t('asset.borrowNotice')}</div>}
           <DataTable columns={columns} rows={assetsList} />
         </AccordionDetails>
       </Accordion>

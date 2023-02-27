@@ -208,7 +208,7 @@ const CreateNewProjectComponent: React.FC<ICreateNewProjectProps> = ({ projectTy
               </div>
               <div className='row section-profile'>
                 <div className='col-md-12'>
-                  <Button onClick={handleCreateOnClick} variant='contained' color='success'>
+                  <Button onClick={handleCreateOnClick} variant='contained' className='btn-style'>
                     {t('create')}
                   </Button>
                 </div>

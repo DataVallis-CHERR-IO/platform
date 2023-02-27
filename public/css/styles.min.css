@@ -10,7 +10,6 @@ body, html {
 body {
     font-family: Poppins;
     color: #21333f;
-    background: #F1F1F3;
     font-size: 15px
 }
 
@@ -1199,6 +1198,11 @@ body.page footer {
     text-align: center
 }
 
+.btn-style {
+    background: #a92a3f;
+    color: #FFFFFF
+}
+
 .causes .causes-details {
     padding: 15px
 }
@@ -1584,7 +1588,7 @@ a:hover {
 
 .pagehead {
     min-height: 750px;
-    background: url(../img/banner1.png) no-repeat center bottom/cover;
+    background: url(../img/banner.png) no-repeat center bottom/cover;
     display: table;
     width: 100%;
     position: relative;
@@ -1935,7 +1939,6 @@ label div {
 @media (min-width: 992px) {
     .box-left {
         padding: 50px 200px 50px 50px;
-        margin-top: 140px
     }
 }
 
@@ -2375,14 +2378,16 @@ section.resume-section .section-inner {
 }
 
 .dark-btn {
-    background: #2c3135;
+    background: #FFFFFF;
+    color: #000000;
     font-size: 14px;
     font-weight: 600;
     text-transform: lowercase;
 }
 
 .dark-btn:hover {
-    background: #242323;
+    background: #FFFFFF;
+    color: #a92a3f;
 }
 
 .mr-00 {

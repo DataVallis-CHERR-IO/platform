@@ -8,12 +8,6 @@ const ProblemAndSolution: React.FC = () => {
     <section className='section-2'>
       <div className='container'>
         <div className='row'>
-          <div className='col-lg-6 mx-auto text-center'>
-            <h2 className='c-red'>{t('home.problemAndSolution.title')}</h2>
-            <p className='lead'>{t('home.problemAndSolution.subtitle')}</p>
-          </div>
-        </div>
-        <div className='row'>
           <div className='col-lg-7'>
             <div className='box-left'>
               <h2 className='text-uppercase'>{t('home.problemAndSolution.problem.title')}</h2>

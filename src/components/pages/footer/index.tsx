@@ -29,30 +29,9 @@ const Footer: React.FC = () => {
                   </Link>
                 </li>
                 <li>
-                  <Link href='https://www.facebook.com/CherrioPlatform'>
-                    <a target='_blank' rel='noreferrer noopener'>
-                      <i className='icon-social-facebook' />
-                    </a>
-                  </Link>
-                </li>
-                <li>
-                  <Link href='https://www.instagram.com/CherrioPlatform'>
-                    <a target='_blank' rel='noreferrer noopener'>
-                      <i className='icon-social-instagram' />
-                    </a>
-                  </Link>
-                </li>
-                <li>
                   <Link href='https://www.linkedin.com/company/11326200'>
                     <a target='_blank' rel='noreferrer noopener'>
                       <i className='icon-social-linkedin' />
-                    </a>
-                  </Link>
-                </li>
-                <li>
-                  <Link href='https://t.me/CherrioPlatform'>
-                    <a target='_blank' rel='noreferrer noopener' className='telegram-icon'>
-                      <i className='icon-social-telegram' />
                     </a>
                   </Link>
                 </li>

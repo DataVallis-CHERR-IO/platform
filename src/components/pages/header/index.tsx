@@ -6,7 +6,7 @@ import useTranslation from 'next-translate/useTranslation'
 import useAuth from '../../../hooks/use-auth'
 import { truncateAddress } from '../../../utils'
 import { alpha, Button, ListItemIcon, Menu, MenuItem, MenuProps, styled } from '@mui/material'
-import { Dashboard, Logout } from '@mui/icons-material'
+import { Logout } from '@mui/icons-material'
 import { useSessionContext } from '../../../contexts/session/provider'
 
 const Header: React.FC = () => {
@@ -60,6 +60,13 @@ const Header: React.FC = () => {
                   <a className='nav-link js-scroll-trigger'>{t('about')}</a>
                 </Link>
               </li>
+              {account && (
+                <li className='nav-item'>
+                  <Link href='/dashboard'>
+                    <a className='nav-link js-scroll-trigger'>{t('dashboard')}</a>
+                  </Link>
+                </li>
+              )}
               {!account ? (
                 <Button id='navbar-account-disconnected-button' variant='contained' disableElevation onClick={connect} className='dark-btn text-uppercase'>
                   {t('connectWallet')}
@@ -87,12 +94,6 @@ const Header: React.FC = () => {
                     open={open}
                     onClose={handleOnClose}
                   >
-                    <MenuItem>
-                      <ListItemIcon>
-                        <Dashboard fontSize='small' />
-                      </ListItemIcon>
-                      <Link href='/dashboard'>{t('dashboard')}</Link>
-                    </MenuItem>
                     <MenuItem onClick={disconnect}>
                       <ListItemIcon>
                         <Logout fontSize='small' />
