@@ -1550,6 +1550,9 @@ a:hover {
 .dashboard-card-details p{
    min-height: 10px !important;
     margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: white !important;
 }
 .progress-bar {
     /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#162732+0,1e2930+100 */
@@ -2483,6 +2486,13 @@ section.resume-section .section-inner {
     box-shadow: rgba(0, 0, 0, 0.08) 0px 4px 8px 0px;
     border-bottom-right-radius: 0.9rem !important;
     border-bottom-left-radius: 0.9rem !important;
+
+    background: #a92a3f; /* Old browsers */
+    background: -moz-linear-gradient(top,  #a92a3f 0%, #d3384f 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(top,  #a92a3f 0%,#d3384f 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to bottom,  #a92a3f 0%,#d3384f 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a92a3f', endColorstr='#d3384f',GradientType=0 ); /* IE6-9 */
+
 }
 
 .navbar-account {
