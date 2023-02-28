@@ -2481,6 +2481,8 @@ section.resume-section .section-inner {
 .dashboard-card-details {
     background-color: #FFFFFF;
     box-shadow: rgba(0, 0, 0, 0.08) 0px 4px 8px 0px;
+    border-bottom-right-radius: 0.9rem !important;
+    border-bottom-left-radius: 0.9rem !important;
 }
 
 .navbar-account {
