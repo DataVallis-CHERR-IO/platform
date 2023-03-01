@@ -4,10 +4,9 @@ import TextField from '../../inputs/text-field.input'
 import useTranslation from 'next-translate/useTranslation'
 import LoadingButton from '@mui/lab/LoadingButton'
 import AddTaskIcon from '@mui/icons-material/AddTask'
-import { useBalance } from 'wagmi'
+import { Address, useAccount, useBalance } from 'wagmi'
 import { method } from '../../../../modules/method'
 import { getEther, getWei } from '../../../../utils'
-import { useSessionContext } from '../../../../contexts/session/provider'
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, FormLabel, Icon, Radio, RadioGroup } from '@mui/material'
 import { tokenOptions } from '../../../../config'
 import { IAsset } from '../../../../interfaces'
@@ -21,7 +20,7 @@ interface IBorrowDialogProps {
 
 const BorrowDialog = ({ asset, open, onClose }: IBorrowDialogProps) => {
   const { t } = useTranslation('common')
-  const { account } = useSessionContext()
+  const { address } = useAccount()
   const [value, setValue] = useState<string>('')
   const [interestRateMode, setInterestRateMode] = useState<number>(InterestRateModeEnum.VARIABLE)
   const [displayApproveBtn, setDisplayApproveBtn] = useState<boolean>(false)
@@ -32,7 +31,7 @@ const BorrowDialog = ({ asset, open, onClose }: IBorrowDialogProps) => {
   const formRef = useRef<HTMLFormElement>(null)
 
   const { data: balance } = useBalance({
-    addressOrName: account,
+    address: address as Address,
     watch: true
   })
 
@@ -64,7 +63,7 @@ const BorrowDialog = ({ asset, open, onClose }: IBorrowDialogProps) => {
         if (asset?.isNative) {
           const allowance = getEther(
             (
-              await method('borrowAllowance', [account, tokenOptions.contract.wethGateway], null, asset.variableDebtToken, asset.variableDebtTokenAbi)
+              await method('borrowAllowance', [address, tokenOptions.contract.wethGateway], null, asset.variableDebtToken, asset.variableDebtTokenAbi)
             ).toString(),
             asset.decimals
           )
@@ -125,7 +124,7 @@ const BorrowDialog = ({ asset, open, onClose }: IBorrowDialogProps) => {
     } else {
       borrow = await method(
         'borrow',
-        [asset.underlyingAsset, getWei(value, asset.decimals), interestRateMode, 0, account],
+        [asset.underlyingAsset, getWei(value, asset.decimals), interestRateMode, 0, address],
         null,
         tokenOptions.contract.pool,
         tokenOptions.contract.poolAbi

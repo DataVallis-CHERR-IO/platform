@@ -10,9 +10,8 @@ import Typography from '@mui/material/Typography'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { useContractRead } from 'wagmi'
+import { Address, useAccount, useContractRead } from 'wagmi'
 import { getEther } from '../../../utils'
-import { useSessionContext } from '../../../contexts/session/provider'
 import { tokenOptions } from '../../../config'
 import { faEthereum } from '@fortawesome/free-brands-svg-icons'
 import { Button } from '@mui/material'
@@ -28,7 +27,7 @@ interface IAssetList {
 
 const AssetsToSupplyAccordion = () => {
   const { t } = useTranslation('common')
-  const { account } = useSessionContext()
+  const { address } = useAccount()
   const [asset, setAsset] = useState<IAsset>(null)
   const [balance, setBalance] = useState<number>(0)
   const [balances, setBalances] = useState<IAssetList[]>(null)
@@ -44,8 +43,8 @@ const AssetsToSupplyAccordion = () => {
 
   const walletBalanceProvider = useMemo(
     () => ({
-      addressOrName: tokenOptions.contract.walletBalanceProvider,
-      contractInterface: tokenOptions.contract.walletBalanceProviderAbi
+      address: tokenOptions.contract.walletBalanceProvider as Address,
+      abi: tokenOptions.contract.walletBalanceProviderAbi
     }),
     [tokenOptions.contract.walletBalanceProvider]
   )
@@ -53,7 +52,7 @@ const AssetsToSupplyAccordion = () => {
   const { data: contractData } = useContractRead({
     ...walletBalanceProvider,
     functionName: 'batchBalanceOf',
-    args: [[account], assets.map(value => value.address)],
+    args: [[address], assets.map(value => value.address)],
     watch: true
   })
 
@@ -109,7 +108,7 @@ const AssetsToSupplyAccordion = () => {
   }, [contractData])
 
   useEffect(() => {
-    !contractData?.length || getAssets()
+    !(contractData as any)?.length || getAssets()
   }, [contractData])
 
   return (

@@ -6,9 +6,9 @@ import { getEther, getWei, isAddress } from '../../../utils'
 import { notify } from '../../../utils/notify'
 import { useContractContext } from '../../../contexts/contract/provider'
 import { getCherrioProjectAbi } from '../../../contracts/abi/cherrio-project'
-import { useSessionContext } from '../../../contexts/session/provider'
 import { Backdrop, Button, CircularProgress, InputAdornment } from '@mui/material'
 import { IProject } from '../../../interfaces/api'
+import { useAccount } from 'wagmi'
 
 interface IProjectCreateSpendingRequestProps {
   project: IProject
@@ -17,7 +17,7 @@ interface IProjectCreateSpendingRequestProps {
 const ProjectCreateSpendingRequest: React.FC<IProjectCreateSpendingRequestProps> = ({ project }) => {
   const { t } = useTranslation('common')
   const { contractProject } = useContractContext()
-  const { account } = useSessionContext()
+  const { address } = useAccount()
   const [recipient, setRecipient] = useState<string>('')
   const [value, setValue] = useState<string>('')
   const [description, setDescription] = useState<string>('')
@@ -89,7 +89,7 @@ const ProjectCreateSpendingRequest: React.FC<IProjectCreateSpendingRequestProps>
                       onChange={data => setRecipient(data)}
                       InputProps={{
                         endAdornment: (
-                          <InputAdornment position='end' onClick={() => setRecipient(account)} className='text-lowercase cursor-pointer'>
+                          <InputAdornment position='end' onClick={() => setRecipient(address)} className='text-lowercase cursor-pointer'>
                             {t('account')}
                           </InputAdornment>
                         )

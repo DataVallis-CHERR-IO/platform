@@ -7,11 +7,11 @@ import AddTaskIcon from '@mui/icons-material/AddTask'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { method } from '../../../../modules/method'
 import { getEther, getWei } from '../../../../utils'
-import { useSessionContext } from '../../../../contexts/session/provider'
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Icon, InputAdornment } from '@mui/material'
 import { faEthereum } from '@fortawesome/free-brands-svg-icons'
 import { tokenOptions } from '../../../../config'
 import { IAsset } from '../../../../interfaces'
+import { useAccount } from 'wagmi'
 
 interface ISupplyDialogProps {
   asset: IAsset
@@ -22,7 +22,7 @@ interface ISupplyDialogProps {
 
 const SupplyDialog = ({ asset, supply, open, onClose }: ISupplyDialogProps) => {
   const { t } = useTranslation('common')
-  const { account } = useSessionContext()
+  const { address } = useAccount()
   const [value, setValue] = useState<string>('')
   const [balance, setBalance] = useState<number>(0)
   const [displayApproveBtn, setDisplayApproveBtn] = useState<boolean>(false)
@@ -61,7 +61,7 @@ const SupplyDialog = ({ asset, supply, open, onClose }: ISupplyDialogProps) => {
           setDisplaySupplyBtn(true)
         } else {
           const allowance = getEther(
-            (await method('allowance', [account, tokenOptions.contract.pool], null, asset.underlyingAsset, asset.abi)).toString(),
+            (await method('allowance', [address, tokenOptions.contract.pool], null, asset.underlyingAsset, asset.abi)).toString(),
             asset.decimals
           )
 
@@ -105,7 +105,7 @@ const SupplyDialog = ({ asset, supply, open, onClose }: ISupplyDialogProps) => {
     if (asset?.isNative) {
       deposit = await method(
         'depositETH',
-        [tokenOptions.contract.pool, account, 0],
+        [tokenOptions.contract.pool, address, 0],
         { value: getWei(value, asset.decimals) },
         tokenOptions.contract.wethGateway,
         tokenOptions.contract.wethGatewayAbi
@@ -113,7 +113,7 @@ const SupplyDialog = ({ asset, supply, open, onClose }: ISupplyDialogProps) => {
     } else {
       deposit = await method(
         'supply',
-        [asset.underlyingAsset, getWei(value, asset.decimals), account, 0],
+        [asset.underlyingAsset, getWei(value, asset.decimals), address, 0],
         null,
         tokenOptions.contract.pool,
         tokenOptions.contract.poolAbi

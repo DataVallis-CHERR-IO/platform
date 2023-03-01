@@ -10,8 +10,7 @@ import Typography from '@mui/material/Typography'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { useContractReads } from 'wagmi'
-import { useSessionContext } from '../../../contexts/session/provider'
+import { Address, useAccount, useContractReads } from 'wagmi'
 import { Button } from '@mui/material'
 import { assets } from '../../../config/assets'
 import { tokenOptions } from '../../../config'
@@ -29,7 +28,7 @@ interface IAssetList {
 
 const AssetsToBorrowAccordion = () => {
   const { t } = useTranslation('common')
-  const { account } = useSessionContext()
+  const { address } = useAccount()
   const [asset, setAsset] = useState<IAsset>(null)
   const [assetsList, setAssetsList] = useState<IAssetList[]>([])
   const [disableBorrowBtn, setDisableBorrowBtn] = useState<boolean>(true)
@@ -47,16 +46,16 @@ const AssetsToBorrowAccordion = () => {
 
   const pool = useMemo(
     () => ({
-      addressOrName: tokenOptions.contract.pool,
-      contractInterface: tokenOptions.contract.poolAbi
+      address: tokenOptions.contract.pool as Address,
+      abi: tokenOptions.contract.poolAbi
     }),
     [tokenOptions.contract.pool]
   )
 
   const uiPoolDataProvider = useMemo(
     () => ({
-      addressOrName: tokenOptions.contract.uiPoolDataProvider,
-      contractInterface: tokenOptions.contract.uiPoolDataProviderAbi
+      address: tokenOptions.contract.uiPoolDataProvider as Address,
+      abi: tokenOptions.contract.uiPoolDataProviderAbi
     }),
     [tokenOptions.contract.uiPoolDataProvider]
   )
@@ -66,7 +65,7 @@ const AssetsToBorrowAccordion = () => {
       {
         ...pool,
         functionName: 'getUserAccountData',
-        args: [account]
+        args: [address]
       },
       {
         ...uiPoolDataProvider,

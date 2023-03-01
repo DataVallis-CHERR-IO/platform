@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import TextField from '../../inputs/text-field.input'
 import useTranslation from 'next-translate/useTranslation'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useBalance } from 'wagmi'
+import { Address, useBalance } from 'wagmi'
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material'
 import { faEthereum } from '@fortawesome/free-brands-svg-icons'
 
@@ -23,7 +23,7 @@ const SendTransactionDialog = ({ title, contentText, open, onClose, sender, min,
   const [maxValue, setMaxValue] = useState<number>(null)
   const formRef = useRef<HTMLFormElement>(null)
   const { data: userBalance } = useBalance({
-    addressOrName: sender,
+    address: sender as Address,
     watch: true
   })
 

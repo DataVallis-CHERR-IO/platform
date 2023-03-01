@@ -10,10 +10,9 @@ import Typography from '@mui/material/Typography'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { BeatLoader } from 'react-spinners'
-import { useContractReads } from 'wagmi'
+import { Address, useAccount, useContractReads } from 'wagmi'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { getEther } from '../../../utils'
-import { useSessionContext } from '../../../contexts/session/provider'
 import { Button } from '@mui/material'
 import { tokenOptions } from '../../../config'
 import { assets } from '../../../config/assets'
@@ -29,7 +28,7 @@ interface IAssetList {
 
 const YourSuppliesAccordion = () => {
   const { t } = useTranslation('common')
-  const { account } = useSessionContext()
+  const { address } = useAccount()
   const [asset, setAsset] = useState<IAsset>(null)
   const [assetsList, setAssetsList] = useState<IAssetList[]>(null)
   const [balance, setBalance] = useState<number>(0)
@@ -45,16 +44,16 @@ const YourSuppliesAccordion = () => {
 
   const walletBalanceProvider = useMemo(
     () => ({
-      addressOrName: tokenOptions.contract.walletBalanceProvider,
-      contractInterface: tokenOptions.contract.walletBalanceProviderAbi
+      address: tokenOptions.contract.walletBalanceProvider as Address,
+      abi: tokenOptions.contract.walletBalanceProviderAbi
     }),
     [tokenOptions.contract.walletBalanceProvider]
   )
 
   const pool = useMemo(
     () => ({
-      addressOrName: tokenOptions.contract.pool,
-      contractInterface: tokenOptions.contract.poolAbi
+      address: tokenOptions.contract.pool as Address,
+      abi: tokenOptions.contract.poolAbi
     }),
     [tokenOptions.contract.pool]
   )
@@ -64,12 +63,12 @@ const YourSuppliesAccordion = () => {
       {
         ...walletBalanceProvider,
         functionName: 'batchBalanceOf',
-        args: [[account], assets.map(value => value.aToken)]
+        args: [[address], assets.map(value => value.aToken)]
       },
       {
         ...pool,
         functionName: 'getUserAccountData',
-        args: [account]
+        args: [address]
       }
     ],
     watch: true

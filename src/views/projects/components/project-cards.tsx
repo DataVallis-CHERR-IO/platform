@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import useTranslation from 'next-translate/useTranslation'
 import ProjectProgress from './project-progress'
-import { useContractReads } from 'wagmi'
+import { Address, useContractReads } from 'wagmi'
 import { getCherrioProjectAbi } from '../../../contracts/abi/cherrio-project'
 import { useSubscription } from '@apollo/client'
 import { useQuery } from 'react-query'
@@ -77,13 +77,13 @@ const ProjectCard: React.FC<IProjectCardProps> = ({ project }) => {
 
   const contract = useMemo(
     () => ({
-      addressOrName: project.contractAddress
+      address: project.contractAddress as Address
     }),
     [project.contractAddress]
   )
-  const contractInterface = useMemo(
+  const abi = useMemo(
     () => ({
-      contractInterface: getCherrioProjectAbi()
+      abi: getCherrioProjectAbi()
     }),
     []
   )
@@ -92,12 +92,12 @@ const ProjectCard: React.FC<IProjectCardProps> = ({ project }) => {
     contracts: [
       {
         ...contract,
-        ...contractInterface,
+        ...abi,
         functionName: 'stage'
       },
       {
         ...contract,
-        ...contractInterface,
+        ...abi,
         functionName: 'raisedAmount'
       }
     ],

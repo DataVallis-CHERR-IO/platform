@@ -10,7 +10,7 @@ import Typography from '@mui/material/Typography'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { useContractRead } from 'wagmi'
+import { Address, useAccount, useContractRead } from 'wagmi'
 import { BeatLoader } from 'react-spinners'
 import { getEther } from '../../../utils'
 import { tokenOptions } from '../../../config'
@@ -20,7 +20,6 @@ import { faEthereum } from '@fortawesome/free-brands-svg-icons'
 import { IAsset } from '../../../interfaces'
 import { IUserReservesData } from '../../../interfaces/contracts'
 import * as _ from 'lodash'
-import { useSessionContext } from '../../../contexts/session/provider'
 
 interface IAssetList {
   asset: any
@@ -31,7 +30,7 @@ interface IAssetList {
 
 const YourBorrowsAccordion = () => {
   const { t } = useTranslation('common')
-  const { account } = useSessionContext()
+  const { address } = useAccount()
   const [asset, setAsset] = useState<IAsset>(null)
   const [assetsList, setAssetsList] = useState<IAssetList[]>(null)
   const [balance, setBalance] = useState<number>(0)
@@ -48,8 +47,8 @@ const YourBorrowsAccordion = () => {
 
   const uiPoolDataProvider = useMemo(
     () => ({
-      addressOrName: tokenOptions.contract.uiPoolDataProvider,
-      contractInterface: tokenOptions.contract.uiPoolDataProviderAbi
+      address: tokenOptions.contract.uiPoolDataProvider as Address,
+      abi: tokenOptions.contract.uiPoolDataProviderAbi
     }),
     [tokenOptions.contract.uiPoolDataProvider]
   )
@@ -57,7 +56,7 @@ const YourBorrowsAccordion = () => {
   const { data: contractData } = useContractRead({
     ...uiPoolDataProvider,
     functionName: 'getUserReservesData',
-    args: [tokenOptions.contract.poolAddressesProvider, account],
+    args: [tokenOptions.contract.poolAddressesProvider, address],
     watch: true
   })
 

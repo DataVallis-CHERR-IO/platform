@@ -14,7 +14,7 @@ import { getEther, getWei } from '../../../utils'
 import { method } from '../../../modules/method'
 import { useContractContext } from '../../../contexts/contract/provider'
 import { getCherrioProjectAbi } from '../../../contracts/abi/cherrio-project'
-import { useSessionContext } from '../../../contexts/session/provider'
+import { useAccount } from 'wagmi'
 
 interface IProjectDetailProps {
   project: IProject
@@ -22,7 +22,7 @@ interface IProjectDetailProps {
 
 const ProjectDetail: React.FC<IProjectDetailProps> = ({ project }) => {
   const { t } = useTranslation('common')
-  const { account } = useSessionContext()
+  const { address } = useAccount()
   const { contractProject, contractProjectActivator } = useContractContext()
   const [displayButton, setDisplayButton] = useState<boolean>(false)
   const [showSendTransactionDialog, setShowSendTransactionDialog] = useState<boolean>(false)
@@ -56,7 +56,7 @@ const ProjectDetail: React.FC<IProjectDetailProps> = ({ project }) => {
   }
 
   useEffect(() => {
-    if (contractProject.owner && account && account?.toLowerCase() !== contractProject.owner.toLowerCase() && contractProject.stage !== StageEnum.ENDED) {
+    if (contractProject.owner && address && address?.toLowerCase() !== contractProject.owner.toLowerCase() && contractProject.stage !== StageEnum.ENDED) {
       setDisplayButton(true)
 
       if (contractProject.stage === StageEnum.PENDING) {
@@ -73,7 +73,7 @@ const ProjectDetail: React.FC<IProjectDetailProps> = ({ project }) => {
     } else {
       setDisplayButton(false)
     }
-  }, [contractProject.stage, contractProjectActivator.activatedAmount, account])
+  }, [contractProject.stage, contractProjectActivator.activatedAmount, address])
 
   return (
     <>
@@ -134,16 +134,16 @@ const ProjectDetail: React.FC<IProjectDetailProps> = ({ project }) => {
         </div>
       </section>
       <ProjectGallery projectId={project.id} />
-      {account?.toLowerCase() === contractProject.owner?.toLowerCase() && <ProjectCreateSpendingRequest project={project} />}{' '}
+      {address?.toLowerCase() === contractProject.owner?.toLowerCase() && <ProjectCreateSpendingRequest project={project} />}{' '}
       {contractProject.requests?.descriptions?.length > 0 && <ProjectSpendingRequests project={project} />}
       <Subscribe />
-      {account && (
+      {address && (
         <SendTransactionDialog
           title={contractProject.stage === StageEnum.PENDING ? 'activateProject' : 'donateForProject'}
           contentText={contractProject.stage === StageEnum.PENDING ? 'activateProjectContentText' : 'donateForProjectContentText'}
           open={showSendTransactionDialog}
           onClose={handleSendOnClose}
-          sender={account}
+          sender={address}
           min={getEther(contractProject.minimumDonation)}
           max={max}
         />

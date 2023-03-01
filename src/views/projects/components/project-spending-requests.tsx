@@ -8,11 +8,11 @@ import { getEther, truncateAddress } from '../../../utils'
 import { notify } from '../../../utils/notify'
 import { method } from '../../../modules/method'
 import { getCherrioProjectAbi } from '../../../contracts/abi/cherrio-project'
-import { useSessionContext } from '../../../contexts/session/provider'
 import { faCheck, faThumbsUp, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { faEthereum } from '@fortawesome/free-brands-svg-icons'
 import { IProject } from '../../../interfaces/api'
 import * as _ from 'lodash'
+import { useAccount } from 'wagmi'
 
 interface IProjectSpendingRequestsProps {
   project: IProject
@@ -20,7 +20,7 @@ interface IProjectSpendingRequestsProps {
 
 const ProjectSpendingRequests: React.FC<IProjectSpendingRequestsProps> = ({ project }) => {
   const { t } = useTranslation('common')
-  const { account } = useSessionContext()
+  const { address } = useAccount()
   const { contractProject } = useContractContext()
   const [rows, setRows] = useState<any[]>([])
   const columns = useMemo(
@@ -36,7 +36,7 @@ const ProjectSpendingRequests: React.FC<IProjectSpendingRequestsProps> = ({ proj
         align: 'right',
         width: 100,
         ignore:
-          account?.toLowerCase() === contractProject.owner?.toLowerCase() || contractProject?.donations === 0 || contractProject?.requests?.votes?.length === 0
+          address?.toLowerCase() === contractProject.owner?.toLowerCase() || contractProject?.donations === 0 || contractProject?.requests?.votes?.length === 0
       }
     ],
     [contractProject?.requests?.votes]

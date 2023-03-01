@@ -7,12 +7,12 @@ import AddTaskIcon from '@mui/icons-material/AddTask'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { method } from '../../../../modules/method'
 import { getEther, getWei } from '../../../../utils'
-import { useSessionContext } from '../../../../contexts/session/provider'
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Icon, InputAdornment } from '@mui/material'
 import { faEthereum } from '@fortawesome/free-brands-svg-icons'
 import { tokenOptions } from '../../../../config'
 import { IAsset } from '../../../../interfaces'
 import { InterestRateModeEnum } from '../../../../enums/interest-rate-mode.enum'
+import { useAccount } from 'wagmi'
 
 interface IRepayDialogProps {
   asset: IAsset
@@ -23,7 +23,7 @@ interface IRepayDialogProps {
 
 const RepayDialog = ({ asset, debt, open, onClose }: IRepayDialogProps) => {
   const { t } = useTranslation('common')
-  const { account } = useSessionContext()
+  const { address } = useAccount()
   const [value, setValue] = useState<string>('')
   const [balance, setBalance] = useState<number>(0)
   const [displayApproveBtn, setDisplayApproveBtn] = useState<boolean>(false)
@@ -59,7 +59,7 @@ const RepayDialog = ({ asset, debt, open, onClose }: IRepayDialogProps) => {
 
       if (amount > 0) {
         const allowance = getEther(
-          (await method('allowance', [account, tokenOptions.contract.pool], null, asset.underlyingAsset, asset.abi)).toString(),
+          (await method('allowance', [address, tokenOptions.contract.pool], null, asset.underlyingAsset, asset.abi)).toString(),
           asset.decimals
         )
 
@@ -106,7 +106,7 @@ const RepayDialog = ({ asset, debt, open, onClose }: IRepayDialogProps) => {
           tokenOptions.contract.pool,
           getWei(value, asset.decimals),
           asset?.stableBorrowRateEnabled ? InterestRateModeEnum.STABLE : InterestRateModeEnum.VARIABLE,
-          account
+          address
         ],
         null,
         tokenOptions.contract.wethGateway,
@@ -115,7 +115,7 @@ const RepayDialog = ({ asset, debt, open, onClose }: IRepayDialogProps) => {
     } else {
       repay = await method(
         'repay',
-        [asset.underlyingAsset, getWei(value, asset.decimals), InterestRateModeEnum.VARIABLE, account],
+        [asset.underlyingAsset, getWei(value, asset.decimals), InterestRateModeEnum.VARIABLE, address],
         null,
         tokenOptions.contract.pool,
         tokenOptions.contract.poolAbi

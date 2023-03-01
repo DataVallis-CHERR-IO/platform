@@ -1,10 +1,9 @@
 import React, { useContext, useMemo } from 'react'
 import ContractContext from './context'
-import { useContractReads } from 'wagmi'
+import { Address, useAccount, useContractReads } from 'wagmi'
 import { getCherrioProjectAbi } from '../../contracts/abi/cherrio-project'
 import { getCherrioProjectActivatorAbi } from '../../contracts/abi/cherrio-project-activator'
 import { getEther } from '../../utils'
-import { useSessionContext } from '../session/provider'
 import { IProject } from '../../interfaces/api'
 import { contractOptions } from '../../config'
 import * as _ from 'lodash'
@@ -17,44 +16,44 @@ interface IContractProviderProps {
 }
 
 const ContractProvider: React.FC<IContractProviderProps> = ({ children, project }) => {
-  const { account } = useSessionContext()
+  const { address } = useAccount()
 
   const cherrioProjectContract = useMemo(
     () => ({
-      addressOrName: project.contractAddress,
-      contractInterface: getCherrioProjectAbi()
+      address: project.contractAddress as Address,
+      abi: getCherrioProjectAbi()
     }),
     [project?.contractAddress]
   )
 
   const cherrioProjectActivatorContract = useMemo(
     () => ({
-      addressOrName: contractOptions.projectActivator.address,
-      contractInterface: getCherrioProjectActivatorAbi()
+      address: contractOptions.projectActivator.address as Address,
+      abi: getCherrioProjectActivatorAbi()
     }),
     []
   )
 
   const contracts = useMemo(() => {
-    if (!account) return []
+    if (!address) return []
     return [
       {
         ...cherrioProjectContract,
         functionName: 'donations',
-        args: [account]
+        args: [address]
       },
       {
         ...cherrioProjectContract,
         functionName: 'getVotes',
-        args: [account]
+        args: [address]
       },
       {
         ...cherrioProjectActivatorContract,
         functionName: 'getActivatedAmount',
-        args: [project?.contractAddress, account]
+        args: [project?.contractAddress, address]
       }
     ]
-  }, [account, cherrioProjectContract, cherrioProjectActivatorContract, project?.contractAddress])
+  }, [address, cherrioProjectContract, cherrioProjectActivatorContract, project?.contractAddress])
 
   const { data, isLoading, isError } = useContractReads({
     contracts: [

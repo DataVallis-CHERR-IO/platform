@@ -7,11 +7,11 @@ import AddTaskIcon from '@mui/icons-material/AddTask'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { method } from '../../../../modules/method'
 import { getEther, getWei } from '../../../../utils'
-import { useSessionContext } from '../../../../contexts/session/provider'
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Icon, InputAdornment } from '@mui/material'
 import { faEthereum } from '@fortawesome/free-brands-svg-icons'
 import { tokenOptions } from '../../../../config'
 import { IAsset } from '../../../../interfaces'
+import { useAccount } from 'wagmi'
 
 interface IWithdrawDialogProps {
   asset: IAsset
@@ -22,7 +22,7 @@ interface IWithdrawDialogProps {
 
 const WithdrawDialog = ({ asset, suppliedBalance, open, onClose }: IWithdrawDialogProps) => {
   const { t } = useTranslation('common')
-  const { account } = useSessionContext()
+  const { address } = useAccount()
   const [value, setValue] = useState<string>('')
   const [balance, setBalance] = useState<number>(0)
   const [displayApproveBtn, setDisplayApproveBtn] = useState<boolean>(false)
@@ -59,7 +59,7 @@ const WithdrawDialog = ({ asset, suppliedBalance, open, onClose }: IWithdrawDial
       if (amount > 0) {
         if (asset?.isNative) {
           const allowance = getEther(
-            (await method('allowance', [account, tokenOptions.contract.wethGateway], null, asset.aToken, asset.aTokenAbi)).toString(),
+            (await method('allowance', [address, tokenOptions.contract.wethGateway], null, asset.aToken, asset.aTokenAbi)).toString(),
             asset.decimals
           )
 
@@ -105,7 +105,7 @@ const WithdrawDialog = ({ asset, suppliedBalance, open, onClose }: IWithdrawDial
     if (asset?.isNative) {
       withdraw = await method(
         'withdrawETH',
-        [tokenOptions.contract.pool, getWei(value, asset.decimals), account],
+        [tokenOptions.contract.pool, getWei(value, asset.decimals), address],
         { gasLimit: tokenOptions.gasLimit },
         tokenOptions.contract.wethGateway,
         tokenOptions.contract.wethGatewayAbi
@@ -113,7 +113,7 @@ const WithdrawDialog = ({ asset, suppliedBalance, open, onClose }: IWithdrawDial
     } else {
       withdraw = await method(
         'withdraw',
-        [asset.underlyingAsset, getWei(value, asset.decimals), account],
+        [asset.underlyingAsset, getWei(value, asset.decimals), address],
         null,
         tokenOptions.contract.pool,
         tokenOptions.contract.poolAbi
