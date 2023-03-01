@@ -5,12 +5,6 @@ import Head from 'next/head'
 import useTranslation from 'next-translate/useTranslation'
 import { Web3Button, useWeb3ModalTheme } from '@web3modal/react'
 import { useAccount } from 'wagmi'
-// const { theme, setTheme } = useWeb3ModalTheme()
-// setTheme({
-//   themeMode: "dark",
-//   themeColor: "orange",
-//   themeBackground: "gradient",
-// })
 
 const Header: React.FC = () => {
   const { t } = useTranslation('common')
