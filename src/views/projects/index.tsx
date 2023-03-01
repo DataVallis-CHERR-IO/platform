@@ -9,7 +9,7 @@ const Projects: React.FC = () => {
     <section>
       <div className='container pb-80'>
         <div className='row'>
-          <div className='col-lg-6 mx-auto text-center'>
+          <div className='col-lg-12 mx-auto text-center'>
             <h2 className='c-red'>{t('home.lastProjects.title')}</h2>
             <p className='lead whiteFont'>{t('home.lastProjects.subtitle')}</p>
           </div>

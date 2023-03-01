@@ -90,12 +90,12 @@
   "home": {
     "text": "Home",
     "header": {
-      "title": "PROOF OF CHARITY DAO PROTOCOL",
+      "title": "PROOF OF CHARITY PROTOCOL",
       "subtitle": "SETTING ONLINE TRUSTED STANDARD FOR CHARITY USING INTEGRATED WEB3 PROTOCOLS"
     },
     "lastProjects": {
-      "title": "Last projects",
-      "subtitle": "Learn more about charity projects and donate for a good cause.",
+      "title": "Sandbox",
+      "subtitle": "Test the platform's features by interacting with these use cases. You can donate, activate or add a project, as well as deposit funds into the Aave protocol and watch your assets grow as a liquidity provider, all while indirectly donating to good causes at the same time.",
       "description": {
         "title": "CHERR.IO Vision",
         "text1": "CHERR.IO is setting an online trusted standard for charity. By using this standard anyone will be able to post a charity project on any platform, and thus benefit from CHERR.IO’s features and functionalities.",
