@@ -17,9 +17,9 @@ const Header: React.FC = () => {
   const { isConnected } = useAccount()
   const { setTheme } = useWeb3ModalTheme()
   setTheme({
-    themeMode: "light",
-    themeColor: "blackWhite",
-    themeBackground: "gradient",
+    themeMode: 'light',
+    themeColor: 'blackWhite',
+    themeBackground: 'gradient'
   })
   return (
     <>
