@@ -19,7 +19,7 @@ const RouteGuard = ({ children }) => {
       router.events.off('routeChangeStart', hideContent)
       router.events.off('routeChangeComplete', authCheck)
     }
-  }, [])
+  }, [isConnected])
 
   const authCheck = url => {
     let path = url.split('?')[0]
