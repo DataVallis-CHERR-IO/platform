@@ -3,13 +3,24 @@ import Link from 'next/link'
 import Image from 'next/image'
 import Head from 'next/head'
 import useTranslation from 'next-translate/useTranslation'
-import { Web3Button } from '@web3modal/react'
+import { Web3Button, useWeb3ModalTheme } from '@web3modal/react'
 import { useAccount } from 'wagmi'
+// const { theme, setTheme } = useWeb3ModalTheme()
+// setTheme({
+//   themeMode: "dark",
+//   themeColor: "orange",
+//   themeBackground: "gradient",
+// })
 
 const Header: React.FC = () => {
   const { t } = useTranslation('common')
   const { isConnected } = useAccount()
-
+  const { setTheme } = useWeb3ModalTheme()
+  setTheme({
+    themeMode: "light",
+    themeColor: "blackWhite",
+    themeBackground: "gradient",
+  })
   return (
     <>
       <Head>
@@ -54,7 +65,10 @@ const Header: React.FC = () => {
                   </Link>
                 </li>
               )}
-              <Web3Button />
+              <Web3Button
+                  themeMode="dark"
+                  accentColor="#000000"
+              />
             </ul>
           </div>
         </div>
