@@ -65,10 +65,7 @@ const Header: React.FC = () => {
                   </Link>
                 </li>
               )}
-              <Web3Button
-                  themeMode="dark"
-                  accentColor="#000000"
-              />
+              <Web3Button />
             </ul>
           </div>
         </div>
