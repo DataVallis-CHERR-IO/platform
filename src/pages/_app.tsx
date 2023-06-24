@@ -8,7 +8,7 @@ import { ToastContainer } from 'react-toastify'
 import { EthereumClient, modalConnectors, walletConnectProvider } from '@web3modal/ethereum'
 import { Web3Modal } from '@web3modal/react'
 import { configureChains, createClient, WagmiConfig } from 'wagmi'
-import { goerli } from 'wagmi/chains'
+import { sepolia } from 'wagmi/chains'
 import { ApolloProvider } from '@apollo/client'
 import { apolloClient } from '../clients/graphql'
 import 'react-18-image-lightbox/style.css'
@@ -16,7 +16,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import '../../public/vendor/bootstrap/css/bootstrap.min.css'
 import '../../public/css/styles.min.css'
 
-const chains = [goerli]
+const chains = [sepolia]
 const { provider, webSocketProvider } = configureChains(chains, [walletConnectProvider({ projectId: process.env.WALLET_CONNECT_PROJECT_ID })])
 const client = createClient({
   autoConnect: true,

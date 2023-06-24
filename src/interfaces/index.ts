@@ -52,7 +52,6 @@ export interface IAsset {
 export interface ITokenOptions {
   chainId: number
   chain: string
-  wagmiChain: string
   name: string
   decimals: number
   rpcUrls: string[]

@@ -27,15 +27,14 @@ export const dropZoneOptions: IDropZoneOptions = {
 }
 
 export const tokenOptions: ITokenOptions = {
-  chainId: 5,
-  chain: 'Goerli',
-  wagmiChain: 'goerli',
-  name: 'GoerliETH',
+  chainId: 11155111,
+  chain: 'Sepolia',
+  name: 'SepoliaETH',
   decimals: 18,
-  rpcUrls: ['https://goerli.infura.io/v3/'],
-  blockExplorerUrls: ['https://goerli.etherscan.io/'],
-  httpsProvider: 'https://goerli.infura.io/v3/9e4165a8806947a08e67ec27c5039607',
-  wssProvider: 'wss://goerli.infura.io/ws/v3/9e4165a8806947a08e67ec27c5039607',
+  rpcUrls: ['https://sepolia.infura.io/v3/'],
+  blockExplorerUrls: ['https://sepolia.etherscan.io/'],
+  httpsProvider: 'https://sepolia.infura.io/v3/9e4165a8806947a08e67ec27c5039607',
+  wssProvider: 'wss://sepolia.infura.io/ws/v3/9e4165a8806947a08e67ec27c5039607',
   gasLimit: 1000000,
   contract: {
     pool: '0x368EedF3f56ad10b9bC57eed4Dac65B26Bb667f6',
