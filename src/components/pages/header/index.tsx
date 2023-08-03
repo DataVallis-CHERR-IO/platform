@@ -23,7 +23,7 @@ const Header: React.FC = () => {
         <meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no' />
         <meta
           name='description'
-          content='Test the platform features by interacting with these use cases. You can donate, activate or add a project, as well as deposit funds into the Aave protocol and watch your assets grow as a liquidity provider, all while indirectly donating to good causes at the same time.'
+          content='Test CHERR.IO platform features by interacting with these use cases. You can donate, activate or add a project, as well as deposit funds into the Aave protocol and watch your assets grow as a liquidity provider, all while indirectly donating to good causes at the same time.'
         />
         <meta name='author' content='' />
       </Head>
